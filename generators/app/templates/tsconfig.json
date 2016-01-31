@@ -1,0 +1,6 @@
+{
+  "files": [
+    "main.d.ts",
+    "browser.d.ts"
+  ]
+}
