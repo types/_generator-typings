@@ -4,6 +4,6 @@
   },
   "files": [
     "test.ts",
-    "typings/main.d.ts"
+    "../typings/main.d.ts"
   ]
 }
