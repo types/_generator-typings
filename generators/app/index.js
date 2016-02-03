@@ -13,35 +13,48 @@ module.exports = yeoman.generators.Base.extend({
 
     this.prompt({
       type: 'input',
-      name: 'url',
-      message: 'What is the url of the package you are writing this typings for?',
-      default: 'https://github.com/...'
+      name: 'repo',
+      message: 'What is the username/repo of the package you are writing this typings for?',
+      default: 'username/repo'
     }, function (props) {
-      this.sourceUrl = props.url;
-      if (this.sourceUrl.indexOf('github.com') === -1) {
-        this.log.error('Sorry, only support github package at the moment. Help wanted!');
-        process.exit(1);
-      } else {
-        this.sourcePackageName = /.*github\.com[^\/]*\/[^\/]*\/([^\/]*)/.exec(this.sourceUrl)[1];
-        this.prettyPackageName = changeCase.titleCase(this.sourcePackageName.replace('-', ' '));
-      }
+      this.sourceUrl = `https://github.com/${props.repo}`;
+      this.sourcePackageName = props.repo.split('/')[1];
+      this.prettyPackageName = changeCase.titleCase(this.sourcePackageName.replace('-', ' '));
       done();
     }.bind(this));
   },
 
   writing: function () {
     this.fs.copy(
-      this.templatePath(''),
+      this.templatePath('**/*'),
       this.destinationPath()
       );
     this.fs.copy(
       this.templatePath('**/.*'),
       this.destinationPath()
       );
-    var typings = {name: this.sourcePackageName, main: 'main.d.ts', browser: 'browser.d.ts'};
+    var typeFileName = `${this.sourcePackageName}.d.ts`;
+
+    var typings = { name: this.sourcePackageName, main: typeFileName };
     this.fs.writeJSON(this.destinationPath('typings.json'), typings);
+
+    var tsconfig = {
+      compilerOptions: {
+        module: 'commonjs'
+      },
+      files: [typeFileName]
+    };
+    this.fs.writeJSON(this.destinationPath('tsconfig.json'), tsconfig);
+
+    this.fs.write(typeFileName, '');
+
     this.fs.write('README.md',
-      `# Typed ${this.prettyPackageName}\n` +
-      `The type definition for [${this.sourcePackageName}](${this.sourceUrl}).`);
+      `# Typed ${this.prettyPackageName }\n` +
+      `The type definition for [${this.sourcePackageName }](${this.sourceUrl }).`);
+
+    this.fs.write('test/test.ts',
+      `import * as ${this.sourcePackageName} from '${this.sourcePackageName}'`);
+
+    this.log(`Run "typings install file:typings.json" when you are ready to test your definition in test/test.ts.`);
   }
 });
