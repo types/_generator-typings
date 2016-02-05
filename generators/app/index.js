@@ -2,15 +2,16 @@
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
+// var extend = require('deep-extend');
 var changeCase = require('change-case');
 
 module.exports = yeoman.generators.Base.extend({
   prompting: {
+    greeting() {
+      this.log(yosay('Welcome to the sensational ' + chalk.red('typings') + ' generator!'));
+    },
     sourceUri() {
       var done = this.async();
-
-      // Have Yeoman greet the user.
-      this.log(yosay('Welcome to the sensational ' + chalk.red('typings') + ' generator!'));
 
       const uriExamples = [
         'facebook/react',
@@ -27,7 +28,7 @@ module.exports = yeoman.generators.Base.extend({
         validate: (value) => value.length > 0
       }, (props) => {
         this.sourceUri = props.sourceUri;
-        this.sourceUrl = `https://github.com/${props.sourceUri}`;
+        this.sourcePackageUrl = `https://github.com/${props.sourceUri}`;
         this.sourcePackageName = props.sourceUri.split('/')[1];
         this.prettyPackageName = changeCase.titleCase(this.sourcePackageName.replace('-', ' '));
         done();
@@ -96,14 +97,44 @@ module.exports = yeoman.generators.Base.extend({
     createTest() {
       this.fs.write('test/test.ts',
         `import * as ${this.sourcePackageName} from '${this.sourcePackageName}'`);
+    },
+    updatePackageJson() {
+      var pkg = this.fs.read(this.destinationPath('package.json'));
+      console.log(this.packageName, this.sourcePackageUrl, this.sourcePackageName, this.username);
+      pkg = pkg.replace('{username}', this.username);
+      pkg = pkg.replace('{packageName}', this.packageName);
+      pkg = pkg.replace('{sourcePackageName}', this.sourcePackageName);
+      pkg = pkg.replace('{sourcePackageUrl}', this.sourcePackageUrl);
+      this.fs.write(this.destinationPath('package.json'), pkg);
+
+      // Don't know why it doesn't work.
+      // var pkg = this.fs.readJSON(this.destinationPath('package.json'), {});
+      // extend(pkg, {
+      //   packageName: this.packageName,
+      //   sourcePackageUrl: this.sourcePackageUrl,
+      //   sourcePackageName: this.sourcePackageName,
+      //   username: this.username
+      // });
+      // this.fs.writeJSON(this.destinationPath('package.json'), pkg);
+    },
+    updateLICENSE() {
+      var lic = this.fs.read(this.destinationPath('LICENSE'));
+      lic = lic.replace('{username}', this.username);
+      this.fs.write(this.destinationPath('LICENSE'), lic);
+    }
+  },
+  install: {
+    npm() {
+      this.log(`Running ${chalk.green('npm install')}...`);
+      this.spawnCommandSync('npm', ['install']);
     }
   },
   end: {
     goodbye() {
-      this.log(`Almost ready! Run ${chalk.green(`typings install ${this.sourcePackageName} --ambient"`)} to get a copy of the DefinitelyTyped file (if available) so you have something to start with!`);
-      this.log('');
-      this.log('');
-      this.log(`When you are ready, run ${chalk.green('typings install -D file:main.d.ts')} when you are ready to test your definition in test/test.ts.`);
+
+      this.log(`Almost ready! Run ${chalk.green(`typings install ${this.sourcePackageName} --ambient"`) }`);
+      this.log('  to get a copy of the DefinitelyTyped file (if available)');
+      this.log('  so you have something to start with!');
     }
   }
 });
