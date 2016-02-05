@@ -1,8 +1,8 @@
 'use strict';
+var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
-// var extend = require('deep-extend');
 var changeCase = require('change-case');
 
 var licenses = [
@@ -44,6 +44,31 @@ module.exports = yeoman.generators.Base.extend({
         done();
       });
     },
+    checkFolder() {
+      var done = this.async();
+
+      var folder = path.basename(this.env.cwd);
+
+      this.packageName = `typed-${this.sourcePackageName}`;
+      this.prompt({
+        type: 'confirm',
+        name: 'quit',
+        message: `I notice your current folder is ${chalk.yellow(folder) }.\n` +
+        `  I recommend to name your repo as ${chalk.cyan(this.packageName) }.\n` +
+        '  do you want to do that instead?',
+        default: 'Y',
+        when: () => folder !== this.packageName
+      }, (props) => {
+        console.log('quit', props.quit);
+        if (props.quit) {
+          this.log('');
+          this.log(`Please create your repo and run ${chalk.green('yo typings') } again.`);
+          process.exit(1);
+        } else {
+          done();
+        }
+      });
+    },
     packageName() {
       var done = this.async();
 
@@ -51,7 +76,7 @@ module.exports = yeoman.generators.Base.extend({
         type: 'input',
         name: 'packageName',
         message: 'Can I name this project as...',
-        default: () => `typed-${this.sourcePackageName}`,
+        default: () => this.packageName,
         validate: (value) => value.length > 0
       }, (props) => {
         this.packageName = props.packageName;
@@ -188,7 +213,7 @@ module.exports = yeoman.generators.Base.extend({
     readyToTest() {
       this.log('');
       this.log('When you are ready to test your definition,');
-      this.log(`Run ${chalk.green('typings install -D file:main.d.ts')}`);
+      this.log(`Run ${chalk.green('typings install -D file:main.d.ts') }`);
       this.log('  and see the result in test/test.ts!');
     }
   }
