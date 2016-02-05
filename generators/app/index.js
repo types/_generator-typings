@@ -175,12 +175,21 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
   end: {
-    goodbye() {
+    almostReady() {
       this.log('');
       this.log('Almost ready!');
+    },
+    dtSuggestion() {
+      this.log('');
       this.log(`Run ${chalk.green(`typings install ${this.sourcePackageName} --ambient"`) }`);
       this.log('  to get a copy of the DefinitelyTyped file (if available)');
       this.log('  so you have something to start with!');
+    },
+    readyToTest() {
+      this.log('');
+      this.log('When you are ready to test your definition,');
+      this.log(`Run ${chalk.green('typings install -D file:main.d.ts')}`);
+      this.log('  and see the result in test/test.ts!');
     }
   }
 });
