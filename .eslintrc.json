@@ -1,0 +1,8 @@
+{
+  "extend": "ox-space",
+  "rules": {
+    "arrow-parens": [2, "always"],
+    "no-warning-comments": 0,
+    "object-curly-spacing": [2, "always"]
+  }
+}

@@ -85,7 +85,8 @@ module.exports = yeoman.generators.Base.extend({
           module: 'commonjs',
           moduleResolution: 'node'
         },
-        files: ['main.d.ts', 'typings/main.d.ts'] // TODO: add ambient source typings file
+        // TODO: add ambient source typings file
+        files: ['main.d.ts', 'typings/main.d.ts']
       };
       this.fs.writeJSON(this.destinationPath('tsconfig.json'), tsconfig);
     },
@@ -125,13 +126,12 @@ module.exports = yeoman.generators.Base.extend({
   },
   install: {
     npm() {
-      this.log(`Running ${chalk.green('npm install')}...`);
+      this.log(`Running ${chalk.green('npm install') }...`);
       this.spawnCommandSync('npm', ['install']);
     }
   },
   end: {
     goodbye() {
-
       this.log(`Almost ready! Run ${chalk.green(`typings install ${this.sourcePackageName} --ambient"`) }`);
       this.log('  to get a copy of the DefinitelyTyped file (if available)');
       this.log('  so you have something to start with!');
