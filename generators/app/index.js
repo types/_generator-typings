@@ -144,26 +144,18 @@ module.exports = yeoman.generators.Base.extend({
         `import * as ${this.sourcePackageName} from '${this.sourcePackageName}'`);
     },
     updatePackageJson() {
-      var pkg = this.fs.read(this.destinationPath('package.json'));
-      console.log(this.packageName, this.sourcePackageUrl, this.sourcePackageName, this.username);
-      pkg = pkg.replace(/{username}/g, this.username);
-      pkg = pkg.replace(/{packageName}/g, this.packageName);
-      pkg = pkg.replace(/{sourcePackageName}/g, this.sourcePackageName);
-      pkg = pkg.replace(/{sourcePackageUrl}/g, this.sourcePackageUrl);
-      this.fs.write(this.destinationPath('package.json'), pkg);
-
-      // Don't know why it doesn't work.
-      // var pkg = this.fs.readJSON(this.destinationPath('package.json'), {});
-      // extend(pkg, {
-      //   packageName: this.packageName,
-      //   sourcePackageUrl: this.sourcePackageUrl,
-      //   sourcePackageName: this.sourcePackageName,
-      //   username: this.username
-      // });
-      // this.fs.writeJSON(this.destinationPath('package.json'), pkg);
+      this.fs.copyTpl(
+        this.templatePath('template/package.json'),
+        this.destinationPath('package.json'),
+        {
+          username: this.username,
+          packageName: this.packageName,
+          sourcePackageName: this.sourcePackageName,
+          sourcePackageUrl: this.sourcePackageUrl
+        });
     },
     createLICENSE() {
-      var filename = `licenses/${this.license}.txt`;
+      var filename = `template/${this.license}.txt`;
       var author = this.nameOnLicense.trim();
 
       this.fs.copyTpl(
