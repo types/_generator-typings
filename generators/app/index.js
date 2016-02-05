@@ -5,6 +5,16 @@ var yosay = require('yosay');
 // var extend = require('deep-extend');
 var changeCase = require('change-case');
 
+var licenses = [
+  { name: 'Apache 2.0', value: 'Apache-2.0' },
+  { name: 'MIT', value: 'MIT' },
+  { name: 'Unlicense', value: 'unlicense' },
+  { name: 'FreeBSD', value: 'BSD-2-Clause-FreeBSD' },
+  { name: 'NewBSD', value: 'BSD-3-Clause' },
+  { name: 'Internet Systems Consortium (ISC)', value: 'ISC' },
+  { name: 'No License (Copyrighted)', value: 'nolicense' }
+];
+
 module.exports = yeoman.generators.Base.extend({
   prompting: {
     greeting() {
@@ -61,17 +71,48 @@ module.exports = yeoman.generators.Base.extend({
         this.username = props.username;
         done();
       });
+    },
+    license() {
+      var done = this.async();
+
+      this.prompt({
+        type: 'list',
+        name: 'license',
+        message: 'Which license do you want to use?',
+        default: 'MIT',
+        choices: licenses
+      }, (props) => {
+        this.license = props.license;
+        done();
+      });
+    },
+    nameOnLicense() {
+      var done = this.async();
+
+      this.prompt({
+        type: 'input',
+        name: 'name',
+        message: 'Name to use on the license?',
+        default: this.username
+      }, (props) => {
+        this.nameOnLicense = props.name;
+        done();
+      });
     }
   },
 
   writing: {
     copyFiles() {
       this.fs.copy(
-        this.templatePath('**/*'),
+        this.templatePath('test/*'),
+        this.destinationPath('test')
+        );
+      this.fs.copy(
+        this.templatePath('*'),
         this.destinationPath()
         );
       this.fs.copy(
-        this.templatePath('**/.*'),
+        this.templatePath('.*'),
         this.destinationPath()
         );
     },
@@ -118,10 +159,18 @@ module.exports = yeoman.generators.Base.extend({
       // });
       // this.fs.writeJSON(this.destinationPath('package.json'), pkg);
     },
-    updateLICENSE() {
-      var lic = this.fs.read(this.destinationPath('LICENSE'));
-      lic = lic.replace('{username}', this.username);
-      this.fs.write(this.destinationPath('LICENSE'), lic);
+    createLICENSE() {
+      var filename = `licenses/${this.license}.txt`;
+      var author = this.nameOnLicense.trim();
+
+      this.fs.copyTpl(
+        this.templatePath(filename),
+        this.destinationPath('LICENSE'),
+        {
+          year: (new Date()).getFullYear(),
+          author: author
+        }
+        );
     }
   },
   install: {
