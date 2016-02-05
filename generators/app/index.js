@@ -40,7 +40,7 @@ module.exports = yeoman.generators.Base.extend({
       this.prompt({
         type: 'input',
         name: 'packageName',
-        message: 'Can I name this project as',
+        message: 'Can I name this project as...',
         default: () => `typed-${this.sourcePackageName}`,
         validate: (value) => value.length > 0
       }, (props) => {
@@ -132,7 +132,9 @@ module.exports = yeoman.generators.Base.extend({
   },
   end: {
     goodbye() {
-      this.log(`Almost ready! Run ${chalk.green(`typings install ${this.sourcePackageName} --ambient"`) }`);
+      this.log('');
+      this.log('Almost ready!');
+      this.log(`Run ${chalk.green(`typings install ${this.sourcePackageName} --ambient"`) }`);
       this.log('  to get a copy of the DefinitelyTyped file (if available)');
       this.log('  so you have something to start with!');
     }
