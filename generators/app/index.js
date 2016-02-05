@@ -5,56 +5,105 @@ var yosay = require('yosay');
 var changeCase = require('change-case');
 
 module.exports = yeoman.generators.Base.extend({
-  prompting: function () {
-    var done = this.async();
+  prompting: {
+    sourceUri() {
+      var done = this.async();
 
-    // Have Yeoman greet the user.
-    this.log(yosay('Welcome to the sensational ' + chalk.red('typings') + ' generator!'));
+      // Have Yeoman greet the user.
+      this.log(yosay('Welcome to the sensational ' + chalk.red('typings') + ' generator!'));
 
-    this.prompt({
-      type: 'input',
-      name: 'repo',
-      message: 'What is the username/repo of the package you are writing this typings for?',
-      default: 'username/repo'
-    }, function (props) {
-      this.sourceUrl = `https://github.com/${props.repo}`;
-      this.sourcePackageName = props.repo.split('/')[1];
-      this.prettyPackageName = changeCase.titleCase(this.sourcePackageName.replace('-', ' '));
-      done();
-    }.bind(this));
+      const uriExamples = [
+        'facebook/react',
+        'atom/atom',
+        'microsoft/vscode',
+        'angular/angular'
+      ];
+
+      this.prompt({
+        type: 'input',
+        name: 'sourceUri',
+        message: `What is the ${chalk.green('source') } author/module name?`,
+        default: () => uriExamples[Math.round(Math.random() * 4 - 0.5)],
+        validate: (value) => value.length > 0
+      }, (props) => {
+        this.sourceUri = props.sourceUri;
+        this.sourceUrl = `https://github.com/${props.sourceUri}`;
+        this.sourcePackageName = props.sourceUri.split('/')[1];
+        this.prettyPackageName = changeCase.titleCase(this.sourcePackageName.replace('-', ' '));
+        done();
+      });
+    },
+    packageName() {
+      var done = this.async();
+
+      this.prompt({
+        type: 'input',
+        name: 'packageName',
+        message: 'Can I name this project as',
+        default: () => `typed-${this.sourcePackageName}`,
+        validate: (value) => value.length > 0
+      }, (props) => {
+        this.packageName = props.packageName;
+        done();
+      });
+    },
+    username() {
+      var done = this.async();
+
+      this.prompt({
+        type: 'input',
+        name: 'username',
+        message: 'And your GitHub username is...',
+        validate: (value) => value.length > 0,
+        store: true
+      }, (props) => {
+        this.username = props.username;
+        done();
+      });
+    }
   },
 
-  writing: function () {
-    this.fs.copy(
-      this.templatePath('**/*'),
-      this.destinationPath()
-      );
-    this.fs.copy(
-      this.templatePath('**/.*'),
-      this.destinationPath()
-      );
-    var typeFileName = `${this.sourcePackageName}.d.ts`;
-
-    var typings = { name: this.sourcePackageName, main: typeFileName };
-    this.fs.writeJSON(this.destinationPath('typings.json'), typings);
-
-    var tsconfig = {
-      compilerOptions: {
-        module: 'commonjs'
-      },
-      files: [typeFileName]
-    };
-    this.fs.writeJSON(this.destinationPath('tsconfig.json'), tsconfig);
-
-    this.fs.write(typeFileName, '');
-
-    this.fs.write('README.md',
-      `# Typed ${this.prettyPackageName }\n` +
-      `The type definition for [${this.sourcePackageName }](${this.sourceUrl }).`);
-
-    this.fs.write('test/test.ts',
-      `import * as ${this.sourcePackageName} from '${this.sourcePackageName}'`);
-
-    this.log(`Run "typings install file:typings.json" when you are ready to test your definition in test/test.ts.`);
+  writing: {
+    copyFiles() {
+      this.fs.copy(
+        this.templatePath('**/*'),
+        this.destinationPath()
+        );
+      this.fs.copy(
+        this.templatePath('**/.*'),
+        this.destinationPath()
+        );
+    },
+    createTypings() {
+      var typings = { name: this.sourcePackageName, main: 'main.d.ts' };
+      this.fs.writeJSON(this.destinationPath('typings.json'), typings);
+    },
+    createTsconfig() {
+      var tsconfig = {
+        compilerOptions: {
+          module: 'commonjs',
+          moduleResolution: 'node'
+        },
+        files: ['main.d.ts', 'typings/main.d.ts'] // TODO: add ambient source typings file
+      };
+      this.fs.writeJSON(this.destinationPath('tsconfig.json'), tsconfig);
+    },
+    createREADME() {
+      this.fs.write('README.md',
+        `# Typed ${this.prettyPackageName}\n` +
+        `The type definition for [${this.sourcePackageName }](${this.sourceUrl}).`);
+    },
+    createTest() {
+      this.fs.write('test/test.ts',
+        `import * as ${this.sourcePackageName} from '${this.sourcePackageName}'`);
+    }
+  },
+  end: {
+    goodbye() {
+      this.log(`Almost ready! Run ${chalk.green(`typings install ${this.sourcePackageName} --ambient"`)} to get a copy of the DefinitelyTyped file (if available) so you have something to start with!`);
+      this.log('');
+      this.log('');
+      this.log(`When you are ready, run ${chalk.green('typings install -D file:main.d.ts')} when you are ready to test your definition in test/test.ts.`);
+    }
   }
 });
