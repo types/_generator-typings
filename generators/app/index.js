@@ -134,7 +134,10 @@ module.exports = yeoman.generators.Base.extend({
     createREADME() {
       this.fs.write('README.md',
         `# Typed ${this.prettyPackageName}\n` +
-        `The type definition for [${this.sourcePackageName }](${this.sourceUrl}).`);
+        `The type definition for [${this.sourcePackageName }](${this.sourcePackageUrl}).\n` +
+        '\n' +
+        '# LICENSE\n' +
+        `${this.license}\n`);
     },
     createTest() {
       this.fs.write('test/test.ts',
@@ -143,10 +146,10 @@ module.exports = yeoman.generators.Base.extend({
     updatePackageJson() {
       var pkg = this.fs.read(this.destinationPath('package.json'));
       console.log(this.packageName, this.sourcePackageUrl, this.sourcePackageName, this.username);
-      pkg = pkg.replace('{username}', this.username);
-      pkg = pkg.replace('{packageName}', this.packageName);
-      pkg = pkg.replace('{sourcePackageName}', this.sourcePackageName);
-      pkg = pkg.replace('{sourcePackageUrl}', this.sourcePackageUrl);
+      pkg = pkg.replace(/{username}/g, this.username);
+      pkg = pkg.replace(/{packageName}/g, this.packageName);
+      pkg = pkg.replace(/{sourcePackageName}/g, this.sourcePackageName);
+      pkg = pkg.replace(/{sourcePackageUrl}/g, this.sourcePackageUrl);
       this.fs.write(this.destinationPath('package.json'), pkg);
 
       // Don't know why it doesn't work.
