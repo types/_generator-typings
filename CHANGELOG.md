@@ -1,8 +1,7 @@
 # Change Log
 
-## [v0.4.0](https://github.com/unional/generator-typings/tree/HEAD)
-
-[Full Changelog](https://github.com/unional/generator-typings/compare/v0.1.1...HEAD)
+## [v0.4.0](https://github.com/unional/generator-typings/tree/v0.4.0) (2016-02-19)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.1.1...v0.4.0)
 
 **Closed issues:**
 
