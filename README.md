@@ -37,6 +37,6 @@ MIT © [unional](https://github.com/unional)
 * [ ] Support non github source package
 * [ ] install target source automatically
 * [ ] Add supporting utilities and settings
-  * [ ] Add `tslint.json`
+  * [x] Add `tslint.json`
 * [ ] Add validation to check if the d.ts file created correctly.
 * [ ] Automate PR creation on `typings/registry`
