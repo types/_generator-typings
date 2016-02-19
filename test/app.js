@@ -9,6 +9,7 @@ describe('generator-typings:app', function () {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withPrompts({
         sourceUri: 'facebook/reactDOM',
+        quit: 'n',
         packageName: 'typed-reactDOM',
         username: 'unional'
       })
@@ -17,6 +18,7 @@ describe('generator-typings:app', function () {
 
   it('creates files', function () {
     assert.file([
+      '.vscode/settings.json',
       'test/test.ts',
       'test/tsconfig.json',
       '.editorconfig',

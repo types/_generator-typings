@@ -60,7 +60,7 @@ module.exports = yeoman.generators.Base.extend({
         when: () => folder !== this.packageName
       }, (props) => {
         console.log('quit', props.quit);
-        if (props.quit) {
+        if (props.quit === 'Y') {
           this.log('');
           this.log(`Please create your repo and run ${chalk.green('yo typings') } again.`);
           process.exit(1);
@@ -128,6 +128,10 @@ module.exports = yeoman.generators.Base.extend({
 
   writing: {
     copyFiles() {
+      this.fs.copy(
+        this.templatePath('.vscode/*'),
+        this.destinationPath('.vscode')
+        );
       this.fs.copy(
         this.templatePath('test/*'),
         this.destinationPath('test')
