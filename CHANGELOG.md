@@ -1,5 +1,16 @@
 # Change Log
 
+## [v0.4.0](https://github.com/unional/generator-typings/tree/HEAD)
+
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.1.1...HEAD)
+
+**Closed issues:**
+
+- Allow repo name and typingsName.d.ts to differ. [\#1](https://github.com/unional/generator-typings/issues/1)
+
+## [v0.1.1](https://github.com/unional/generator-typings/tree/v0.1.1) (2016-02-03)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.0.1...v0.1.1)
+
 ## [v0.0.1](https://github.com/unional/generator-typings/tree/v0.0.1) (2016-01-31)
 
 
