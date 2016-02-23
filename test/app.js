@@ -9,8 +9,7 @@ describe('generator-typings:app', function () {
     helpers.run(path.join(__dirname, '../generators/app'))
       .withPrompts({
         sourceUri: 'facebook/reactDOM',
-        quit: 'n',
-        packageName: 'typed-reactDOM',
+        projectUri: 'unional/typed-reactDOM',
         username: 'unional'
       })
       .on('end', done);
