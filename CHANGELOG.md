@@ -1,5 +1,8 @@
 # Change Log
 
+## [v0.5.1](https://github.com/unional/generator-typings/tree/v0.5.1) (2016-02-23)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.4.0...v0.5.1)
+
 ## [v0.4.0](https://github.com/unional/generator-typings/tree/v0.4.0) (2016-02-19)
 [Full Changelog](https://github.com/unional/generator-typings/compare/v0.1.1...v0.4.0)
 
