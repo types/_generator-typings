@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/<%- username %>/<%- packageName %>.git"
+    "url": "git+https://github.com/<%- organization %>/<%- packageName %>.git"
   },
   "keywords": [
     "typings",
@@ -22,7 +22,7 @@
   "author": "<%- username %>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/<%- username %>/<%- packageName %>/issues"
+    "url": "https://github.com/<%- organization %>/<%- packageName %>/issues"
   },
-  "homepage": "https://github.com/<%- username %>/<%- packageName %>#readme"
+  "homepage": "https://github.com/<%- organization %>/<%- packageName %>#readme"
 }

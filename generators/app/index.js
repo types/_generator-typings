@@ -33,7 +33,7 @@ module.exports = yeoman.generators.Base.extend({
       this.prompt({
         type: 'input',
         name: 'sourceUri',
-        message: `What is the ${chalk.green('source') } author/module name?`,
+        message: `What is the ${chalk.green('author/module') } of the ${chalk.red('source') } on github?`,
         default: () => uriExamples[Math.round(Math.random() * 4 - 0.5)],
         validate: (value) => value.length > 0
       }, (props) => {
@@ -44,43 +44,21 @@ module.exports = yeoman.generators.Base.extend({
         done();
       });
     },
-    checkFolder() {
+    projectUri() {
       var done = this.async();
-
       var folder = path.basename(this.env.cwd);
-
-      this.packageName = `typed-${this.sourcePackageName}`;
-      this.prompt({
-        type: 'confirm',
-        name: 'quit',
-        message: `I notice your current folder is ${chalk.yellow(folder) }.\n` +
-        `  I recommend to name your repo as ${chalk.cyan(this.packageName) }.\n` +
-        '  do you want to do that instead?',
-        default: 'Y',
-        when: () => folder !== this.packageName
-      }, (props) => {
-        console.log('quit', props.quit);
-        if (props.quit === 'Y') {
-          this.log('');
-          this.log(`Please create your repo and run ${chalk.green('yo typings') } again.`);
-          process.exit(1);
-        } else {
-          this.packageName = folder;
-          done();
-        }
-      });
-    },
-    packageName() {
-      var done = this.async();
+      var parentFolder = path.basename(path.dirname(this.env.cwd));
 
       this.prompt({
         type: 'input',
-        name: 'packageName',
-        message: 'Can I name this project as...',
-        default: () => this.packageName,
-        validate: (value) => value.length > 0
+        name: 'projectUri',
+        message: `What will be the ${chalk.green('author/module') } for ${chalk.red('this typing') }?`,
+        default: () => `${parentFolder}/${folder}`,
+        validate: (value) => value.length > 0 && value.split('/').length === 2
       }, (props) => {
-        this.packageName = props.packageName;
+        var parts = props.projectUri.split('/');
+        this.organization = parts[0];
+        this.packageName = parts[1];
         done();
       });
     },
@@ -181,7 +159,8 @@ module.exports = yeoman.generators.Base.extend({
           username: this.username,
           packageName: this.packageName,
           sourcePackageName: this.sourcePackageName,
-          sourcePackageUrl: this.sourcePackageUrl
+          sourcePackageUrl: this.sourcePackageUrl,
+          organization: this.origanization
         });
     },
     createLICENSE() {
@@ -205,15 +184,9 @@ module.exports = yeoman.generators.Base.extend({
     }
   },
   end: {
-    almostReady() {
+    isReady() {
       this.log('');
-      this.log('Almost ready!');
-    },
-    dtSuggestion() {
-      this.log('');
-      this.log(`Run ${chalk.green(`typings install ${this.sourcePackageName} --ambient"`) }`);
-      this.log('  to get a copy of the DefinitelyTyped file (if available)');
-      this.log('  so you have something to start with!');
+      this.log('I am done! Now it is your turn!');
     },
     readyToTest() {
       this.log('');
