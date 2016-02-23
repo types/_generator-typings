@@ -65,6 +65,7 @@ module.exports = yeoman.generators.Base.extend({
           this.log(`Please create your repo and run ${chalk.green('yo typings') } again.`);
           process.exit(1);
         } else {
+          this.packageName = folder;
           done();
         }
       });
