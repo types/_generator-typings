@@ -1,5 +1,14 @@
 # Change Log
 
+## [v0.7.1](https://github.com/unional/generator-typings/tree/HEAD)
+
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.6.0...HEAD)
+
+**Closed issues:**
+
+- Can move to typings, but one item remains [\#3](https://github.com/unional/generator-typings/issues/3)
+- Add test similar to what's in DT [\#2](https://github.com/unional/generator-typings/issues/2)
+
 ## [v0.6.0](https://github.com/unional/generator-typings/tree/v0.6.0) (2016-02-23)
 [Full Changelog](https://github.com/unional/generator-typings/compare/v0.5.1...v0.6.0)
 
