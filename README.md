@@ -1,5 +1,5 @@
 # generator-typings [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
-> Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) package
+> Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) project
 
 ## Installation
 
