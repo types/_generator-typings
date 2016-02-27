@@ -1,17 +1,44 @@
 # Change Log
 
+## [v0.6.0](https://github.com/unional/generator-typings/tree/v0.6.0) (2016-02-23)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.5.1...v0.6.0)
+
 ## [v0.5.1](https://github.com/unional/generator-typings/tree/v0.5.1) (2016-02-23)
-[Full Changelog](https://github.com/unional/generator-typings/compare/v0.4.0...v0.5.1)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.5.0...v0.5.1)
+
+## [v0.5.0](https://github.com/unional/generator-typings/tree/v0.5.0) (2016-02-19)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.4.0...v0.5.0)
 
 ## [v0.4.0](https://github.com/unional/generator-typings/tree/v0.4.0) (2016-02-19)
-[Full Changelog](https://github.com/unional/generator-typings/compare/v0.1.1...v0.4.0)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.3.3...v0.4.0)
+
+## [v0.3.3](https://github.com/unional/generator-typings/tree/v0.3.3) (2016-02-05)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.3.2...v0.3.3)
+
+## [v0.3.2](https://github.com/unional/generator-typings/tree/v0.3.2) (2016-02-05)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.3.1...v0.3.2)
+
+## [v0.3.1](https://github.com/unional/generator-typings/tree/v0.3.1) (2016-02-05)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.3.0...v0.3.1)
+
+## [v0.3.0](https://github.com/unional/generator-typings/tree/v0.3.0) (2016-02-05)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.2.1...v0.3.0)
+
+## [v0.2.1](https://github.com/unional/generator-typings/tree/v0.2.1) (2016-02-05)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.2.0...v0.2.1)
 
 **Closed issues:**
 
 - Allow repo name and typingsName.d.ts to differ. [\#1](https://github.com/unional/generator-typings/issues/1)
 
+## [v0.2.0](https://github.com/unional/generator-typings/tree/v0.2.0) (2016-02-05)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.1.1...v0.2.0)
+
 ## [v0.1.1](https://github.com/unional/generator-typings/tree/v0.1.1) (2016-02-03)
-[Full Changelog](https://github.com/unional/generator-typings/compare/v0.0.1...v0.1.1)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.1.0...v0.1.1)
+
+## [v0.1.0](https://github.com/unional/generator-typings/tree/v0.1.0) (2016-02-03)
+[Full Changelog](https://github.com/unional/generator-typings/compare/v0.0.1...v0.1.0)
 
 ## [v0.0.1](https://github.com/unional/generator-typings/tree/v0.0.1) (2016-01-31)
 
