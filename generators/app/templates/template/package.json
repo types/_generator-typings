@@ -1,28 +1,33 @@
 {
   "name": "<%- packageName %>",
-  "version": "0.0.1",
   "description": "The type definition for <%- sourcePackageUrl %>",
+  "version": "0.0.1",
+  "author": "<%- username %>",
+  "license": "MIT",
+  "scripts": {
+    "bundle": "typings bundle . -o bundle.d.ts",
+    "test": "npm run bundle && ts-node test/test.ts"
+  },
   "directories": {
     "test": "test"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "tslint": "^3.3.0",
-    "typescript": "^1.8.0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/<%- organization %>/<%- packageName %>.git"
   },
+  "homepage": "https://github.com/<%- organization %>/<%- packageName %>#readme",
   "keywords": [
     "typings",
     "typed",
     "<%- sourcePackageName %>"
   ],
-  "author": "<%- username %>",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/<%- organization %>/<%- packageName %>/issues"
   },
-  "homepage": "https://github.com/<%- organization %>/<%- packageName %>#readme"
+  "dependencies": {},
+  "devDependencies": {
+    "ts-node": "^0.5.5",
+    "tslint": "^3.5.0",
+    "typescript": "^1.8.2"
+  }
 }

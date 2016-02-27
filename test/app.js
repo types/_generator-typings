@@ -23,7 +23,7 @@ describe('generator-typings:app', function () {
       '.editorconfig',
       '.gitignore',
       'LICENSE',
-      'main.d.ts',
+      'index.d.ts',
       'README.md',
       'package.json',
       'typings.json',

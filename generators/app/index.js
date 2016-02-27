@@ -125,7 +125,11 @@ module.exports = yeoman.generators.Base.extend({
         );
     },
     createTypings() {
-      var typings = { name: this.sourcePackageName, main: 'main.d.ts' };
+      var typings = {
+        name: this.sourcePackageName,
+        main: 'index.d.ts',
+        homepage: `https://github.com/${this.sourceUri}`
+      };
       this.fs.writeJSON(this.destinationPath('typings.json'), typings);
     },
     createTsconfig() {
@@ -135,7 +139,7 @@ module.exports = yeoman.generators.Base.extend({
           moduleResolution: 'node'
         },
         // TODO: add ambient source typings file
-        files: ['main.d.ts', 'typings/main.d.ts']
+        files: ['index.d.ts', 'test/test.ts', 'typings/main.d.ts']
       };
       this.fs.writeJSON(this.destinationPath('tsconfig.json'), tsconfig);
     },
@@ -147,9 +151,12 @@ module.exports = yeoman.generators.Base.extend({
         '# LICENSE\n' +
         `${this.license}\n`);
     },
-    createTest() {
+    createTestFile() {
       this.fs.write('test/test.ts',
-        `import * as ${this.sourcePackageName} from '${this.sourcePackageName}'`);
+        ['/// <reference path="../bundle.d.ts" />',
+        '',
+        `import * as ${this.sourcePackageName} from '${this.sourcePackageName}';`,
+        ''].join('\n'));
     },
     updatePackageJson() {
       this.fs.copyTpl(
@@ -160,7 +167,7 @@ module.exports = yeoman.generators.Base.extend({
           packageName: this.packageName,
           sourcePackageName: this.sourcePackageName,
           sourcePackageUrl: this.sourcePackageUrl,
-          organization: this.origanization
+          organization: this.organization
         });
     },
     createLICENSE() {
@@ -181,6 +188,14 @@ module.exports = yeoman.generators.Base.extend({
     npm() {
       this.log(`Running ${chalk.green('npm install') }...`);
       this.spawnCommandSync('npm', ['install']);
+    },
+    npmInstallSource() {
+      this.log(`Installing ${chalk.green(this.sourcePackageName) }...`);
+      this.spawnCommandSync('npm', ['install', '-D', this.sourcePackageName]);
+    },
+    runBundle() {
+      this.log(`Running ${chalk.green('npm run bundle') }...`);
+      this.spawnCommandSync('npm', ['run', 'bundle']);
     }
   },
   end: {
@@ -190,9 +205,8 @@ module.exports = yeoman.generators.Base.extend({
     },
     readyToTest() {
       this.log('');
-      this.log('When you are ready to test your definition,');
-      this.log(`Run ${chalk.green('typings install -D file:main.d.ts') }`);
-      this.log('  and see the result in test/test.ts!');
+      this.log(`Run ${chalk.green('npm run bundle')} to update the definition for the test, and`);
+      this.log(`Run ${chalk.green('npm test') } test your definition!`);
     }
   }
 });
