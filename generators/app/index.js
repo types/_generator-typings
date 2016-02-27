@@ -20,6 +20,24 @@ module.exports = yeoman.generators.Base.extend({
     greeting() {
       this.log(yosay('Welcome to the sensational ' + chalk.red('typings') + ' generator!'));
     },
+    projectUri() {
+      var done = this.async();
+      var folder = path.basename(this.env.cwd);
+      var parentFolder = path.basename(path.dirname(this.env.cwd));
+
+      this.prompt({
+        type: 'input',
+        name: 'projectUri',
+        message: `What will be the ${chalk.green('author/module') } for ${chalk.red('this typing') }?`,
+        default: () => `${parentFolder}/${folder}`,
+        validate: (value) => value.length > 0 && value.split('/').length === 2
+      }, (props) => {
+        var parts = props.projectUri.split('/');
+        this.organization = parts[0];
+        this.packageName = parts[1];
+        done();
+      });
+    },
     sourceUri() {
       var done = this.async();
 
@@ -44,21 +62,30 @@ module.exports = yeoman.generators.Base.extend({
         done();
       });
     },
-    projectUri() {
+    isNpm() {
       var done = this.async();
-      var folder = path.basename(this.env.cwd);
-      var parentFolder = path.basename(path.dirname(this.env.cwd));
+
+      this.prompt({
+        type: 'confirm',
+        name: 'isNpm',
+        message: `Is the source installable through NPM?`,
+        default: true
+      }, (props) => {
+        this.isNpm = props.isNpm;
+        done();
+      });
+    },
+    npmName() {
+      var done = this.async();
 
       this.prompt({
         type: 'input',
-        name: 'projectUri',
-        message: `What will be the ${chalk.green('author/module') } for ${chalk.red('this typing') }?`,
-        default: () => `${parentFolder}/${folder}`,
-        validate: (value) => value.length > 0 && value.split('/').length === 2
+        name: 'npmName',
+        message: `Name of the package on NPM is...`,
+        when: () => this.isNpm,
+        default: () => this.sourcePackageName
       }, (props) => {
-        var parts = props.projectUri.split('/');
-        this.organization = parts[0];
-        this.packageName = parts[1];
+        this.npmName = props.npmName;
         done();
       });
     },
@@ -190,8 +217,10 @@ module.exports = yeoman.generators.Base.extend({
       this.spawnCommandSync('npm', ['install']);
     },
     npmInstallSource() {
-      this.log(`Installing ${chalk.green(this.sourcePackageName) }...`);
-      this.spawnCommandSync('npm', ['install', '-D', this.sourcePackageName]);
+      if (this.npmName) {
+        this.log(`Installing ${chalk.green(this.sourcePackageName) }...`);
+        this.spawnCommandSync('npm', ['install', '-D', this.sourcePackageName]);
+      }
     },
     runBundle() {
       this.log(`Running ${chalk.green('npm run bundle') }...`);
@@ -202,6 +231,13 @@ module.exports = yeoman.generators.Base.extend({
     isReady() {
       this.log('');
       this.log('I am done! Now it is your turn!');
+    },
+    installSource() {
+      if (!this.isNpm) {
+        // this.log('');
+        // this.log('To run the test, you need to get the source package and reference it in test');
+        // this.log('');
+      }
     },
     readyToTest() {
       this.log('');
