@@ -1,4 +1,5 @@
-# generator-typings [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
+# generator-typings [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://unional.mit-license.org)
+
 > Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) project
 
 ## Installation
