@@ -1,4 +1,4 @@
-# generator-typings [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://unional.mit-license.org)
+# generator-typings [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![License][license-image]][license-url]
 
 > Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) project
 
@@ -26,10 +26,12 @@ MIT © [unional](https://github.com/unional)
 
 [npm-image]: https://badge.fury.io/js/generator-typings.svg
 [npm-url]: https://npmjs.org/package/generator-typings
-[travis-image]: https://travis-ci.org/unional/generator-typings.svg?branch=master
-[travis-url]: https://travis-ci.org/unional/generator-typings
-[daviddm-image]: https://david-dm.org/unional/generator-typings.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/unional/generator-typings
+[travis-image]: https://travis-ci.org/typings/generator-typings.svg?branch=master
+[travis-url]: https://travis-ci.org/typings/generator-typings
+[daviddm-image]: https://david-dm.org/typings/generator-typings.svg?theme=shields.io
+[daviddm-url]: https://david-dm.org/typings/generator-typings
+[license-image]: http://img.shields.io/:license-mit-blue.svg?style=flat-square
+[license-url]: http://unional.mit-license.org
 
 ## TODO List
 * [x] Basic scaffolding
