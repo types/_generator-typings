@@ -1,5 +1,8 @@
 # Change Log
 
+## [v0.7.3](https://github.com/typings/generator-typings/tree/v0.7.3) (2016-03-01)
+[Full Changelog](https://github.com/typings/generator-typings/compare/v0.7.2...v0.7.3)
+
 ## [v0.7.2](https://github.com/typings/generator-typings/tree/v0.7.2) (2016-03-01)
 [Full Changelog](https://github.com/typings/generator-typings/compare/v0.7.1...v0.7.2)
 
