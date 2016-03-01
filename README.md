@@ -35,7 +35,13 @@ MIT © [unional](https://github.com/unional)
 
 ## TODO List
 * [x] Basic scaffolding
-* [ ] Support non github source package
+* [ ] Support multiple source hostings providers
+  * [x] github
+* [ ] Support multiple source distribution channels
+  * [x] npm
+  * [ ] bower
+  * [ ] github
+  * [ ] gitlab
 * [x] install target source automatically
 * [ ] Add supporting utilities and settings
   * [x] Add `tslint.json`
