@@ -10,6 +10,7 @@ describe('generator-typings:app', function () {
       .withPrompts({
         sourceUri: 'facebook/reactDOM',
         projectUri: 'unional/typed-reactDOM',
+        isNpm: false,
         username: 'unional'
       })
       .on('end', done);
@@ -19,7 +20,6 @@ describe('generator-typings:app', function () {
     assert.file([
       '.vscode/settings.json',
       'test/test.ts',
-      'test/tsconfig.json',
       '.editorconfig',
       '.gitignore',
       'LICENSE',
