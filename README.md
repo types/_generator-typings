@@ -1,4 +1,4 @@
-# generator-typings [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![License][license-image]][license-url]
+# generator-typings [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Build Status][travis-image]][travis-url] [![License][license-image]][license-url]
 
 > Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) project
 
