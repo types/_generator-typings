@@ -1,5 +1,8 @@
 {
   "extend": "ox-space",
+  "env": {
+    "es6": true
+  },
   "rules": {
     "arrow-parens": [2, "always"],
     "no-warning-comments": 0,
