@@ -15,7 +15,7 @@ var licenses = [
   { name: 'No License (Copyrighted)', value: 'nolicense' }
 ];
 
-module.exports = yeoman.generators.Base.extend({
+module.exports = yeoman.Base.extend({
   prompting: {
     greeting() {
       this.log(yosay('Welcome to the sensational ' + chalk.red('typings') + ' generator!'));
