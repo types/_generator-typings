@@ -239,6 +239,12 @@ module.exports = yeoman.Base.extend({
         // this.log('');
       }
     },
+    tsdHint() {
+      this.log('');
+      this.log('If there are DefinitelyType support for the source,');
+      this.log(` you can run ${chalk.green('tsd install <source>')} to download the file`);
+      this.log(' so you can easily access those code.');
+    },
     readyToTest() {
       this.log('');
       this.log(`Run ${chalk.green('npm run bundle')} to update the definition for the test, and`);
