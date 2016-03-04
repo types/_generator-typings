@@ -47,7 +47,7 @@
     "url": "https://github.com/typings/generator-typings.git"
   },
   "scripts": {
-    "prepublish": "gulp prepublish",
+    "prepublish": "gulp prepublish && gulp",
     "test": "gulp"
   },
   "license": "MIT"
