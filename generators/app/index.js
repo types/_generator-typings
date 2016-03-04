@@ -247,7 +247,7 @@ module.exports = yeoman.Base.extend({
     },
     readyToTest() {
       this.log('');
-      this.log(`Run ${chalk.green('npm run bundle')} to update the definition for the test, and`);
+      this.log(`Run ${chalk.green('npm run build')} to update the definition for the test, and`);
       this.log(`Run ${chalk.green('npm test') } test your definition!`);
     }
   }

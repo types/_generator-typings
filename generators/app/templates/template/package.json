@@ -5,8 +5,8 @@
   "author": "<%- username %>",
   "license": "MIT",
   "scripts": {
-    "bundle": "typings bundle . -o bundle.d.ts",
-    "test": "npm run bundle && ts-node test/test.ts"
+    "build": "typings bundle . -o bundle.d.ts",
+    "test": "ts-node test/test.ts"
   },
   "directories": {
     "test": "test"
