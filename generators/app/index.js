@@ -222,9 +222,9 @@ module.exports = yeoman.Base.extend({
         this.spawnCommandSync('npm', ['install', '-D', this.sourcePackageName]);
       }
     },
-    runBundle() {
-      this.log(`Running ${chalk.green('npm run bundle') }...`);
-      this.spawnCommandSync('npm', ['run', 'bundle']);
+    runBuild() {
+      this.log(`Running ${chalk.green('npm run build') }...`);
+      this.spawnCommandSync('npm', ['run', 'build']);
     }
   },
   end: {
