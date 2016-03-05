@@ -18,25 +18,7 @@ var licenses = [
 module.exports = yeoman.Base.extend({
   prompting: {
     greeting() {
-      this.log(yosay('Welcome to the sensational ' + chalk.red('typings') + ' generator!'));
-    },
-    projectUri() {
-      var done = this.async();
-      var folder = path.basename(this.env.cwd);
-      var parentFolder = path.basename(path.dirname(this.env.cwd));
-
-      this.prompt({
-        type: 'input',
-        name: 'projectUri',
-        message: `What will be the ${chalk.green('author/module') } for ${chalk.red('this typing') }?`,
-        default: () => `${parentFolder}/${folder}`,
-        validate: (value) => value.length > 0 && value.split('/').length === 2
-      }, (props) => {
-        var parts = props.projectUri.split('/');
-        this.organization = parts[0];
-        this.packageName = parts[1];
-        done();
-      });
+      this.log(yosay(`Welcome to the sensational ${chalk.red('typings')} generator!`));
     },
     sourceUri() {
       var done = this.async();
@@ -181,21 +163,9 @@ module.exports = yeoman.Base.extend({
     createTestFile() {
       this.fs.write('test/test.ts',
         ['/// <reference path="../bundle.d.ts" />',
-        '',
-        `import * as ${this.sourcePackageName} from '${this.sourcePackageName}';`,
-        ''].join('\n'));
-    },
-    updatePackageJson() {
-      this.fs.copyTpl(
-        this.templatePath('template/package.json'),
-        this.destinationPath('package.json'),
-        {
-          username: this.username,
-          packageName: this.packageName,
-          sourcePackageName: this.sourcePackageName,
-          sourcePackageUrl: this.sourcePackageUrl,
-          organization: this.organization
-        });
+          '',
+          `import * as ${this.sourcePackageName} from '${this.sourcePackageName}';`,
+          ''].join('\n'));
     },
     createLICENSE() {
       var filename = `template/${this.license}.txt`;
@@ -242,12 +212,12 @@ module.exports = yeoman.Base.extend({
     tsdHint() {
       this.log('');
       this.log('If there are DefinitelyType support for the source,');
-      this.log(` you can run ${chalk.green('tsd install <source>')} to download the file`);
+      this.log(` you can run ${chalk.green('tsd install <source>') } to download the file`);
       this.log(' so you can easily access those code.');
     },
     readyToTest() {
       this.log('');
-      this.log(`Run ${chalk.green('npm run build')} to update the definition for the test, and`);
+      this.log(`Run ${chalk.green('npm run build') } to update the definition for the test, and`);
       this.log(`Run ${chalk.green('npm test') } test your definition!`);
     }
   }
