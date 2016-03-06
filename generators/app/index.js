@@ -155,7 +155,7 @@ module.exports = yeoman.Base.extend({
     createREADME() {
       this.fs.write('README.md',
         `# Typed ${this.prettyPackageName}\n` +
-        `The type definition for [${this.sourcePackageName }](${this.sourcePackageUrl}).\n` +
+        `The type definition for [\`${this.sourcePackageName }\`](${this.sourcePackageUrl}).\n` +
         '\n' +
         '# LICENSE\n' +
         `${this.license}\n`);
