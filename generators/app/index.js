@@ -71,6 +71,19 @@ module.exports = yeoman.Base.extend({
         done();
       });
     },
+    isAmbient() {
+      var done = this.async();
+
+      this.prompt({
+        type: 'confirm',
+        name: 'isAmbient',
+        message: `Is this module ambient? i.e. does it declare globally?`,
+        default: true
+      }, (props) => {
+        this.isAmbient = props.isAmbient;
+        done();
+      });
+    },
     username() {
       var done = this.async();
 
@@ -164,8 +177,16 @@ module.exports = yeoman.Base.extend({
       this.fs.write('test/test.ts',
         ['/// <reference path="./main.d.ts" />',
           '',
-          `import * as ${this.sourcePackageName} from '${this.sourcePackageName}';`,
+          this.isAmbient? '': `import * as ${this.sourcePackageName} from '${this.sourcePackageName}';`,
           ''].join('\n'));
+    },
+    updatePackageJson() {
+      this.fs.copyTpl(
+        this.templatePath('template/package.json'),
+        this.destinationPath('package.json'),
+        {
+          ambient: this.isAmbient? '--ambient': ''
+        });
     },
     createLICENSE() {
       var filename = `template/${this.license}.txt`;

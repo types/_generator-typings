@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "typings bundle -o test",
+    "build": "typings bundle -o test <%- ambient %>",
     "test": "ts-node test/test.ts"
   },
   "private": true,
