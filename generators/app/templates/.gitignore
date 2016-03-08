@@ -39,7 +39,7 @@ node_modules
 
 # typings
 typings
-bundle.d.ts
+test/*.d.ts
 
 # output folder
 out

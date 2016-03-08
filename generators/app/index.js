@@ -162,7 +162,7 @@ module.exports = yeoman.Base.extend({
     },
     createTestFile() {
       this.fs.write('test/test.ts',
-        ['/// <reference path="../bundle.d.ts" />',
+        ['/// <reference path="./main.d.ts" />',
           '',
           `import * as ${this.sourcePackageName} from '${this.sourcePackageName}';`,
           ''].join('\n'));
