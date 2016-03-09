@@ -77,8 +77,8 @@ module.exports = yeoman.Base.extend({
       this.prompt({
         type: 'confirm',
         name: 'isAmbient',
-        message: `Is this module ambient? i.e. does it declare globally?`,
-        default: true
+        message: `Is this module ambient? i.e. does it declare itself globally?`,
+        default: false
       }, (props) => {
         this.isAmbient = props.isAmbient;
         done();
@@ -185,7 +185,7 @@ module.exports = yeoman.Base.extend({
         this.templatePath('template/package.json'),
         this.destinationPath('package.json'),
         {
-          ambient: this.isAmbient? '--ambient': ''
+          ambient: this.isAmbient? ' --ambient': ''
         });
     },
     createLICENSE() {
