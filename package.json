@@ -33,7 +33,7 @@
     "gulp-mocha": "^2.0.0",
     "gulp-nsp": "^2.1.0",
     "gulp-plumber": "^1.0.0",
-    "typings": "^0.7.5",
+    "typings": "^0.7.7",
     "yeoman-assert": "^2.0.0"
   },
   "eslintConfig": {
