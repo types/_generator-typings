@@ -210,7 +210,7 @@ module.exports = yeoman.Base.extend({
     npmInstallSource() {
       if (this.npmName) {
         this.log(`Installing ${chalk.green(this.sourcePackageName) }...`);
-        this.spawnCommandSync('npm', ['install', '-D', this.sourcePackageName]);
+        this.spawnCommandSync('npm', ['install', '-D', '--save-exact', this.sourcePackageName]);
       }
     },
     runBuild() {
