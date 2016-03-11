@@ -46,4 +46,4 @@ MIT © [unional](https://github.com/unional)
 * [ ] Add supporting utilities and settings
   * [x] Add `tslint.json`
 * [x] Add validation to check if the d.ts file created correctly.
-* [ ] Automate PR creation on `typings/registry`
+* [ ] Automatically create PR to [`typings/registry`](https://github.com/typings/registry)
