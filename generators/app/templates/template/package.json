@@ -7,7 +7,7 @@
   "devDependencies": {
     "blue-tape": "^0.2.0",
     "ts-node": "^0.7.0",
-    "tslint": "github:unional/tslint",
+    "tslint": "git+https://github.com/unional/tslint.git",
     "tslint-config-typings": "^0.1.2",
     "typescript": "^1.8.9",
     "typings": "^0.7.9"

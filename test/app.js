@@ -25,8 +25,8 @@ describe('app', function() {
       assert.file([
         '.vscode/settings.json',
         'test/test.ts',
-        'test/main.d.ts',
-        'test/browser.d.ts',
+        'out/main.d.ts',
+        'out/browser.d.ts',
         '.editorconfig',
         '.gitignore',
         'LICENSE',
@@ -59,8 +59,8 @@ describe('app', function() {
       assert.file([
         '.vscode/settings.json',
         'test/test.ts',
-        'test/main.d.ts',
-        'test/browser.d.ts',
+        'out/main.d.ts',
+        'out/browser.d.ts',
         '.editorconfig',
         '.gitignore',
         'LICENSE',
