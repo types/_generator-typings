@@ -166,12 +166,15 @@ module.exports = yeoman.Base.extend({
       this.fs.writeJSON(this.destinationPath('tsconfig.json'), tsconfig);
     },
     createREADME() {
-      this.fs.write('README.md',
-        `# Typed ${this.prettyPackageName}\n` +
-        `The type definition for [\`${this.sourcePackageName }\`](${this.sourcePackageUrl}).\n` +
-        '\n' +
-        '# LICENSE\n' +
-        `${this.license}\n`);
+      this.fs.copyTpl(
+        this.templatePath('template/README.md'),
+        this.destinationPath('README.md'),
+        {
+          prettyPackageName: this.prettyPackageName,
+          sourcePackageName: this.sourcePackageName,
+          sourcePackageUrl: this.sourcePackageUrl,
+          license: this.license
+        });
     },
     createTestFile() {
       this.fs.write('test/test.ts',
