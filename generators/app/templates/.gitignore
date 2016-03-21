@@ -39,7 +39,6 @@ node_modules
 
 # typings
 typings
-test/*.d.ts
 
 # output folder
 out

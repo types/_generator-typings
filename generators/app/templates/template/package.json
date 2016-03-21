@@ -1,13 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "build": "typings bundle -o test<%- ambient %>",
+    "build": "typings bundle<%- ambient %> -o out",
     "test": "ts-node -n test/test.ts"
   },
   "devDependencies": {
+    "blue-tape": "^0.2.0",
     "ts-node": "^0.7.0",
     "tslint": "github:unional/tslint",
-    "tslint-config-typings": "^0.1.1",
+    "tslint-config-typings": "^0.1.2",
     "typescript": "^1.8.9",
     "typings": "^0.7.9"
   }

@@ -161,7 +161,7 @@ module.exports = yeoman.Base.extend({
           moduleResolution: 'node'
         },
         // TODO: add ambient source typings file
-        files: ['index.d.ts', 'test/test.ts', 'typings/main.d.ts']
+        files: ['index.d.ts', 'typings/main.d.ts']
       };
       this.fs.writeJSON(this.destinationPath('tsconfig.json'), tsconfig);
     },
@@ -178,9 +178,11 @@ module.exports = yeoman.Base.extend({
     },
     createTestFile() {
       this.fs.write('test/test.ts',
-        ['/// <reference path="./main.d.ts" />',
+        ['/// <reference path="../out/main.d.ts" />',
+         '/// <reference path="../typings/main.d.ts" />',
           '',
-          this.isAmbient? '': `import * as ${this.sourcePackageName} from '${this.sourcePackageName}';`,
+          'import test = require(\'blue-tape\');',
+          this.isAmbient? '': `import ${this.sourcePackageName} = require('${this.sourcePackageName}');`,
           ''].join('\n'));
     },
     updatePackageJson() {
