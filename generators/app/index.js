@@ -217,6 +217,12 @@ module.exports = yeoman.Base.extend({
     runBuild() {
       this.log(`Running ${chalk.green('npm run build')}...`);
       this.spawnCommandSync('npm', ['run', 'build']);
+    },
+    submodule() {
+      this.log(`Downloading ${chalk.green(this.sourceUri)}...`);
+      // Currently this step is needed to pass test. Will use nodegit for this.
+      this.spawnCommandSync('git', ['init']);
+      this.spawnCommandSync('git', ['submodule', 'add', `${this.sourcePackageUrl}`, 'source']);
     }
   },
   end: {
