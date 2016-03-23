@@ -20,6 +20,12 @@ Then generate your new project:
 yo typings
 ```
 
+## How to write typings
+- https://github.com/typings/typings
+- https://github.com/typings/typings/blob/master/docs/faq.md
+- https://github.com/typings/typings/blob/master/docs/examples.md
+- https://github.com/unional/typescript/blob/master/style-guide/typings/README.md
+
 ## License
 
 MIT © [unional](https://github.com/unional)
