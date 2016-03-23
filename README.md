@@ -6,16 +6,17 @@
 
 First, install [Yeoman](http://yeoman.io) and generator-typings using [npm](https://www.npmjs.com/).
 
-```bash
+```sh
 npm install -g yo
 npm install -g generator-typings
 ```
 
 Then generate your new project:
 
-```bash
-mkdir typed-abc
-cd typed-abc
+```sh
+# create a git repo form github
+# clone it locally to your machine
+# in that directory:
 yo typings
 ```
 
