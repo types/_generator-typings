@@ -40,19 +40,31 @@ MIT © [unional](https://github.com/unional)
 [license-image]: http://img.shields.io/:license-mit-blue.svg?style=flat-square
 [license-url]: http://unional.mit-license.org
 
-## TODO List
+## Features
 * [x] Basic scaffolding
 * [ ] Support multiple source hostings providers
   * [x] github
+  * [ ] gitlab
+  * [ ] custom
 * [ ] Support multiple source distribution channels
   * [x] npm
   * [ ] bower
   * [ ] github
-  * [ ] gitlab
-* [x] install target source automatically
-* [ ] Add supporting utilities and settings
-  * [x] Add `tslint.json`
-  * [x] Add `is-callable`
-* [x] Add validation to check if the d.ts file created correctly.
-* [x] Add watch command
-* [ ] Automatically create PR to [`typings/registry`](https://github.com/typings/registry)
+  * [ ] jspm
+* [x] Install target source automatically
+* [x] Add source as submodule
+* [ ] Install supporting utilities and settings
+  * [x] [`tslint.json`](https://github.com/typings/tslint-config-typings) for typings
+  * [x] [`is-callable`](https://www.npmjs.com/package/is-callable)
+* [x] Default test harness: [`blue-tape`](https://www.npmjs.com/package/blue-tape)
+* [ ] Custom test harness
+  * [ ] Mocha
+  * [ ] Jasmine
+* [ ] npm commands
+  * [x] build: Build typings for testing
+  * [x] watch: Build typings for testing automatically
+  * [x] test: Run tests
+  * [ ] source-test: Run tests copied form source
+  * [ ] test-all: Run both `test` and `source-test`
+  * [ ] tdd: Watch both typings and tests, and run `test` when changed
+  * [ ] publish: Create PR to [`typings/registry`](https://github.com/typings/registry)
