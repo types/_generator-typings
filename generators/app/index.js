@@ -134,10 +134,6 @@ module.exports = yeoman.Base.extend({
         this.destinationPath('.vscode')
       );
       this.fs.copy(
-        this.templatePath('scripts/*'),
-        this.destinationPath('scripts')
-      );
-      this.fs.copy(
         this.templatePath('*'),
         this.destinationPath()
       );
