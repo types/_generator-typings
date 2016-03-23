@@ -45,5 +45,7 @@ MIT © [unional](https://github.com/unional)
 * [x] install target source automatically
 * [ ] Add supporting utilities and settings
   * [x] Add `tslint.json`
+  * [x] Add `is-callable`
 * [x] Add validation to check if the d.ts file created correctly.
+* [x] Add watch command
 * [ ] Automatically create PR to [`typings/registry`](https://github.com/typings/registry)
