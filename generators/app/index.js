@@ -33,7 +33,7 @@ module.exports = yeoman.Base.extend({
       this.prompt({
         type: 'input',
         name: 'sourceUri',
-        message: `What is the ${chalk.green('author/module') } of the ${chalk.red('source') } on github?`,
+        message: `What is the ${chalk.green('author/module')} of the ${chalk.red('source')} on github?`,
         default: () => uriExamples[Math.round(Math.random() * 4 - 0.5)],
         validate: (value) => value.length > 0
       }, (props) => {
@@ -132,38 +132,29 @@ module.exports = yeoman.Base.extend({
       this.fs.copy(
         this.templatePath('.vscode/*'),
         this.destinationPath('.vscode')
-        );
+      );
       this.fs.copy(
         this.templatePath('test/*'),
         this.destinationPath('test')
-        );
+      );
       this.fs.copy(
         this.templatePath('*'),
         this.destinationPath()
-        );
+      );
       this.fs.copy(
         this.templatePath('.*'),
         this.destinationPath()
-        );
+      );
     },
     createTypings() {
-      var typings = {
-        name: this.sourcePackageName,
-        main: 'index.d.ts',
-        homepage: `https://github.com/${this.sourceUri}`
-      };
-      this.fs.writeJSON(this.destinationPath('typings.json'), typings);
-    },
-    createTsconfig() {
-      var tsconfig = {
-        compilerOptions: {
-          module: 'commonjs',
-          moduleResolution: 'node'
-        },
-        // TODO: add ambient source typings file
-        files: ['index.d.ts', 'typings/main.d.ts']
-      };
-      this.fs.writeJSON(this.destinationPath('tsconfig.json'), tsconfig);
+      this.fs.copyTpl(
+        this.templatePath('template/typings.json'),
+        this.destinationPath('typings.json'),
+        {
+          name: this.sourcePackageName,
+          main: 'index.d.ts',
+          homepage: `https://github.com/${this.sourceUri}`
+        });
     },
     createREADME() {
       this.fs.copyTpl(
@@ -178,19 +169,20 @@ module.exports = yeoman.Base.extend({
     },
     createTestFile() {
       this.fs.write('test/test.ts',
-        ['/// <reference path="../out/main.d.ts" />',
-         '/// <reference path="../typings/main.d.ts" />',
-          '',
+        [
           'import test = require(\'blue-tape\');',
-          this.isAmbient? '': `import ${this.sourcePackageName} = require('${this.sourcePackageName}');`,
-          ''].join('\n'));
+          'import isCallable = require(\'is-callable\');',
+          '',
+          this.isAmbient ? '' : `import ${this.sourcePackageName} = require('${this.sourcePackageName}');`,
+          ''
+        ].join('\n'));
     },
     updatePackageJson() {
       this.fs.copyTpl(
         this.templatePath('template/package.json'),
         this.destinationPath('package.json'),
         {
-          ambient: this.isAmbient? ' --ambient': ''
+          ambient: this.isAmbient ? ' --ambient' : ''
         });
     },
     createLICENSE() {
@@ -204,22 +196,26 @@ module.exports = yeoman.Base.extend({
           year: (new Date()).getFullYear(),
           author: author
         }
-        );
+      );
     }
   },
   install: {
     npm() {
-      this.log(`Running ${chalk.green('npm install') }...`);
+      this.log(`Running ${chalk.green('npm install')}...`);
       this.spawnCommandSync('npm', ['install']);
     },
     npmInstallSource() {
       if (this.npmName) {
-        this.log(`Installing ${chalk.green(this.sourcePackageName) }...`);
+        this.log(`Installing ${chalk.green(this.sourcePackageName)}...`);
         this.spawnCommandSync('npm', ['install', '-D', '--save-exact', this.sourcePackageName]);
       }
     },
+    typingsInstall() {
+      this.log(`Running ${chalk.green('typings install')}...`);
+      this.spawnCommandSync('typings', ['install']);
+    },
     runBuild() {
-      this.log(`Running ${chalk.green('npm run build') }...`);
+      this.log(`Running ${chalk.green('npm run build')}...`);
       this.spawnCommandSync('npm', ['run', 'build']);
     }
   },
@@ -238,13 +234,14 @@ module.exports = yeoman.Base.extend({
     tsdHint() {
       this.log('');
       this.log('If there are DefinitelyType support for the source,');
-      this.log(` you can run ${chalk.green('tsd install <source>') } to download the file`);
+      this.log(` you can run ${chalk.green('tsd install <source>')} to download the file`);
       this.log(' so you can easily access those code.');
     },
     readyToTest() {
       this.log('');
-      this.log(`Run ${chalk.green('npm run build') } to update the definition for the test, and`);
-      this.log(`Run ${chalk.green('npm test') } test your definition!`);
+      this.log(`Run ${chalk.green('npm run watch')} to update the definition automatically, or`);
+      this.log(`Run ${chalk.green('npm run build')} to update the definition manually, and`);
+      this.log(`Run ${chalk.green('npm test')} to test your definition!`);
     }
   }
 });

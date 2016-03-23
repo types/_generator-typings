@@ -3,5 +3,11 @@
     "chalk": "github:typings/typed-chalk#a7e422c5455e70292e5675a727d43a7b05fc3e58",
     "change-case": "npm:change-case"
   },
-  "ambientDependencies": {}
+  "ambientDependencies": {},
+  "devDependencies": {
+    "onchange": "registry:npm/onchange#2.1.2+20160323074425"
+  },
+  "ambientDevDependencies": {
+    "node": "registry:dt/node#4.0.0+20160319033040"
+  }
 }

@@ -24,9 +24,10 @@ describe('app', function() {
     it('creates files', function() {
       assert.file([
         '.vscode/settings.json',
-        'test/test.ts',
         'out/main.d.ts',
         'out/browser.d.ts',
+        'scripts/watch.ts',
+        'test/test.ts',
         '.editorconfig',
         '.gitignore',
         'LICENSE',
@@ -58,9 +59,10 @@ describe('app', function() {
     it('creates files', function() {
       assert.file([
         '.vscode/settings.json',
-        'test/test.ts',
         'out/main.d.ts',
         'out/browser.d.ts',
+        'scripts/watch.ts',
+        'test/test.ts',
         '.editorconfig',
         '.gitignore',
         'LICENSE',
