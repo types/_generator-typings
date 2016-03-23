@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "watch": "onchange **/*.d.ts -e out/** -- npm run build",
+    "watch": "onchange '**/*.d.ts' -e 'out/**' -- npm run build",
     "build": "typings bundle<%- ambient %> -o out",
     "test": "ts-node -n test/test.ts"
   },
