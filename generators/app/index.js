@@ -207,10 +207,6 @@ module.exports = yeoman.Base.extend({
         this.spawnCommandSync('npm', ['install', '-D', '--save-exact', this.sourcePackageName]);
       }
     },
-    typingsInstall() {
-      this.log(`Running ${chalk.green('typings install')}...`);
-      this.spawnCommandSync('typings', ['install']);
-    },
     runBuild() {
       this.log(`Running ${chalk.green('npm run build')}...`);
       this.spawnCommandSync('npm', ['run', 'build']);
