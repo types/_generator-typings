@@ -26,7 +26,7 @@
   * [x] build: Build typings for testing
   * [x] watch: Build typings for testing automatically
   * [x] test: Run tests
-  * [x] source-test: Run tests copied form source
+  * [ ] source-test: Run tests copied form source
   * [x] test-all: Run both `test` and `source-test`
   * [x] tdd: Watch both typings and tests, and run `build` and `test` when changed
   * [x] tdd-all: Watch both typings and tests, and run `build`, `test-all` when changed
