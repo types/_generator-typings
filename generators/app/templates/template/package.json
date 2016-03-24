@@ -4,6 +4,10 @@
     "watch": "onchange '**/*.d.ts' -e 'out/**' -- npm run build",
     "build": "typings bundle<%- ambient %> -o out",
     "test": "ts-node test/test.ts",
+    "source-test": "<%- sourceTest %>",
+    "test-all": "npm test && npm run source-test",
+    "tdd": "onchange '**/*.ts' -e 'out/**' -- npm test",
+    "tdd-all": "onchange '**/*.ts' -e 'out/**' -- npm run test-all",
     "prepublish": "typings install"
   },
   "devDependencies": {
