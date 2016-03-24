@@ -7,7 +7,8 @@
     "source-test": "<%- sourceTest %>",
     "test-all": "npm test && npm run source-test",
     "tdd": "onchange '**/*.ts' -e 'out/**' -- npm test",
-    "tdd-all": "onchange '**/*.ts' -e 'out/**' -- npm run test-all"
+    "tdd-all": "onchange '**/*.ts' -e 'out/**' -- npm run test-all",
+    "prepublish": "typings install"
   },
   "devDependencies": {
     "blue-tape": "^0.2.0",

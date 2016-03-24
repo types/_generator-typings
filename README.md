@@ -28,7 +28,8 @@
   * [x] test: Run tests
   * [ ] source-test: Run tests copied form source
   * [ ] test-all: Run both `test` and `source-test`
-  * [ ] tdd: Watch both typings and tests, and run `test` when changed
+  * [ ] tdd: Watch both typings and tests, and run `build` and `test` when changed
+  * [ ] tdd-all: Watch both typings and tests, and run `build`, `test-all` when changed
   * [ ] publish: Create PR to [`typings/registry`](https://github.com/typings/registry)
 
 ## Installation
