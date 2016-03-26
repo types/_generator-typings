@@ -27,6 +27,7 @@
   * [x] watch: Build typings for testing automatically
   * [x] test: Run tests
   * [ ] source-test: Run tests copied form source
+  * [ ] lint: Run tslint
   * [x] test-all: Run both `test` and `source-test`
   * [x] tdd: Watch both typings and tests, and run `build` and `test` when changed
   * [x] tdd-all: Watch both typings and tests, and run `build`, `test-all` when changed
