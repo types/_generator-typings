@@ -17,7 +17,6 @@
 * [x] Add source as submodule
 * [ ] Install supporting utilities and settings
   * [x] [`tslint.json`](https://github.com/typings/tslint-config-typings) for typings
-  * [x] [`is-callable`](https://www.npmjs.com/package/is-callable)
 * [x] Default test harness: [`blue-tape`](https://www.npmjs.com/package/blue-tape)
 * [ ] Custom test harness
   * [ ] Mocha
