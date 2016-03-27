@@ -167,7 +167,6 @@ module.exports = yeoman.Base.extend({
       this.fs.write('test/test.ts',
         [
           'import test = require(\'blue-tape\');',
-          'import isCallable = require(\'is-callable\');',
           '',
           this.isAmbient ? '' : `import ${this.sourcePackageName} = require('${this.sourcePackageName}');`,
           ''
