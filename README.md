@@ -29,6 +29,7 @@
     * [x] build: Build typings for testing
     * [x] lint: Run tslint
     * [x] test: Run tests
+    * [x] source-test: Run tests transferred from source
 
 ## Installation
 First, install [Yeoman](http://yeoman.io) and generator-typings using [npm](https://www.npmjs.com/).

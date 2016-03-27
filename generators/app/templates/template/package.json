@@ -1,12 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "build": "typings bundle<%- ambient %> -o out",
-    "lint": "tslint \"**/*.ts\" -e \"source/**\" -e \"out/**\" -e \"node_modules/**\" -e \"typings/**\"",
-    "test": "cd test && ts-node ../node_modules/blue-tape/bin/blue-tape \"**/*.ts\" | tap-spec && cd .. && <%- sourceTest %>",
+    "build": "echo building... && typings bundle<%- ambient %> -o out",
+    "lint": "echo linting... && tslint \"**/*.ts\" -e \"source/**\" -e \"out/**\" -e \"node_modules/**\" -e \"typings/**\"",
+    "test": "echo testing... && cd test && ts-node ../node_modules/blue-tape/bin/blue-tape \"**/*.ts\" | tap-spec",
+    "source-test": "echo source-testing... &&  <%- sourceTest %>",
     "watch": "onchange \"**/*.ts\" -i -e \"out/**\" -- npm -s run build+test",
     "publish": "npm -s run lint+build+test && echo please publish to typings/registry",
-    "build+test": "npm run build && npm run test",
+    "source-test+test": "npm run source-test && npm test",
+    "build+test": "npm run build && npm run source-test+test",
     "lint+build+test": "npm run lint && npm run build+test",
     "prepublish": "typings install"
   },
