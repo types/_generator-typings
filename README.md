@@ -23,15 +23,12 @@
   * [ ] Mocha
   * [ ] Jasmine
 * [ ] npm commands
-  * [x] build: Build typings for testing
   * [x] watch: Build typings for testing automatically
-  * [x] test: Run tests
-  * [ ] source-test: Run tests copied form source
-  * [ ] lint: Run tslint
-  * [x] test-all: Run both `test` and `source-test`
-  * [x] tdd: Watch both typings and tests, and run `build` and `test` when changed
-  * [x] tdd-all: Watch both typings and tests, and run `build`, `test-all` when changed
   * [ ] publish: Create PR to [`typings/registry`](https://github.com/typings/registry)
+  * individual commands
+    * [x] build: Build typings for testing
+    * [x] lint: Run tslint
+    * [x] test: Run tests
 
 ## Installation
 First, install [Yeoman](http://yeoman.io) and generator-typings using [npm](https://www.npmjs.com/).

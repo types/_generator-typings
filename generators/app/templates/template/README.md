@@ -7,14 +7,11 @@ The type definition for [`<%- sourcePackageName %>`](<%- sourcePackageUrl %>)
 ## Contributing
 
 ```sh
-# Install modules
+# Fork this repo
 npm install
 
-# Build
-npm run build
 npm run watch
 
-# Test
-npm test
-npm run tdd
+# add tests, make changes, pass tests ... then [ctrl+c]
+npm run publish
 ```
