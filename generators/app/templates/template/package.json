@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "echo building... && typings bundle<%- ambient %> -o out",
-    "lint": "echo linting... && tslint \"**/*.ts\" -e \"source/**\" -e \"out/**\" -e \"node_modules/**\" -e \"typings/**\"",
+    "lint": "echo linting... && tslint \"**/*.ts\" -e \"source/**\" -e \"source-test/**\" -e \"out/**\" -e \"node_modules/**\" -e \"typings/**\"",
     "test": "echo testing... && cd test && ts-node ../node_modules/blue-tape/bin/blue-tape \"**/*.ts\" | tap-spec",
     "source-test": "echo source-testing... &&  <%- sourceTest %>",
     "watch": "onchange \"**/*.ts\" -i -e \"out/**\" -- npm -s run build+test",
