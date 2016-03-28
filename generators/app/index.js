@@ -24,10 +24,10 @@ module.exports = yeoman.Base.extend({
       var done = this.async();
 
       const uriExamples = [
-        'facebook/react',
-        'atom/atom',
-        'microsoft/vscode',
-        'angular/angular'
+        'visionmedia/batch',
+        'chaijs/chai',
+        'ded/domready',
+        'knockout/knockout'
       ];
 
       this.prompt({
@@ -196,35 +196,17 @@ module.exports = yeoman.Base.extend({
     }
   },
   install: {
-    npmGetProgress() {
-      // const npmSet = this.spawnCommand('npm', ['get', 'progress']);
-      // npmSet.on('end', (data) => {
-      //   console.log('data: ', data);
-      // });
-    },
-    npm() {
-      this.log(`Running ${chalk.green('npm install')}...`);
-      // this.spawnCommandSync('npm', ['set', 'progress=false']);
-      this.spawnCommandSync('npm', ['install']);
-    },
     npmInstallSource() {
       if (this.npmName) {
         this.log(`Installing ${chalk.green(this.sourcePackageName)}...`);
         this.spawnCommandSync('npm', ['install', '-D', '--save-exact', this.sourcePackageName]);
       }
     },
-    runBuild() {
-      this.log(`Running ${chalk.green('npm run build')}...`);
-      this.spawnCommandSync('npm', ['run', 'build']);
-    },
     submodule() {
       this.log(`Downloading ${chalk.green(this.sourceUri)}...`);
       // Currently this step is needed to pass test. Will use nodegit for this.
       this.spawnCommandSync('git', ['init']);
       this.spawnCommandSync('git', ['submodule', 'add', `${this.sourcePackageUrl}`, 'source']);
-    },
-    npmResetProgress() {
-      // this.spawnCommandSync('npm', ['set', `progress=${this.props.npmProgress}`]);
     }
   },
   end: {
@@ -234,22 +216,24 @@ module.exports = yeoman.Base.extend({
     },
     installSource() {
       if (!this.isNpm) {
-        // this.log('');
-        // this.log('To run the test, you need to get the source package and reference it in test');
-        // this.log('');
+        this.log('');
+        this.log('You need to install the source package and reference it for the test to work.');
       }
     },
     tsdHint() {
       this.log('');
-      this.log('If there are DefinitelyType support for the source,');
+      this.log('If DefinitelyType has definition for the source,');
       this.log(` you can run ${chalk.green('tsd install <source>')} to download the file`);
       this.log(' so you can easily access those code.');
+      this.log('You don\'t need to save it thou.');
     },
     readyToTest() {
       this.log('');
-      this.log(`Run ${chalk.green('npm run watch')} to update the definition automatically, or`);
-      this.log(`Run ${chalk.green('npm run build')} to update the definition manually, and`);
-      this.log(`Run ${chalk.green('npm test')} to test your definition!`);
+      this.log(`Run ${chalk.green('npm install')} to install dependencies needed. It will take about a minute`);
+      this.log('In the mean time, you can open your editor and start writing.');
+      this.log('');
+      this.log(`When installation completes, run ${chalk.green('npm run watch')}.`);
+      this.log('It will automatically build and test the typings for you as you make changes.');
     }
   }
 });
