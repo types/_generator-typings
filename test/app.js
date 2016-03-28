@@ -24,7 +24,10 @@ describe('app', function() {
     it('creates files', function() {
       assert.file([
         '.vscode/settings.json',
+        'source-test/README.md',
+        'source-test/tsconfig.json',
         'test/test.ts',
+        'test/tsconfig.json',
         '.editorconfig',
         '.gitignore',
         'LICENSE',
