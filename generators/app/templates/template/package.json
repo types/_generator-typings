@@ -1,5 +1,5 @@
 {
-  "version": "",
+  "version": "<%- version %>",
   "private": true,
   "scripts": {
     "build": "echo building... && typings bundle<%- ambient %> -o out",

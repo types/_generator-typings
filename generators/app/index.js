@@ -186,7 +186,8 @@ module.exports = yeoman.Base.extend({
         this.destinationPath('package.json'),
         {
           ambient: this.isAmbient ? ' --ambient' : '',
-          sourceTest: 'echo source-test is not specified'
+          sourceTest: 'echo source-test is not specified',
+          version: ''
         });
     },
     createLICENSE() {
