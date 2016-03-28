@@ -196,8 +196,15 @@ module.exports = yeoman.Base.extend({
     }
   },
   install: {
+    npmGetProgress() {
+      // const npmSet = this.spawnCommand('npm', ['get', 'progress']);
+      // npmSet.on('end', (data) => {
+      //   console.log('data: ', data);
+      // });
+    },
     npm() {
       this.log(`Running ${chalk.green('npm install')}...`);
+      // this.spawnCommandSync('npm', ['set', 'progress=false']);
       this.spawnCommandSync('npm', ['install']);
     },
     npmInstallSource() {
@@ -215,6 +222,9 @@ module.exports = yeoman.Base.extend({
       // Currently this step is needed to pass test. Will use nodegit for this.
       this.spawnCommandSync('git', ['init']);
       this.spawnCommandSync('git', ['submodule', 'add', `${this.sourcePackageUrl}`, 'source']);
+    },
+    npmResetProgress() {
+      // this.spawnCommandSync('npm', ['set', `progress=${this.props.npmProgress}`]);
     }
   },
   end: {
