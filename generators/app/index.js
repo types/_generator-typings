@@ -135,11 +135,11 @@ module.exports = yeoman.Base.extend({
       );
       this.fs.copy(
         this.templatePath('test/*'),
-        this.destinationPath('.vscode')
+        this.destinationPath('test')
       );
       this.fs.copy(
-        this.templatePath('.vscode/*'),
-        this.destinationPath('.vscode')
+        this.templatePath('source-test/*'),
+        this.destinationPath('source-test')
       );
       this.fs.copy(
         this.templatePath('*'),
