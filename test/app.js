@@ -24,10 +24,6 @@ describe('app', function() {
     it('creates files', function() {
       assert.file([
         '.vscode/settings.json',
-        'out/main.d.ts',
-        'out/browser.d.ts',
-        'typings/main.d.ts',
-        'typings/browser.d.ts',
         'test/test.ts',
         '.editorconfig',
         '.gitignore',
