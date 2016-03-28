@@ -1,11 +1,11 @@
 'use strict';
-var path = require('path');
-var yeoman = require('yeoman-generator');
-var chalk = require('chalk');
-var yosay = require('yosay');
-var changeCase = require('change-case');
+const path = require('path');
+const yeoman = require('yeoman-generator');
+const chalk = require('chalk');
+const yosay = require('yosay');
+const changeCase = require('change-case');
 
-var licenses = [
+const licenses = [
   { name: 'Apache 2.0', value: 'Apache-2.0' },
   { name: 'MIT', value: 'MIT' },
   { name: 'Unlicense', value: 'unlicense' },
@@ -21,7 +21,7 @@ module.exports = yeoman.Base.extend({
       this.log(yosay(`Welcome to the sensational ${chalk.red('typings')} generator!`));
     },
     sourceUri() {
-      var done = this.async();
+      const done = this.async();
 
       const uriExamples = [
         'facebook/react',
@@ -45,7 +45,7 @@ module.exports = yeoman.Base.extend({
       });
     },
     isNpm() {
-      var done = this.async();
+      const done = this.async();
 
       this.prompt({
         type: 'confirm',
@@ -58,7 +58,7 @@ module.exports = yeoman.Base.extend({
       });
     },
     npmName() {
-      var done = this.async();
+      const done = this.async();
 
       this.prompt({
         type: 'input',
@@ -72,7 +72,7 @@ module.exports = yeoman.Base.extend({
       });
     },
     isAmbient() {
-      var done = this.async();
+      const done = this.async();
 
       this.prompt({
         type: 'confirm',
@@ -85,7 +85,7 @@ module.exports = yeoman.Base.extend({
       });
     },
     username() {
-      var done = this.async();
+      const done = this.async();
 
       this.prompt({
         type: 'input',
@@ -99,7 +99,7 @@ module.exports = yeoman.Base.extend({
       });
     },
     license() {
-      var done = this.async();
+      const done = this.async();
 
       this.prompt({
         type: 'list',
@@ -113,7 +113,7 @@ module.exports = yeoman.Base.extend({
       });
     },
     nameOnLicense() {
-      var done = this.async();
+      const done = this.async();
 
       this.prompt({
         type: 'input',
@@ -129,6 +129,14 @@ module.exports = yeoman.Base.extend({
 
   writing: {
     copyFiles() {
+      this.fs.copy(
+        this.templatePath('.vscode/*'),
+        this.destinationPath('.vscode')
+      );
+      this.fs.copy(
+        this.templatePath('test/*'),
+        this.destinationPath('.vscode')
+      );
       this.fs.copy(
         this.templatePath('.vscode/*'),
         this.destinationPath('.vscode')
@@ -182,8 +190,8 @@ module.exports = yeoman.Base.extend({
         });
     },
     createLICENSE() {
-      var filename = `template/${this.license}.txt`;
-      var author = this.nameOnLicense.trim();
+      const filename = `template/${this.license}.txt`;
+      const author = this.nameOnLicense.trim();
 
       this.fs.copyTpl(
         this.templatePath(filename),
