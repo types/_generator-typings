@@ -18,10 +18,14 @@
 * [x] Add source as submodule
 * [ ] Install supporting utilities and settings
   * [x] [`tslint.json`](https://github.com/typings/tslint-config-typings) for typings
-* [x] Default test harness: [`blue-tape`](https://www.npmjs.com/package/blue-tape)
-* [ ] Custom test harness
-  * [ ] Mocha
-  * [ ] Jasmine
+* Test harness
+  - Server side
+    - [x] [`blue-tape`](https://www.npmjs.com/package/blue-tape)
+    - [ ] Mocha
+  - Client side
+    - [ ] tape-run
+    - [ ] karma
+    - [ ] jasmine
 * [ ] npm commands
   * [x] watch: Build typings for testing automatically
   * [ ] publish: Create PR to [`typings/registry`](https://github.com/typings/registry)
