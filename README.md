@@ -22,7 +22,7 @@
 * [x] Install target source automatically
 * [x] Add source as submodule
 * [ ] Install supporting utilities and settings
-  * [x] [`tslint.json`](https://github.com/typings/tslint-config-typings) for typings
+  * [x] [`tslint for typings`](https://github.com/typings/tslint-config-typings)
 * Test harness
   - Server side
     - [x] [`blue-tape`](https://www.npmjs.com/package/blue-tape)
