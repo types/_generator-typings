@@ -1,4 +1,4 @@
-# generator-typings [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Build Status][travis-image]][travis-url] [![License][license-image]][license-url]
+# generator-typings [![NPM version][npm-image]][npm-url] [![NPM download][downloads-image]][downloads-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Build Status][travis-image]][travis-url] [![License][license-image]][license-url]
 
 > Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) project
 
@@ -64,6 +64,8 @@ MIT © [unional](https://github.com/unional)
 
 [npm-image]: https://badge.fury.io/js/generator-typings.svg
 [npm-url]: https://npmjs.org/package/generator-typings
+[downloads-image]: https://img.shields.io/npm/dm/generator-typings.svg?style=flat
+[downloads-url]: https://npmjs.org/package/generator-typings
 [travis-image]: https://travis-ci.org/typings/generator-typings.svg?branch=master
 [travis-url]: https://travis-ci.org/typings/generator-typings
 [daviddm-image]: https://david-dm.org/typings/generator-typings.svg?theme=shields.io
