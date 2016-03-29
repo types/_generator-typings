@@ -6,6 +6,7 @@
 * [x] Basic scaffolding
 * [ ] Support multiple source hostings providers
   * [x] github
+  * [ ] bitbucket
   * [ ] gitlab
   * [ ] custom
 * [ ] Support multiple source delivery mechanisms
