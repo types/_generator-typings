@@ -8,7 +8,7 @@
   * [x] github
   * [ ] gitlab
   * [ ] custom
-* [ ] Support multiple source delivery mechanism
+* [ ] Support multiple source delivery mechanisms
   * [x] npm
   * [ ] bower
   * [ ] github
