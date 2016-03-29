@@ -9,16 +9,16 @@
 
 ## Features
 * [x] Basic scaffolding
-* [ ] Support multiple source hostings providers
-  * [x] github
-  * [ ] bitbucket
-  * [ ] gitlab
-  * [ ] custom
-* [ ] Support multiple source delivery mechanisms
+* [ ] Source delivery mechanisms
   * [x] npm
   * [ ] bower
   * [ ] github
   * [ ] jspm
+* [ ] Source hostings providers
+  * [x] github
+  * [ ] bitbucket
+  * [ ] gitlab
+  * [ ] custom
 * [x] Install target source automatically
 * [x] Add source as submodule
 * [ ] Install supporting utilities and settings
