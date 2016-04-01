@@ -29,7 +29,7 @@
     - [ ] mocha
   - Client side
     - [ ] [`blue-tape`](https://www.npmjs.com/package/blue-tape) (through tape-run)
-    - [ ] mocha (through mocha-headless, karma-mocha)
+    - [ ] mocha (through mocha-phantomjs, karma-mocha)
     - [ ] jasmine
 - npm commands
   - [x] watch: Build typings for testing automatically
