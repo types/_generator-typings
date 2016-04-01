@@ -17,10 +17,10 @@
     "blue-tape": "^0.2.0",
     "onchange": "^2.2.0",
     "tap-spec": "^4.1.1",
-    "ts-node": "^0.7.0",
-    "tslint": "git+https://github.com/unional/tslint.git",
-    "tslint-config-typings": "^0.1.5",
+    "ts-node": "^0.7.1",
+    "tslint": "^3.7.0",
+    "tslint-config-typings": "^0.2.0",
     "typescript": "^1.8.9",
-    "typings": "^0.7.9"
+    "typings": "^0.7.11"
   }
 }

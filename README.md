@@ -7,6 +7,25 @@
 
 > Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) project
 
+## Upgrade Note
+Starting from `0.14`, the generated project will use `tslint@3.7.0` as the `extends` feature lands.
+In previous verison, you the generated project might have `tslint.json` like this:
+
+```js
+{
+  "extends": "typings"
+}
+```
+
+The official `extends` feature does not support package shorthand.
+So you need to change your `tslint.json` to:
+
+```js
+{
+  "extends": "tslint-config-typings"
+}
+```
+
 ## Features
 - [x] Basic scaffolding
 - Source delivery mechanisms
