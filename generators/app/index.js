@@ -155,7 +155,7 @@ module.exports = yeoman.Base.extend({
         this.templatePath('template/typings.json'),
         this.destinationPath('typings.json'),
         {
-          name: this.sourcePackageName,
+          name: this.npmName || this.sourcePackageName,
           main: 'index.d.ts',
           homepage: `https://github.com/${this.sourceUri}`
         });
@@ -166,7 +166,7 @@ module.exports = yeoman.Base.extend({
         this.destinationPath('README.md'),
         {
           prettyPackageName: this.prettyPackageName,
-          sourcePackageName: this.sourcePackageName,
+          sourcePackageName: this.npmName || this.sourcePackageName,
           sourcePackageUrl: this.sourcePackageUrl,
           license: this.license
         });
