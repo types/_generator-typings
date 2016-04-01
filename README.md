@@ -8,37 +8,37 @@
 > Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) project
 
 ## Features
-* [x] Basic scaffolding
-* [ ] Source delivery mechanisms
-  * [x] npm
-  * [ ] bower
-  * [ ] github
-  * [ ] jspm
-* [ ] Source hostings providers
-  * [x] github
-  * [ ] bitbucket
-  * [ ] gitlab
-  * [ ] custom
-* [x] Install target source automatically
-* [x] Add source as submodule
-* [ ] Install supporting utilities and settings
-  * [x] [`tslint for typings`](https://github.com/typings/tslint-config-typings)
-* Test harness
+- [x] Basic scaffolding
+- Source delivery mechanisms
+  - [x] npm
+  - [ ] bower
+  - [ ] github
+  - [ ] jspm
+- Source hostings providers
+  - [x] github
+  - [ ] bitbucket
+  - [ ] gitlab
+  - [ ] custom
+- [x] Install target source automatically
+- [x] Add source as submodule
+- Install supporting utilities and settings
+  - [x] [`tslint for typings`](https://github.com/typings/tslint-config-typings)
+- Test harness
   - Server side
     - [x] [`blue-tape`](https://www.npmjs.com/package/blue-tape)
-    - [ ] Mocha
+    - [ ] mocha
   - Client side
-    - [ ] tape-run
-    - [ ] karma
+    - [ ] [`blue-tape`](https://www.npmjs.com/package/blue-tape) (through tape-run)
+    - [ ] mocha (through mocha-headless, karma-mocha)
     - [ ] jasmine
-* [ ] npm commands
-  * [x] watch: Build typings for testing automatically
-  * [ ] publish: Create PR to [`typings/registry`](https://github.com/typings/registry)
-  * individual commands
-    * [x] build: Build typings for testing
-    * [x] lint: Run tslint
-    * [x] test: Run tests
-    * [x] source-test: Run tests transferred from source
+- npm commands
+  - [x] watch: Build typings for testing automatically
+  - [ ] publish: Create PR to [`typings/registry`](https://github.com/typings/registry)
+  - individual commands
+    - [x] build: Build typings for testing
+    - [x] lint: Run tslint
+    - [x] test: Run tests
+    - [x] source-test: Run tests transferred from source
 
 ## Installation
 First, install [Yeoman](http://yeoman.io) and generator-typings using [npm](https://www.npmjs.com/).
