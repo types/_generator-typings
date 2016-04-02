@@ -137,8 +137,8 @@ module.exports = yeoman.Base.extend({
               { name: 'CommonJS (NodeJS)', value: 'commonjs' },
               { name: 'global', value: 'global' },
               { name: 'ES2015 Module', value: 'esm' },
-              { name: 'System (SystemJS)', value: 'system'},
-              { name: 'TypeScript', value: 'typescript'},
+              { name: 'System (SystemJS)', value: 'system' },
+              { name: 'TypeScript', value: 'typescript' },
               { name: 'UMD (global + AMD + CommonJS)', value: 'umd' },
               { name: 'UMD (global + CommonJS)', value: 'umd2' },
             ];
