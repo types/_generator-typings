@@ -41,6 +41,7 @@ module.exports = yeoman.Base.extend({
         this.sourcePackageUrl = `https://github.com/${props.sourceUri}`;
         this.sourcePackageName = props.sourceUri.split('/')[1];
         this.prettyPackageName = changeCase.titleCase(this.sourcePackageName.replace('-', ' '));
+        this.packageVariable = changeCase.camelCase(this.sourcePackageName.replace('-', ' '));
         done();
       });
     },
@@ -176,7 +177,7 @@ module.exports = yeoman.Base.extend({
         [
           'import test = require(\'blue-tape\');',
           '',
-          this.isAmbient ? '' : `import ${this.sourcePackageName} = require('${this.sourcePackageName}');`,
+          this.isAmbient ? '' : `import ${this.packageVariable} = require('${this.npmName || this.sourcePackageName}');`,
           ''
         ].join('\n'));
     },
