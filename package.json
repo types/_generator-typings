@@ -1,6 +1,6 @@
 {
   "name": "generator-typings",
-  "version": "0.14.4",
+  "version": "0.14.5",
   "description": "Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) package",
   "homepage": "https://github.com/typings/generator-typings",
   "author": {
