@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "chalk": "github:typings/typed-chalk#a7e422c5455e70292e5675a727d43a7b05fc3e58",
+    "chalk": "registry:npm/chalk#1.0.0+20160211003958",
     "change-case": "npm:change-case"
   },
   "ambientDependencies": {},
