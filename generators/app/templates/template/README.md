@@ -17,10 +17,10 @@ npm run publish
 ```
 
 ## Updating
-Update `package.json/version` to match the source version you are typing against.
+Update `typings.json/version` to match the source version you are typing against.
 e.g. if you are creating typings for `chai@3.5.0`, then:
 ```js
-// package.json
+// typings.json
 {
   "version": "3.5.0"
   // ...
