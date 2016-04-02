@@ -70,7 +70,7 @@ npm install -g generator-typings
 Then generate your new project:
 
 ```sh
-# create a git repo form github
+# create a git repo from github
 # clone it locally to your machine
 # in that directory:
 yo typings
