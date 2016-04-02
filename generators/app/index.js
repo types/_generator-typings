@@ -4,46 +4,179 @@ const yeoman = require('yeoman-generator');
 const chalk = require('chalk');
 const yosay = require('yosay');
 const changeCase = require('change-case');
+const GitHubApi = require('github');
+const NodeGit = require('nodegit');
 
-const licenses = [
-  { name: 'Apache 2.0', value: 'Apache-2.0' },
-  { name: 'MIT', value: 'MIT' },
-  { name: 'Unlicense', value: 'unlicense' },
-  { name: 'FreeBSD', value: 'BSD-2-Clause-FreeBSD' },
-  { name: 'NewBSD', value: 'BSD-3-Clause' },
-  { name: 'Internet Systems Consortium (ISC)', value: 'ISC' },
-  { name: 'No License (Copyrighted)', value: 'nolicense' }
-];
+// const github = new GitHubApi({
+//   version: "3.0.0",
+//   protocol: "https",
+//   host: "api.github.com",
+//   timeout: 5000,
+//   header: {
+//     "user-agent": "generator-typings"
+//   }
+// });
 
 module.exports = yeoman.Base.extend({
+  constructor: function() {
+    yeoman.Base.apply(this, arguments);
+
+    this.option('beta');
+  },
+  initializing: {
+    loadRepo() {
+      const done = this.async();
+      NodeGit.Repository.open(path.resolve('.')).then((repo) => {
+        this.repo = repo;
+        done();
+      }, () => {
+        done();
+      });
+    }
+  },
   prompting: {
     greeting() {
-      this.log(yosay(`Welcome to the sensational ${chalk.red('typings')} generator!`));
+      this.log(yosay(`Welcome to the sensational ${chalk.yellow('typings')} generator!`));
+    },
+    askSource() {
+      if (!this.options.beta) return;
+
+      this.log('Welcome to the beta! Let me know if my questions make sense to you.');
+      this.log('Now, let\'s get started...');
+      this.log('');
+      const done = this.async();
+      this.log(`To begin, I need to know a little bit about the ${chalk.green('source')} you are typings for.`)
+      this.log('Note that some of these questions will be skipped in actual release');
+      this.log('  if I can access the source and determine them myself.')
+
+      const questions = [
+        {
+          type: 'list',
+          name: 'host',
+          message: `Where is the package ${chalk.green(`hosted`)}?`,
+          choices: [
+            // { name: 'BitBucket', value: 'bitbucket' },
+            // { name: 'CodePlex', value: 'codeplex' },
+            { name: 'GitHub', value: 'github' },
+            // { name: 'GitLab', value: 'gitlab' },
+            // { name: 'SourceForge', value: 'sourceforge' },
+            { name: 'hosted privately', value: 'private' },
+          ],
+          default: 'github'
+        },
+        {
+          type: 'input',
+          name: 'author',
+          message: (props) => {
+            switch (props.host) {
+              case 'github':
+                return `http://github.com/${chalk.green('<author>')}/repository?`;
+              case 'private':
+                return `Who is the ${chalk.green('author')}?`;
+            }
+          },
+          validate: (value) => value.length > 0,
+        },
+        {
+          type: 'input',
+          name: 'repository',
+          message: (props) => {
+            switch (props.host) {
+              case 'github':
+                return `http://github.com/${props.author}/${chalk.green('<repository>')}?`;
+            }
+          },
+          validate: (value) => value.length > 0,
+          when: (props) => props.host !== 'private',
+        },
+        {
+          type: 'checkbox',
+          name: 'packageManagers',
+          message: `How is it distributed through ${chalk.green('package manager(s)')}?`,
+          choices: [
+            { name: 'NPM', value: 'npm', checked: true },
+            { name: 'Bower', value: 'bower', disabled: 'available soon...' }
+          ],
+        },
+        {
+          type: 'input',
+          name: 'npmName',
+          message: `What is the ${chalk.green('package name')} used in NPM?`,
+          default: (props) => props.repository,
+          validate: (value) => value.length > 0,
+          when: (props) => props.packageManagers.indexOf('npm') !== -1,
+        },
+        {
+          type: 'input',
+          name: 'bowerName',
+          message: `What is the ${chalk.green('package name')} used in Bower?`,
+          default: (props) => props.npmName || props.repository,
+          validate: (value) => value.length > 0,
+          when: (props) => props.packageManagers.indexOf('bower') !== -1,
+        },
+        {
+          type: 'checkbox',
+          name: 'platforms',
+          message: `Which ${chalk.green('platform')} does the package run on?`,
+          choices: [
+            { name: 'Node', value: 'node' },
+            { name: 'Browser', value: 'browser' },
+            { name: 'Others (e.g. atom)', value: 'others' }
+          ],
+          validate: (answers) => answers.length > 0,
+        },
+        {
+          type: 'list',
+          name: 'format',
+          message: `What is the ${chalk.green('format')} of the package?`,
+          choices: (props) => {
+            const moduleId = props.npmName || props.bowerName || prop.repository;
+            const moduleName = changeCase.camelCase(moduleId);
+            return [
+              { name: 'AMD (RequireJS)', value: 'amd' },
+              { name: 'CommonJS (NodeJS)', value: 'commonjs' },
+              { name: 'global', value: 'global' },
+              { name: 'ES2015 Module', value: 'esm' },
+              { name: 'System (SystemJS)', value: 'system'},
+              { name: 'TypeScript', value: 'typescript'},
+              { name: 'UMD (global + AMD + CommonJS)', value: 'umd' },
+              { name: 'UMD (global + CommonJS)', value: 'umd2' },
+            ];
+          }
+        },
+      ];
+
+      this.prompt(questions, (props) => {
+        this.source = props;
+        console.log(props);
+        process.exit(1);
+        done();
+      });
     },
     sourceUri() {
       const done = this.async();
 
-      const uriExamples = [
-        'visionmedia/batch',
-        'chaijs/chai',
-        'ded/domready',
-        'knockout/knockout'
-      ];
+          const uriExamples = [
+            'visionmedia/batch',
+            'chaijs/chai',
+            'ded/domready',
+            'knockout/knockout'
+          ];
 
-      this.prompt({
-        type: 'input',
-        name: 'sourceUri',
-        message: `What is the ${chalk.green('author/module')} of the ${chalk.red('source')} on github?`,
-        default: () => uriExamples[Math.round(Math.random() * 4 - 0.5)],
-        validate: (value) => value.length > 0
-      }, (props) => {
-        this.sourceUri = props.sourceUri;
-        this.sourcePackageUrl = `https://github.com/${props.sourceUri}`;
-        this.sourcePackageName = props.sourceUri.split('/')[1];
-        this.prettyPackageName = changeCase.titleCase(this.sourcePackageName.replace('-', ' '));
-        this.packageVariable = changeCase.camelCase(this.sourcePackageName.replace('-', ' '));
-        done();
-      });
+          this.prompt({
+            type: 'input',
+            name: 'sourceUri',
+            message: `What is the ${chalk.green('author/module')} of the ${chalk.red('source')} on github?`,
+            default: () => uriExamples[Math.round(Math.random() * 4 - 0.5)],
+            validate: (value) => value.length > 0
+          }, (props) => {
+            this.sourceUri = props.sourceUri;
+            this.sourcePackageUrl = `https://github.com/${props.sourceUri}`;
+            this.sourcePackageName = props.sourceUri.split('/')[1];
+            this.prettyPackageName = changeCase.titleCase(this.sourcePackageName.replace('-', ' '));
+            this.packageVariable = changeCase.camelCase(this.sourcePackageName.replace('-', ' '));
+            done();
+          });
     },
     isNpm() {
       const done = this.async();
@@ -101,6 +234,16 @@ module.exports = yeoman.Base.extend({
     },
     license() {
       const done = this.async();
+
+      const licenses = [
+        { name: 'Apache 2.0', value: 'Apache-2.0' },
+        { name: 'MIT', value: 'MIT' },
+        { name: 'Unlicense', value: 'unlicense' },
+        { name: 'FreeBSD', value: 'BSD-2-Clause-FreeBSD' },
+        { name: 'NewBSD', value: 'BSD-3-Clause' },
+        { name: 'Internet Systems Consortium (ISC)', value: 'ISC' },
+        { name: 'No License (Copyrighted)', value: 'nolicense' }
+      ];
 
       this.prompt({
         type: 'list',
