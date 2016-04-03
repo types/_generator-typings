@@ -4,8 +4,8 @@ const yeoman = require('yeoman-generator');
 const chalk = require('chalk');
 const yosay = require('yosay');
 const changeCase = require('change-case');
-// const GitHubApi = require('github');
-// const NodeGit = require('nodegit');
+const GitHubApi = require('github');
+const NodeGit = require('nodegit');
 
 // const github = new GitHubApi({
 //   version: "3.0.0",
@@ -23,10 +23,10 @@ module.exports = yeoman.Base.extend({
 
     this.option('beta');
   },
-  // initializing: {
-  //   loadRepo() {
+  initializing: {
+    loadRepo() {
   //     const done = this.async();
-  //     console.log('initializing...');
+      console.log('loadRepo...');
   //     NodeGit.Repository.open(path.resolve('.')).then((repo) => {
   //       this.repo = repo;
   //       console.log('found repo');
@@ -35,8 +35,8 @@ module.exports = yeoman.Base.extend({
   //       console.log('repo not found');
   //       done();
   //     });
-  //   }
-  // },
+    }
+  },
   prompting: {
     greeting() {
       this.log(yosay(`Welcome to the sensational ${chalk.yellow('typings')} generator!`));
