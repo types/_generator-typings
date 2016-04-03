@@ -4,8 +4,8 @@ const yeoman = require('yeoman-generator');
 const chalk = require('chalk');
 const yosay = require('yosay');
 const changeCase = require('change-case');
-const GitHubApi = require('github');
-const NodeGit = require('nodegit');
+// const GitHubApi = require('github');
+// const NodeGit = require('nodegit');
 
 // const github = new GitHubApi({
 //   version: "3.0.0",
@@ -23,17 +23,20 @@ module.exports = yeoman.Base.extend({
 
     this.option('beta');
   },
-  initializing: {
-    loadRepo() {
-      const done = this.async();
-      NodeGit.Repository.open(path.resolve('.')).then((repo) => {
-        this.repo = repo;
-        done();
-      }, () => {
-        done();
-      });
-    }
-  },
+  // initializing: {
+  //   loadRepo() {
+  //     const done = this.async();
+  //     console.log('initializing...');
+  //     NodeGit.Repository.open(path.resolve('.')).then((repo) => {
+  //       this.repo = repo;
+  //       console.log('found repo');
+  //       done();
+  //     }, () => {
+  //       console.log('repo not found');
+  //       done();
+  //     });
+  //   }
+  // },
   prompting: {
     greeting() {
       this.log(yosay(`Welcome to the sensational ${chalk.yellow('typings')} generator!`));
@@ -301,7 +304,8 @@ module.exports = yeoman.Base.extend({
         {
           name: this.npmName || this.sourcePackageName,
           main: 'index.d.ts',
-          homepage: `https://github.com/${this.sourceUri}`
+          homepage: `https://github.com/${this.sourceUri}`,
+          version: ''
         });
     },
     createREADME() {
@@ -330,8 +334,7 @@ module.exports = yeoman.Base.extend({
         this.destinationPath('package.json'),
         {
           ambient: this.isAmbient ? ' --ambient' : '',
-          sourceTest: 'echo source-test is not specified',
-          version: ''
+          sourceTest: 'echo source-test is not specified'
         });
     },
     createLICENSE() {

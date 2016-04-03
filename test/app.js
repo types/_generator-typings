@@ -10,7 +10,6 @@ describe('app', function() {
       helpers.run(path.join(__dirname, '../generators/app'))
         .withPrompts({
           sourceUri: 'visionmedia/batch',
-          projectUri: 'typed-typings/npm-batch',
           // Set to false to avoid longer test time.
           isNpm: false,
           isAmbient: false,
