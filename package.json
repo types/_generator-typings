@@ -1,16 +1,17 @@
 {
   "name": "generator-typings",
   "version": "0.14.5",
-  "description": "Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) package",
+  "description": "Yeoman generator for typings (https://github.com/typings/typings)",
   "homepage": "https://github.com/typings/generator-typings",
   "author": {
     "name": "unional",
     "url": "https://github.com/unional"
   },
   "files": [
-    "generators"
+    "generators/app",
+    "generators/beta",
+    "generators/current"
   ],
-  "main": "generators/index.js",
   "keywords": [
     "yeoman-generator",
     "typings",
