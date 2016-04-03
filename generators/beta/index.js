@@ -36,8 +36,6 @@ module.exports = yeoman.Base.extend({
       this.log(yosay(`Welcome to the sensational ${chalk.yellow('typings')} generator!`));
     },
     askSource() {
-      if (!this.options.beta) return;
-
       this.log('Welcome to the beta! Let me know if my questions make sense to you.');
       this.log('Now, let\'s get started...');
       this.log('');
@@ -51,7 +49,7 @@ module.exports = yeoman.Base.extend({
         {
           type: 'list',
           name: 'delivery',
-          message: `${chalk.green('Where')} can I it?`,
+          message: `How can I ${chalk.green('install')} it?`,
           choices: [
             { name: 'Bower', value: 'bower', disabled: 'coming soon...' },
             { name: 'Duo', value: 'duo', disabled: 'coming not so soon...' },
@@ -67,7 +65,7 @@ module.exports = yeoman.Base.extend({
           message: `What ${chalk.green('kind(s)')} of package is it?`,
           choices: (props) => {
             return [
-              { name: 'NPM', value: 'npm', checked: props.list === 'npm' },
+              { name: 'NPM', value: 'npm', checked: props.delivery === 'npm' },
               {
                 name: 'github (Duo, JSPM, volo, etc)',
                 value: 'github',
