@@ -4,8 +4,8 @@ const yeoman = require('yeoman-generator');
 const chalk = require('chalk');
 const yosay = require('yosay');
 const changeCase = require('change-case');
-const GitHubApi = require('github');
-const NodeGit = require('nodegit');
+// const GitHubApi = require('github');
+// const NodeGit = require('nodegit');
 
 // const github = new GitHubApi({
 //   version: "3.0.0",
