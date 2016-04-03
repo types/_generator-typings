@@ -25,16 +25,16 @@ module.exports = yeoman.Base.extend({
   },
   initializing: {
     loadRepo() {
-  //     const done = this.async();
+      //     const done = this.async();
       console.log('loadRepo...');
-  //     NodeGit.Repository.open(path.resolve('.')).then((repo) => {
-  //       this.repo = repo;
-  //       console.log('found repo');
-  //       done();
-  //     }, () => {
-  //       console.log('repo not found');
-  //       done();
-  //     });
+      //     NodeGit.Repository.open(path.resolve('.')).then((repo) => {
+      //       this.repo = repo;
+      //       console.log('found repo');
+      //       done();
+      //     }, () => {
+      //       console.log('repo not found');
+      //       done();
+      //     });
     }
   },
   prompting: {
@@ -48,11 +48,62 @@ module.exports = yeoman.Base.extend({
       this.log('Now, let\'s get started...');
       this.log('');
       const done = this.async();
-      this.log(`To begin, I need to know a little bit about the ${chalk.green('source')} you are typings for.`)
-      this.log('Note that some of these questions will be skipped in actual release');
-      this.log('  if I can access the source and determine them myself.')
+      this.log(`To begin, I need to know a little bit about the ${chalk.green('source')} you are typings for.`);
+      this.log('');
+      this.log('Beta note: some of these questions will be skipped in actual release');
+      this.log('  if I can access the source and determine them myself.');
 
       const questions = [
+        {
+          type: 'list',
+          name: 'delivery',
+          message: `${chalk.green('Where')} can I it?`,
+          choices: [
+            { name: 'Bower', value: 'bower', disabled: 'coming soon...' },
+            { name: 'Duo', value: 'duo', disabled: 'coming not so soon...' },
+            { name: 'Jam', value: 'jam', disabled: 'coming not so soon...' },
+            { name: 'JSPM', value: 'jspm', disabled: 'coming not so soon...' },
+            { name: 'NPM', value: 'npm', checked: true },
+            { name: 'volo', value: 'volo', disabled: 'coming not so soon...' },
+          ]
+        },
+        {
+          type: 'checkbox',
+          name: 'kinds',
+          message: `What ${chalk.green('kind(s)')} of package is it?`,
+          choices: (props) => {
+            return [
+              { name: 'NPM', value: 'npm', checked: props.list === 'npm' },
+              {
+                name: 'github (Duo, JSPM, volo, etc)',
+                value: 'github',
+                checked: props.delivery === 'duo' || props.delivery === 'jspm' ||props.delivery === 'volo'
+              },
+              { name: 'Bower', value: 'bower', checked: props.delivery === 'bower' },
+              { name: 'Jam', value: 'jam', checked: props.delivery === 'jam' },
+              { name: 'Script (load in script tag)', value: 'global' },
+              { name: 'Platform (e.g. atom)', value: 'env' },
+            ]
+          }
+        },
+        {
+          type: 'input',
+          name: 'npmName',
+          when: (props) => props.packageManagers.indexOf('npm') !== -1,
+          message: `What is the ${chalk.green('package name')} in ${chalk.cyan('NPM')}?`,
+          default: (props) => props.repository,
+          validate: (value) => value.length > 0,
+        },
+        {
+          type: 'input',
+          name: 'bowerName',
+          message: `What is the ${chalk.green('package name')} in  ${chalk.cyan('Bower')}?`,
+          default: (props) => props.npmName || props.repository,
+          validate: (value) => value.length > 0,
+          when: (props) => props.packageManagers.indexOf('bower') !== -1,
+        }];
+
+      const hostQuestions = [
         {
           type: 'list',
           name: 'host',
@@ -91,31 +142,6 @@ module.exports = yeoman.Base.extend({
           },
           validate: (value) => value.length > 0,
           when: (props) => props.host !== 'private',
-        },
-        {
-          type: 'checkbox',
-          name: 'packageManagers',
-          message: `How is it distributed through ${chalk.green('package manager(s)')}?`,
-          choices: [
-            { name: 'NPM', value: 'npm', checked: true },
-            { name: 'Bower', value: 'bower', disabled: 'available soon...' }
-          ],
-        },
-        {
-          type: 'input',
-          name: 'npmName',
-          message: `What is the ${chalk.green('package name')} used in NPM?`,
-          default: (props) => props.repository,
-          validate: (value) => value.length > 0,
-          when: (props) => props.packageManagers.indexOf('npm') !== -1,
-        },
-        {
-          type: 'input',
-          name: 'bowerName',
-          message: `What is the ${chalk.green('package name')} used in Bower?`,
-          default: (props) => props.npmName || props.repository,
-          validate: (value) => value.length > 0,
-          when: (props) => props.packageManagers.indexOf('bower') !== -1,
         },
         {
           type: 'checkbox',
@@ -159,27 +185,27 @@ module.exports = yeoman.Base.extend({
     sourceUri() {
       const done = this.async();
 
-          const uriExamples = [
-            'visionmedia/batch',
-            'chaijs/chai',
-            'ded/domready',
-            'knockout/knockout'
-          ];
+      const uriExamples = [
+        'visionmedia/batch',
+        'chaijs/chai',
+        'ded/domready',
+        'knockout/knockout'
+      ];
 
-          this.prompt({
-            type: 'input',
-            name: 'sourceUri',
-            message: `What is the ${chalk.green('author/module')} of the ${chalk.red('source')} on github?`,
-            default: () => uriExamples[Math.round(Math.random() * 4 - 0.5)],
-            validate: (value) => value.length > 0
-          }, (props) => {
-            this.sourceUri = props.sourceUri;
-            this.sourcePackageUrl = `https://github.com/${props.sourceUri}`;
-            this.sourcePackageName = props.sourceUri.split('/')[1];
-            this.prettyPackageName = changeCase.titleCase(this.sourcePackageName.replace('-', ' '));
-            this.packageVariable = changeCase.camelCase(this.sourcePackageName.replace('-', ' '));
-            done();
-          });
+      this.prompt({
+        type: 'input',
+        name: 'sourceUri',
+        message: `What is the ${chalk.green('author/module')} of the ${chalk.red('source')} on github?`,
+        default: () => uriExamples[Math.round(Math.random() * 4 - 0.5)],
+        validate: (value) => value.length > 0
+      }, (props) => {
+        this.sourceUri = props.sourceUri;
+        this.sourcePackageUrl = `https://github.com/${props.sourceUri}`;
+        this.sourcePackageName = props.sourceUri.split('/')[1];
+        this.prettyPackageName = changeCase.titleCase(this.sourcePackageName.replace('-', ' '));
+        this.packageVariable = changeCase.camelCase(this.sourcePackageName.replace('-', ' '));
+        done();
+      });
     },
     isNpm() {
       const done = this.async();
