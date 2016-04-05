@@ -232,15 +232,15 @@ module.exports = yeoman.Base.extend({
     },
     tsdHint() {
       this.log('');
-      this.log('If DefinitelyType has definition for the source,');
+      this.log('If DefinitelyTyped has a definition for the source,');
       this.log(` you can run ${chalk.green('tsd install <source>')} to download the file`);
-      this.log(' so you can easily access those code.');
-      this.log('You don\'t need to save it thou.');
+      this.log(' so you can easily access those definitions.');
+      this.log('You don\'t need to save it though.');
     },
     readyToTest() {
       this.log('');
-      this.log(`Run ${chalk.green('npm install')} to install dependencies needed. It will take about a minute`);
-      this.log('In the mean time, you can open your editor and start writing.');
+      this.log(`Run ${chalk.green('npm install')} to install dependencies needed. It will take about a minute.`);
+      this.log('In the meantime, you can open your editor and start writing.');
       this.log('');
       this.log(`When installation completes, run ${chalk.green('npm run watch')}.`);
       this.log('It will automatically build and test the typings for you as you make changes.');
