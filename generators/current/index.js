@@ -151,11 +151,11 @@ module.exports = yeoman.Base.extend({
         this.destinationPath()
       );
       this.fs.copy(
-        this.templatePath('_.gitignore'),
+        this.templatePath('template/_.gitignore'),
         this.destinationPath('.gitignore')
       );
       this.fs.copy(
-        this.templatePath('_.gitignore'),
+        this.templatePath('template/_.gitignore'),
         this.destinationPath('.npmignore')
       );
     },
