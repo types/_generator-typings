@@ -1,11 +1,10 @@
 {
   "dependencies": {
-    "chalk": "registry:npm/chalk#1.0.0+20160211003958",
-    "change-case": "npm:change-case"
+    "chalk": "registry:npm/chalk#1.0.0+20160211003958"
   },
   "ambientDependencies": {},
   "devDependencies": {
-    "onchange": "registry:npm/onchange#2.1.2+20160323074425"
+    "rc": "registry:npm/rc#1.1.0+20160211003958"
   },
   "ambientDevDependencies": {
     "node": "registry:dt/node#4.0.0+20160319033040"
