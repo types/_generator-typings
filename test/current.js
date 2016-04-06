@@ -29,7 +29,6 @@ describe('current', function() {
         'test/tsconfig.json',
         '.editorconfig',
         '.gitignore',
-        '.npmignore',
         'LICENSE',
         'index.d.ts',
         'README.md',
