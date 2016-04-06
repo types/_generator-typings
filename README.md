@@ -50,6 +50,7 @@ So you need to change your `tslint.json` to:
     - [ ] [`blue-tape`](https://www.npmjs.com/package/blue-tape) (through tape-run)
     - [ ] mocha (through mocha-phantomjs, karma-mocha)
     - [ ] jasmine
+    - [ ] QUnit
 - npm commands
   - [x] watch: Build typings for testing automatically
   - [ ] publish: Create PR to [`typings/registry`](https://github.com/typings/registry)
