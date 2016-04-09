@@ -28,7 +28,7 @@
     "yosay": "^1.1.0"
   },
   "devDependencies": {
-    "eslint-config-xo-space": "^0.11.0",
+    "eslint-config-xo-space": "^0.12.0",
     "gulp": "^3.9.0",
     "gulp-eslint": "^2.0.0",
     "gulp-exclude-gitignore": "^1.0.0",
