@@ -147,8 +147,6 @@ module.exports = yeoman.Base.extend({
             repositoryOrganization: path.basename(path.join(repositoryPath, '..'))
           };
 
-          var repositoryName = path.basename(path.join(repositoryPath, '..'));
-          var repositoryOrganization = path.basename(path.join(repositoryPath, '..', '..'));
           if (fs.existsSync(path.join(repositoryPath, '.git'))) {
             var git = simpleGit(repositoryPath);
             result.git = git;
@@ -440,11 +438,20 @@ module.exports = yeoman.Base.extend({
             message: 'I notice you are in a git repository. Is this the typings repository you created?',
             default: true
           },
+        ], (props) => {
+          extend(this.props, props);
+          done();
+        });
+      }
+    },
+    askRepositoryInfo() {
+        const done = this.async();
+        this.prompt([
           {
             type: 'input',
             name: 'repositoryOrganization',
             message: `https://github.com/${chalk.green('<organization>')}/...`,
-            default: (props) => props.useExistingRepository ?
+            default: () => this.props.useExistingRepository ?
               this.props.repositoryOrganization :
               this.configTemplate.repositoryOrganization,
             validate: (value) => value.length > 0
@@ -453,7 +460,7 @@ module.exports = yeoman.Base.extend({
             type: 'input',
             name: 'repositoryName',
             message: (props) => `https://github.com/${chalk.cyan(props.repositoryOrganization)}/${chalk.green('<name>')}`,
-            default: (props) => props.useExistingRepository ?
+            default: () => this.props.useExistingRepository ?
               this.props.repositoryName :
               this.configTemplate.repositoryNamePrefix + this.props.sourceDeliveryPackageName,
             validate: (value) => value.length > 0
@@ -465,9 +472,7 @@ module.exports = yeoman.Base.extend({
           }
           done();
         });
-      }
     },
-
     // askTemplateInfo() {
     //   this.configTemplate = this.config.get('configTemplate');
     //   this.isFirstTime = !this.configTemplate;
