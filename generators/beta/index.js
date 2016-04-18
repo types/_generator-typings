@@ -34,8 +34,9 @@ const globalConfigPath = path.join(process.env.HOME, '.generator-typingsrc');
 module.exports = yeoman.Base.extend({
   constructor: function () {
     yeoman.Base.apply(this, arguments);
-    this.option('skipPrompt', { hide: true });
-    this.option('updateTemplate', { desc: 'Update template.' });
+    this.option('skip-prompting', { hide: true });
+    this.option('skip-writing', { hide: true });
+    this.option('update-template', { desc: 'Update template', defaults: false });
     this.props = {};
     this.updateConfigTemplate = function () {
       const questions = [
@@ -70,9 +71,9 @@ module.exports = yeoman.Base.extend({
           type: 'list',
           name: 'testFrameworkInBrowser',
           message: `${chalk.green('Test framework')} in ${chalk.cyan('browser')}`,
-            choices: [
-              { name: 'blue-tape + browserify', value: 'blue-tape+browserify' },
-              ],
+          choices: [
+            { name: 'blue-tape + browserify', value: 'blue-tape+browserify' },
+          ],
           default: this.configTemplate.testFrameworkInBrowser,
         },
         {
@@ -229,7 +230,7 @@ module.exports = yeoman.Base.extend({
         this.updateConfigTemplate();
       }
       else if (typeof this.configTemplate.version === 'undefined') {
-        if (this.options.skipPrompt) return;
+        if (this.options['skip-prompting']) return;
 
         this.log('Seems like this is the first time you use this generator.');
         this.log('Let\'s quickly setup the template...');
@@ -237,7 +238,7 @@ module.exports = yeoman.Base.extend({
         this.updateConfigTemplate();
       }
       else if (this.configTemplate.version !== TEMPLATEVERSION) {
-        if (this.options.skipPrompt) return;
+        if (this.options['skip-prompting']) return;
 
         this.log('Seems like you updated this generator. The template has changed.');
         this.log('Let\'s quickly update the template...');
@@ -250,7 +251,7 @@ module.exports = yeoman.Base.extend({
       this.log(`To begin, I need to know a little bit about the ${chalk.green('source')} you are typings for.`);
     },
     askDelivery() {
-      if (this.options.skipPrompt) return;
+      if (this.options['skip-prompting']) return;
 
       const questions = [
         {
@@ -299,7 +300,7 @@ module.exports = yeoman.Base.extend({
       });
     },
     getInfoFromDelivery() {
-      if (this.options.skipPrompt) return;
+      if (this.options['skip-prompting']) return;
 
       if (this.props.sourceDeliveryType !== 'none') {
         this.log(`gathering info from ${chalk.cyan(this.props.sourceDeliveryType)}...`);
@@ -380,7 +381,7 @@ module.exports = yeoman.Base.extend({
       }
     },
     askUsage() {
-      if (this.options.skipPrompt) return;
+      if (this.options['skip-prompting']) return;
 
       const done = this.async();
       this.prompt(
@@ -403,7 +404,7 @@ module.exports = yeoman.Base.extend({
         });
     },
     askPlatform() {
-      if (this.options.skipPrompt) return;
+      if (this.options['skip-prompting']) return;
 
       const done = this.async();
       this.prompt(
@@ -456,138 +457,156 @@ module.exports = yeoman.Base.extend({
       });
     },
     confirmExistingRepository() {
-      if (!this.props.usePresetValues && this.props.git) {
-        const done = this.async();
-        this.prompt([
-          {
-            type: 'confirm',
-            name: 'useExistingRepository',
-            message: 'I notice you are in a git repository. Is this the typings repository you created?',
-            default: true
-          },
-        ], (props) => {
-          extend(this.props, props);
-          done();
-        });
-      }
+      if (this.props.usePresetValues || !this.props.git) return
+      const done = this.async();
+      this.prompt([
+        {
+          type: 'confirm',
+          name: 'useExistingRepository',
+          message: 'I notice you are in a git repository. Is this the typings repository you created?',
+          default: true
+        },
+      ], (props) => {
+        extend(this.props, props);
+        done();
+      });
     },
     askRepositoryInfo() {
-      if (!this.props.usePresetValues) {
-        const done = this.async();
-        this.prompt([
-          {
-            type: 'input',
-            name: 'repositoryOrganization',
-            message: `https://github.com/${chalk.green('<organization>')}/...`,
-            default: () => this.props.useExistingRepository ?
-              this.props.repositoryOrganization :
-              this.configTemplate.repositoryOrganization,
-            validate: (value) => value.length > 0
-          },
-          {
-            type: 'input',
-            name: 'repositoryName',
-            message: (props) => `https://github.com/${chalk.cyan(props.repositoryOrganization)}/${chalk.green('<name>')}`,
-            default: () => this.props.useExistingRepository ?
-              this.props.repositoryName :
-              this.configTemplate.repositoryNamePrefix + this.props.sourceDeliveryPackageName,
-            validate: (value) => value.length > 0
-          },
-        ], (props) => {
-          extend(this.props, props);
-          if (!this.props.repositoryRemoteUrl) {
-            this.props.repositoryRemoteUrlToAdd = `https://github.com/${props.repositoryOrganization}/${props.repositoryName}.git`;
-          }
+      if (this.props.usePresetValues) return;
+      const done = this.async();
+      this.prompt([
+        {
+          type: 'input',
+          name: 'repositoryOrganization',
+          message: `https://github.com/${chalk.green('<organization>')}/...`,
+          default: () => this.props.useExistingRepository ?
+            this.props.repositoryOrganization :
+            this.configTemplate.repositoryOrganization,
+          validate: (value) => value.length > 0
+        },
+        {
+          type: 'input',
+          name: 'repositoryName',
+          message: (props) => `https://github.com/${chalk.cyan(props.repositoryOrganization)}/${chalk.green('<name>')}`,
+          default: () => this.props.useExistingRepository ?
+            this.props.repositoryName :
+            this.configTemplate.repositoryNamePrefix + this.props.sourceDeliveryPackageName,
+          validate: (value) => value.length > 0
+        },
+      ], (props) => {
+        extend(this.props, props);
+        if (!this.props.repositoryRemoteUrl) {
+          this.props.repositoryRemoteUrlToAdd = `https://github.com/${props.repositoryOrganization}/${props.repositoryName}.git`;
+        }
 
-          done();
-        });
-      }
+        done();
+      });
     },
     askGitHubInfo() {
-      if (!this.props.usePresetValues && !this.props.repositoryRemoteUrl) {
-        const done = this.async();
-        this.prompt([
-          {
-            type: 'input',
-            name: 'username',
-            message: `Your username on ${chalk.green('GitHub')}`,
-            default: this.configTemplate.username,
-            validate: (value) => value.length > 0,
-          }],
-          (props) => {
-            done();
-          });
-      }
-    },
-    askTestFramework() {
-      if (!this.props.usePresetValues) {
-        const done = this.async();
-        this.prompt([
-          {
-            type: 'list',
-            name: 'testFrameworkInNode',
-            message: `${chalk.green('Test framework')} in ${chalk.cyan('node')}`,
-            choices: ['blue-tape'],
-            default: this.configTemplate.testFrameworkInNode,
-            when: ~this.props.sourcePlatforms.indexOf('node'),
-          },
-          {
-            type: 'list',
-            name: 'testFrameworkInBrowser',
-            message: `${chalk.green('Test framework')} in ${chalk.cyan('browser')}`,
-            choices: [
-              { name: 'blue-tape + browserify', value: 'blue-tape+browserify' },
-              ],
-            default: this.configTemplate.testFrameworkInBrowser,
-            when: ~this.props.sourcePlatforms.indexOf('browser'),
-          },
-        ])
-      }
-    },
-    askLicenseInfo() {
-      if (!this.props.usePresetValues) {
-        const done = this.async();
-
-        this.prompt([
-          {
-            type: 'list',
-            name: 'license',
-            message: `Which ${chalk.green('license')} do you want to use?`,
-            choices: [
-              { name: 'Apache 2.0', value: 'Apache-2.0' },
-              { name: 'MIT', value: 'MIT' },
-              { name: 'Unlicense', value: 'unlicense' },
-              { name: 'FreeBSD', value: 'BSD-2-Clause-FreeBSD' },
-              { name: 'NewBSD', value: 'BSD-3-Clause' },
-              { name: 'Internet Systems Consortium (ISC)', value: 'ISC' },
-              { name: 'No License (Copyrighted)', value: 'nolicense' }
-            ],
-            default: this.configTemplate.license,
-          },
-          {
-            type: 'input',
-            name: 'licenseSignature',
-            message: `Your signature in the license: Copyright (c) ${new Date().getFullYear()} ${chalk.green('<signature>')}`,
-            default: (props) => this.configTemplate.licenseSignature,
-          },
-        ], (props) => {
-          extend(this.props, props);
+      if (this.props.usePresetValues || this.props.repositoryRemoteUrl) return;
+      const done = this.async();
+      this.prompt([
+        {
+          type: 'input',
+          name: 'username',
+          message: `Your username on ${chalk.green('GitHub')}`,
+          default: this.configTemplate.username,
+          validate: (value) => value.length > 0,
+        }],
+        (props) => {
           done();
         });
-      }
+    },
+    askTestFramework() {
+      if (this.props.usePresetValues) return;
+      const done = this.async();
+      this.prompt([
+        {
+          type: 'list',
+          name: 'testFrameworkInNode',
+          message: `${chalk.green('Test framework')} in ${chalk.cyan('node')}`,
+          choices: ['blue-tape'],
+          default: this.configTemplate.testFrameworkInNode,
+          when: ~this.props.sourcePlatforms.indexOf('node'),
+        },
+        {
+          type: 'list',
+          name: 'testFrameworkInBrowser',
+          message: `${chalk.green('Test framework')} in ${chalk.cyan('browser')}`,
+          choices: [
+            { name: 'blue-tape + browserify', value: 'blue-tape+browserify' },
+          ],
+          default: this.configTemplate.testFrameworkInBrowser,
+          when: ~this.props.sourcePlatforms.indexOf('browser'),
+        },
+      ]);
+    },
+    askLicenseInfo() {
+      if (this.props.usePresetValues) return;
+      const done = this.async();
+
+      this.prompt([
+        {
+          type: 'list',
+          name: 'license',
+          message: `Which ${chalk.green('license')} do you want to use?`,
+          choices: [
+            { name: 'Apache 2.0', value: 'Apache-2.0' },
+            { name: 'MIT', value: 'MIT' },
+            { name: 'Unlicense', value: 'unlicense' },
+            { name: 'FreeBSD', value: 'BSD-2-Clause-FreeBSD' },
+            { name: 'NewBSD', value: 'BSD-3-Clause' },
+            { name: 'Internet Systems Consortium (ISC)', value: 'ISC' },
+            { name: 'No License (Copyrighted)', value: 'nolicense' }
+          ],
+          default: this.configTemplate.license,
+        },
+        {
+          type: 'input',
+          name: 'licenseSignature',
+          message: `Your signature in the license: Copyright (c) ${new Date().getFullYear()} ${chalk.green('<signature>')}`,
+          default: (props) => this.configTemplate.licenseSignature,
+        },
+      ], (props) => {
+        extend(this.props, props);
+        done();
+      });
     },
   },
   writing: {
-
+    copyFiles() {
+      if (this.options['skip-writing']) return;
+      this.fs.copy(
+        this.templatePath('.vscode/*'),
+        this.destinationPath('.vscode')
+      );
+      this.fs.copy(
+        this.templatePath('test/*'),
+        this.destinationPath('test')
+      );
+      this.fs.copy(
+        this.templatePath('source-test/*'),
+        this.destinationPath('source-test')
+      );
+      this.fs.copy(
+        this.templatePath('*'),
+        this.destinationPath()
+      );
+      this.fs.copy(
+        this.templatePath('.*'),
+        this.destinationPath()
+      );
+      this.fs.copy(
+        this.templatePath('template/_.gitignore'),
+        this.destinationPath('.gitignore')
+      );
+    }
   },
   install: {
     printProps() {
       this.log('');
       this.log('');
       this.log('');
-      if (this.options.dryrun) {
-        this.log('dryrun testing');
-      }
 
       this.log(this.props);
       this.log(this.configTemplate);
