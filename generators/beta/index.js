@@ -62,19 +62,26 @@ module.exports = yeoman.Base.extend({
         },
         {
           type: 'list',
-          name: 'testFrameworkInNode',
-          message: `${chalk.green('Test framework')} in ${chalk.cyan('node')}`,
+          name: 'testFramework',
+          message: `Your ${chalk.green('test framework')} of choice`,
           choices: ['blue-tape'],
-          default: this.configTemplate.testFrameworkInNode,
+          default: this.configTemplate.testFramework,
         },
         {
           type: 'list',
-          name: 'testFrameworkInBrowser',
-          message: `${chalk.green('Test framework')} in ${chalk.cyan('browser')}`,
-          choices: [
-            { name: 'blue-tape + browserify', value: 'blue-tape+browserify' },
-          ],
-          default: this.configTemplate.testFrameworkInBrowser,
+          name: 'browserTestHarness',
+          message: `Your ${chalk.cyan('browser')} ${chalk.green('test harness')}`,
+          choices: (props) => {
+            switch (props.testFramework) {
+              case 'blue-tape':
+              default:
+                return [
+                  { name: 'tap-run + browserify', value: 'tap-run+browserify' },
+                  { name: 'tap-run + jspm', value: 'tap-run+jspm' },
+                ];
+            }
+          },
+          default: this.configTemplate.browserTestHarness,
         },
         {
           type: 'list',
@@ -119,11 +126,11 @@ module.exports = yeoman.Base.extend({
       this.props.licenseSignature = this.configTemplate.licenseSignature;
 
       if (~this.props.sourcePlatforms.indexOf('node')) {
-        this.props.testFrameworkInNode = this.configTemplate.testFrameworkInNode;
+        this.props.testFramework = this.configTemplate.testFramework;
       }
 
       if (~this.props.sourcePlatforms.indexOf('browser')) {
-        this.props.testFrameworkInBrowser = this.configTemplate.testFrameworkInBrowser;
+        this.props.browserTestHarness = this.configTemplate.browserTestHarness;
       }
     };
 
@@ -220,8 +227,8 @@ module.exports = yeoman.Base.extend({
         repositoryNamePrefix: 'typed-',
         repositoryOrganization: undefined,
         license: 'MIT',
-        testFrameworkInNode: 'blue-tape',
-        testFrameworkInBrowser: 'blue-tape+browserify'
+        testFramework: 'blue-tape',
+        browserTestHarness: 'tape-run+browserify'
       };
 
       this.configTemplate = rc('generator-typings', defaultConfigTemplate);
@@ -351,7 +358,13 @@ module.exports = yeoman.Base.extend({
             });
             child.stdout.on('data', (data) => {
               const result = JSON.parse(data.toString());
-              this.props.sourceMain = result.latest.main ? path.parse(result.latest.main).name : 'index';
+              if (result.latest.main) {
+                const main = path.parse(result.latest.main);
+                this.propse.sourceMain = path.join(main.dir, main.name);
+              }
+              else {
+                this.props.sourceMain = 'index';
+              }
               this.props.sourceVersion = result.latest.version;
               this.props.sourceHomepage = result.latest.homepage;
               resolve();
@@ -369,7 +382,13 @@ module.exports = yeoman.Base.extend({
 
             child.stdout.on('data', (data) => {
               const pjson = JSON.parse(data.toString());
-              this.props.sourceMain = path.parse(pjson.main).name;
+              if (pjson.main) {
+                const main = path.parse(pjson.main);
+                this.props.sourceMain = path.join(main.dir, main.name);
+              }
+              else {
+                this.props.sourceMain = 'index';
+              }
               this.props.sourceVersion = pjson.version;
               this.props.sourceHomepage = pjson.homepage;
               this.props.sourceRepository = pjson.repository && pjson.repository.url ?
@@ -453,6 +472,9 @@ module.exports = yeoman.Base.extend({
         }
       ], (props) => {
         extend(this.props, props);
+        if (props.usePresetValues) {
+          this.applyConfigTemplate();
+        }
         done();
       });
     },
@@ -523,20 +545,27 @@ module.exports = yeoman.Base.extend({
       this.prompt([
         {
           type: 'list',
-          name: 'testFrameworkInNode',
-          message: `${chalk.green('Test framework')} in ${chalk.cyan('node')}`,
+          name: 'testFramework',
+          message: `Your ${chalk.green('test framework')} of choice`,
           choices: ['blue-tape'],
-          default: this.configTemplate.testFrameworkInNode,
+          default: this.configTemplate.testFramework,
           when: ~this.props.sourcePlatforms.indexOf('node'),
         },
         {
           type: 'list',
-          name: 'testFrameworkInBrowser',
-          message: `${chalk.green('Test framework')} in ${chalk.cyan('browser')}`,
-          choices: [
-            { name: 'blue-tape + browserify', value: 'blue-tape+browserify' },
-          ],
-          default: this.configTemplate.testFrameworkInBrowser,
+          name: 'browserTestHarness',
+          message: `Your ${chalk.cyan('browser')} ${chalk.green('test harness')}`,
+          choices: (props) => {
+            switch (props.testFramework) {
+              case 'blue-tape':
+              default:
+                return [
+                  { name: 'tap-run + browserify', value: 'tap-run+browserify' },
+                  { name: 'tap-run + jspm', value: 'tap-run+jspm' },
+                ];
+            }
+          },
+          default: this.configTemplate.browserTestHarness,
           when: ~this.props.sourcePlatforms.indexOf('browser'),
         },
       ]);
@@ -572,22 +601,18 @@ module.exports = yeoman.Base.extend({
         done();
       });
     },
+    printProps() {
+      this.log('');
+      this.log('');
+      this.log('');
+
+      this.log(this.props);
+    },
   },
   writing: {
     copyFiles() {
       if (this.options['skip-writing']) return;
-      this.fs.copy(
-        this.templatePath('.vscode/*'),
-        this.destinationPath('.vscode')
-      );
-      this.fs.copy(
-        this.templatePath('test/*'),
-        this.destinationPath('test')
-      );
-      this.fs.copy(
-        this.templatePath('source-test/*'),
-        this.destinationPath('source-test')
-      );
+
       this.fs.copy(
         this.templatePath('*'),
         this.destinationPath()
@@ -596,20 +621,143 @@ module.exports = yeoman.Base.extend({
         this.templatePath('.*'),
         this.destinationPath()
       );
+
+      // `.gitignore` needs to be name as NOT `.gitignore` because NPM will automatically rename it to `.npmignore`
       this.fs.copy(
         this.templatePath('template/_.gitignore'),
         this.destinationPath('.gitignore')
       );
+
+      this.fs.copyTpl(
+        this.templatePath('template/typings.json'),
+        this.destinationPath('typings.json'),
+        {
+          name: this.props.sourceDeliveryPackageName,
+          main: this.props.sourceMain + '.d.ts',
+          homepage: this.props.sourceHomepage,
+          version: this.props.sourceVersion
+        });
+
+      this.fs.copyTpl(
+        this.templatePath('template/README.md'),
+        this.destinationPath('README.md'),
+        {
+          prettyPackageName: this.prettyPackageName,
+          sourcePackageName: this.props.sourceDeliveryPackageName,
+          sourcePackageUrl: this.props.sourceRepository,
+          license: this.props.license
+        });
+
+
+      this.fs.copyTpl(
+        this.templatePath('template/package.json'),
+        this.destinationPath('package.json'),
+        {
+          ambient: !(~this.props.sourceUsages.indexOf('commonjs') ||
+            ~this.props.sourceUsages.indexOf('amd') ||
+            ~this.props.sourceUsages.indexOf('esm')) ? ' --ambient' : '',
+          sourceTest: 'echo no source test',
+          test: ~this.props.sourcePlatforms.indexOf('node')? 'cd test && ts-node ../node_modules/blue-tape/bin/blue-tape "**/*.ts" | tap-spec': 'echo no server test',
+          browserTest: ~this.props.sourcePlatforms.indexOf('browser')?
+            'node npm-scripts/test "test/**.*.ts"': 'echo no browser test'
+        });
+
+      this.fs.copyTpl(
+        this.templatePath(`template/${this.props.license}.txt`),
+        this.destinationPath('LICENSE'),
+        {
+          year: (new Date()).getFullYear(),
+          author: this.props.licenseSignature.trim()
+        }
+      );
+
+      this.fs.copy(
+        this.templatePath('source-test/*'),
+        this.destinationPath('source-test')
+      );
+
+      this.fs.copy(
+        this.templatePath('test/*'),
+        this.destinationPath('test')
+      );
+
+      if (~this.props.sourceUsages.indexOf('commonjs')) {
+        this.fs.write('test/test.ts',
+          [
+            `import tape = require('${this.props.testFrameworke}');`,
+            '',
+            `import ${changeCase.camel(this.props.sourceDeliveryPackageName)} = require('${this.props.sourceDeliveryPackageName}');`,
+            ''
+          ].join('\n'));
+      } else if (~this.props.sourceUsages.indexOf('esm')) {
+        this.fs.write('test/test.ts',
+          [
+            `import tape = require('${this.props.testFramework}');`,
+            '',
+            `import ${changeCase.camel(this.props.sourceDeliveryPackageName)} from '${this.props.sourceDeliveryPackageName}';`,
+            ''
+          ].join('\n'));
+      } else if (~this.props.sourceUsages.indexOf('amd')) {
+        this.fs.write('test/test.ts',
+          [
+            'define((require, module, exports) => {',
+            `  import tape = require('${this.props.testFramework}');`,
+            '',
+            `  import ${changeCase.camel(this.props.sourceDeliveryPackageName)} = require('${this.props.sourceDeliveryPackageName}');`,
+            '',
+            '});'
+          ].join('\n'));
+      }
+      switch (this.props.browserTestHarness) {
+        case 'tape-run+jspm':
+          this.fs.copy(
+            this.templatePath('npm-scripts/tape-jspm.test.js'),
+            this.destinationPath('npm-scripts/test.js')
+          );
+          break;
+        case 'tape-run+browserify':
+          this.fs.copy(
+            this.templatePath('npm-scripts/tape-browserify.test.js'),
+            this.destinationPath('npm-scripts/test.js')
+          );
+          break;
+      }
     }
   },
   install: {
-    printProps() {
-      this.log('');
-      this.log('');
-      this.log('');
+    npmInstallSource() {
+      if (this.props.sourceDeliveryType === 'npm') {
+        this.log(`Installing ${chalk.cyan(this.props.sourceDeliveryPackageName)}...`);
+        this.npmInstall([this.props.sourceDeliveryPackageName], { 'saveDev': true, 'saveExact': true });
+        // this.spawnCommandSync('npm', ['install', '-D', '--save-exact', this.props.sourceDeliveryPackageName]);
+      }
+      const devPackages = ['onchange', 'typings', 'ts-node', 'tslint', 'tslint-config-typings'];
+      if (this.props.testFramework === 'blue-tape') {
+        devPackages.push('tap-spec', 'blue-tape');
+      }
+      switch (this.props.browserTestHarness) {
+        case 'tape-run+jspm':
+          devPackage.push('stream', 'jspm', 'tape-run');
+          break;
+        case 'tape-run+browserify':
+          devPackages.push('globby', 'browserify', 'tsify', 'tape-run');
+          break;
+      }
 
-      this.log(this.props);
-      this.log(this.configTemplate);
+      this.npmInstall(depPackages, { 'saveDev': true });
+    },
+    createGitHubRepo() {
+
+    },
+    addRemote() {
+
+    },
+    submodule() {
+      this.log(`Downloading ${chalk.green(this.props.sourceRepository)}...`);
+      this.git.
+        // Currently this step is needed to pass test. Will use nodegit for this.
+        this.spawnCommandSync('git', ['init']);
+      this.spawnCommandSync('git', ['submodule', 'add', `${this.props.sourceRepository}`, 'source']);
     },
   },
   end: {
