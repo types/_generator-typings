@@ -234,21 +234,22 @@ module.exports = yeoman.Base.extend({
       this.configTemplate = rc('generator-typings', defaultConfigTemplate);
 
       if (this.options.updateTemplate) {
+        this.log(`You want to update your ${chalk.green('template')}? Here it goes...`);
         this.updateConfigTemplate();
       }
       else if (typeof this.configTemplate.version === 'undefined') {
         if (this.options['skip-prompting']) return;
 
-        this.log('Seems like this is the first time you use this generator.');
-        this.log('Let\'s quickly setup the template...');
+        this.log(`Seems like this is the ${chalk.cyan('first time')} you use this generator.`);
+        this.log(`Let's quickly setup the ${chalk.green('template')}...`);
 
         this.updateConfigTemplate();
       }
       else if (this.configTemplate.version !== TEMPLATEVERSION) {
         if (this.options['skip-prompting']) return;
 
-        this.log('Seems like you updated this generator. The template has changed.');
-        this.log('Let\'s quickly update the template...');
+        this.log(`Seems like you have ${chalk.cyan('updated')} this generator. The template has changed.`);
+        this.log(`Let's quickly update the ${chalk.green('template')}...`);
 
         this.updateConfigTemplate();
       }
