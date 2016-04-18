@@ -42,7 +42,7 @@ module.exports = yeoman.Base.extend({
         {
           type: 'input',
           name: 'username',
-          message: `Your username on GitHub`,
+          message: `Your username on ${chalk.green('GitHub')}`,
           default: this.configTemplate.username,
         },
         {
@@ -62,21 +62,23 @@ module.exports = yeoman.Base.extend({
         {
           type: 'list',
           name: 'testFrameworkInNode',
-          message: `Testing framework in node`,
+          message: `${chalk.green('Test framework')} in ${chalk.cyan('node')}`,
           choices: ['blue-tape'],
           default: this.configTemplate.testFrameworkInNode,
         },
         {
           type: 'list',
           name: 'testFrameworkInBrowser',
-          message: `Testing framework in browser`,
-          choices: ['blue-tape'],
+          message: `${chalk.green('Test framework')} in ${chalk.cyan('browser')}`,
+            choices: [
+              { name: 'blue-tape + browserify', value: 'blue-tape+browserify' },
+              ],
           default: this.configTemplate.testFrameworkInBrowser,
         },
         {
           type: 'list',
           name: 'license',
-          message: `Which license do you want to use?`,
+          message: `Which ${chalk.green('license')} do you want to use?`,
           choices: [
             { name: 'Apache 2.0', value: 'Apache-2.0' },
             { name: 'MIT', value: 'MIT' },
@@ -218,7 +220,7 @@ module.exports = yeoman.Base.extend({
         repositoryOrganization: undefined,
         license: 'MIT',
         testFrameworkInNode: 'blue-tape',
-        testFrameworkInBrowser: 'blue-tape'
+        testFrameworkInBrowser: 'blue-tape+browserify'
       };
 
       this.configTemplate = rc('generator-typings', defaultConfigTemplate);
@@ -421,6 +423,15 @@ module.exports = yeoman.Base.extend({
           done();
         });
     },
+    waitForSourceInfo() {
+      const done = this.async();
+      Promise.all(collectingSourceInfo).then(() => {
+        done();
+      }, (err) => {
+        this.log(err);
+        process.exit(1);
+      });
+    },
     askTestHarness() {
       // Source-test is still in early stage. No automation.
     },
@@ -428,8 +439,24 @@ module.exports = yeoman.Base.extend({
       this.log('');
       this.log(`Good, now about the ${chalk.yellow('typings')} itself...`);
     },
+    confirmQuickSetup() {
+      this.log('Based on your configured template, ...');
+      this.log('<<print out default props>>');
+      const done = this.async();
+      this.prompt([
+        {
+          type: 'confirm',
+          name: 'usePresetValues',
+          message: 'Does it look good to you?',
+          default: true
+        }
+      ], (props) => {
+        extend(this.props, props);
+        done();
+      });
+    },
     confirmExistingRepository() {
-      if (this.props.git) {
+      if (!this.props.usePresetValues && this.props.git) {
         const done = this.async();
         this.prompt([
           {
@@ -445,6 +472,7 @@ module.exports = yeoman.Base.extend({
       }
     },
     askRepositoryInfo() {
+      if (!this.props.usePresetValues) {
         const done = this.async();
         this.prompt([
           {
@@ -470,89 +498,89 @@ module.exports = yeoman.Base.extend({
           if (!this.props.repositoryRemoteUrl) {
             this.props.repositoryRemoteUrlToAdd = `https://github.com/${props.repositoryOrganization}/${props.repositoryName}.git`;
           }
+
           done();
         });
+      }
     },
-    // askTemplateInfo() {
-    //   this.configTemplate = this.config.get('configTemplate');
-    //   this.isFirstTime = !this.configTemplate;
-    //   if (isFirstTime) {
-    //     this.log('Seems like this is the first time you use this generator.');
-    //     this.log('Let\'s quickly setup the template...');
+    askGitHubInfo() {
+      if (!this.props.usePresetValues && !this.props.repositoryRemoteUrl) {
+        const done = this.async();
+        this.prompt([
+          {
+            type: 'input',
+            name: 'username',
+            message: `Your username on ${chalk.green('GitHub')}`,
+            default: this.configTemplate.username,
+            validate: (value) => value.length > 0,
+          }],
+          (props) => {
+            done();
+          });
+      }
+    },
+    askTestFramework() {
+      if (!this.props.usePresetValues) {
+        const done = this.async();
+        this.prompt([
+          {
+            type: 'list',
+            name: 'testFrameworkInNode',
+            message: `${chalk.green('Test framework')} in ${chalk.cyan('node')}`,
+            choices: ['blue-tape'],
+            default: this.configTemplate.testFrameworkInNode,
+            when: ~this.props.sourcePlatforms.indexOf('node'),
+          },
+          {
+            type: 'list',
+            name: 'testFrameworkInBrowser',
+            message: `${chalk.green('Test framework')} in ${chalk.cyan('browser')}`,
+            choices: [
+              { name: 'blue-tape + browserify', value: 'blue-tape+browserify' },
+              ],
+            default: this.configTemplate.testFrameworkInBrowser,
+            when: ~this.props.sourcePlatforms.indexOf('browser'),
+          },
+        ])
+      }
+    },
+    askLicenseInfo() {
+      if (!this.props.usePresetValues) {
+        const done = this.async();
 
-    //     this.configTemplate = {
-    //       repository: {
-    //         namePrefix: 'typed-',
-    //         organization: 'typed-typings',
-    //         hosting: 'github'
-    //       },
-    //       license: {
-    //         type: 'MIT',
-    //         username: undefined,
-    //         fullName: undefined,
-    //         email: undefined,
-    //         homepage: undefined,
-    //       },
-    //       testing: {
-    //         node: 'blue-tape',
-    //         browser: 'blue-tape',
-    //         browserRunner: 'tape-run'
-    //       },
-    //       auth: {
-    //         username: undefined,
-    //       }
-    //     };
+        this.prompt([
+          {
+            type: 'list',
+            name: 'license',
+            message: `Which ${chalk.green('license')} do you want to use?`,
+            choices: [
+              { name: 'Apache 2.0', value: 'Apache-2.0' },
+              { name: 'MIT', value: 'MIT' },
+              { name: 'Unlicense', value: 'unlicense' },
+              { name: 'FreeBSD', value: 'BSD-2-Clause-FreeBSD' },
+              { name: 'NewBSD', value: 'BSD-3-Clause' },
+              { name: 'Internet Systems Consortium (ISC)', value: 'ISC' },
+              { name: 'No License (Copyrighted)', value: 'nolicense' }
+            ],
+            default: this.configTemplate.license,
+          },
+          {
+            type: 'input',
+            name: 'licenseSignature',
+            message: `Your signature in the license: Copyright (c) ${new Date().getFullYear()} ${chalk.green('<signature>')}`,
+            default: (props) => this.configTemplate.licenseSignature,
+          },
+        ], (props) => {
+          extend(this.props, props);
+          done();
+        });
+      }
+    },
+  },
+  writing: {
 
-    //     updateConfigTemplate();
-    //   }
-
-    //   applyConfigTemplate();
-
-    //   // print config;
-
-    //   this.prompt([
-    //     {
-    //       type: 'confirm',
-    //       name: 'noChange',
-    //       message: `Do you want to make any changes?`,
-    //       default: false
-    //     }
-    //   ]);
-    // },
-    // askSource() {
-    //   const hostQuestions = [
-    //     {
-    //       type: 'input',
-    //       name: 'author',
-    //       message: (props) => {
-    //         switch (props.host) {
-    //           case 'github':
-    //             return `http://github.com/${chalk.green('<author>')}/repository?`;
-    //           case 'private':
-    //             return `Who is the ${chalk.green('author')}?`;
-    //         }
-    //       },
-    //       validate: (value) => value.length > 0,
-    //     },
-    //   ];
-
-    //   // this.prompt(questions, (props) => {
-    //   //   this.source = props;
-    //   //   console.log(props);
-    //   //   done();
-    //   // });
-    // },
   },
   install: {
-    waitForSourceInfo() {
-      const done = this.async();
-      Promise.all(collectingSourceInfo).then(() => {
-        done();
-      }, (err) => {
-        this.log(err);
-        process.exit(1);
-      });
-    },
     printProps() {
       this.log('');
       this.log('');
@@ -563,7 +591,7 @@ module.exports = yeoman.Base.extend({
 
       this.log(this.props);
       this.log(this.configTemplate);
-    }
+    },
   },
   end: {
     sayGoodbye() {
