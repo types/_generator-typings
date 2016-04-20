@@ -18,7 +18,7 @@ new jspm.Builder()
     reader.push(null);
     reader
       .pipe(run())
-      .on('results', results => {
+      .on('results', (results) => {
         if (!results.ok) {
           process.exit(1);
         }
