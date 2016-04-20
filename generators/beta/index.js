@@ -643,9 +643,11 @@ module.exports = yeoman.Base.extend({
         this.templatePath('template/README.md'),
         this.destinationPath('README.md'),
         {
-          prettyPackageName: this.prettyPackageName,
+          prettyPackageName: changeCase.titleCase(this.props.sourceDeliveryPackageName.replace('-', ' ')),
           sourcePackageName: this.props.sourceDeliveryPackageName,
           sourcePackageUrl: this.props.sourceRepository,
+          organization: this.props.repositoryOrganization,
+          packageName: this.props.repositoryName,
           license: this.props.license
         });
 
@@ -745,19 +747,21 @@ module.exports = yeoman.Base.extend({
           break;
       }
 
-      this.npmInstall(depPackages, { 'saveDev': true });
+      this.npmInstall(devPackages, { 'saveDev': true });
     },
     createGitHubRepo() {
 
+    },
+    createGitRepo() {
+      if (this.git) return;
+      this.git = simpleGit.init()
     },
     addRemote() {
 
     },
     submodule() {
       this.log(`Downloading ${chalk.green(this.props.sourceRepository)}...`);
-      this.git.
         // Currently this step is needed to pass test. Will use nodegit for this.
-        this.spawnCommandSync('git', ['init']);
       this.spawnCommandSync('git', ['submodule', 'add', `${this.props.sourceRepository}`, 'source']);
     },
   },

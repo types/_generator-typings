@@ -1,4 +1,5 @@
-# Typed <%- prettyPackageName %>
+# Typed <%- prettyPackageName %>  [![Build Status](https://travis-ci.org/<%- organization ->/<%- packageName %>.svg?branch=master)](https://travis-ci.org/<%- organization ->/<%- packageName %>)
+
 
 The type definition for [`<%- sourcePackageName %>`](<%- sourcePackageUrl %>)
 
