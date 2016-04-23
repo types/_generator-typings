@@ -37,7 +37,7 @@
     "gulp-nsp": "^2.1.0",
     "gulp-plumber": "^1.0.0",
     "tslint": "^3.7.0",
-    "typings": "^0.7.9",
+    "typings": "^0.8.1",
     "yeoman-assert": "^2.0.0"
   },
   "eslintConfig": {
