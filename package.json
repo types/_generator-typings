@@ -22,8 +22,6 @@
   "dependencies": {
     "chalk": "^1.0.0",
     "change-case": "^2.3.1",
-    "github": "^0.2.4",
-    "nodegit": "^0.12.1",
     "yeoman-generator": "^0.22.5",
     "yosay": "^1.1.0"
   },
