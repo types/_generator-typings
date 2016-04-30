@@ -1,6 +1,6 @@
 {
   "name": "generator-typings",
-  "version": "0.14.10",
+  "version": "0.14.11",
   "description": "Yeoman generator for typings (https://github.com/typings/typings)",
   "homepage": "https://github.com/typings/generator-typings",
   "author": {
