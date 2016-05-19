@@ -113,22 +113,26 @@ module.exports = yeoman.Base.extend({
         this.log('Got it! The template is saved.')
       });
     };
-    this.applyConfigTemplate = function () {
-      this.props.username = this.configTemplate.username;
-      this.props.repositoryName = this.props.repositoryName || this.configTemplate.repositoryNamePrefix + this.props.sourceDeliveryPackageName;
-      this.props.repositoryOrganization = this.props.repositoryOrganization || this.configTemplate.repositoryOrganization;
-      this.props.repositoryRemoteUrl = this.props.repositoryRemoteUrl || `https://github.com/${this.props.repositoryOrganization}/${this.props.repositoryName}.git`;
-
-      this.props.license = this.configTemplate.license;
-      this.props.licenseSignature = this.configTemplate.licenseSignature;
+    this.generatePropsFromConfigTemplate = function () {
+      let props = {
+        username: this.configTemplate.username,
+        repositoryName: this.props.repositoryName || this.configTemplate.repositoryNamePrefix + this.props.sourceDeliveryPackageName,
+        repositoryOrganization: this.props.repositoryOrganization || this.configTemplate.repositoryOrganization,
+        repositoryRemoteUrl: this.props.repositoryRemoteUrl || `https://github.com/${this.props.repositoryOrganization}/${this.props.repositoryName}.git`,
+        license: this.configTemplate.license,
+        licenseSignature: this.configTemplate.licenseSignature,
+      };
 
       if (~this.props.sourcePlatforms.indexOf('node')) {
-        this.props.testFramework = this.configTemplate.testFramework;
+        props.testFramework = this.configTemplate.testFramework;
       }
 
       if (~this.props.sourcePlatforms.indexOf('browser')) {
-        this.props.browserTestHarness = this.configTemplate.browserTestHarness;
+        props.testFramework = this.configTemplate.testFramework;
+        props.browserTestHarness = this.configTemplate.browserTestHarness;
       }
+
+      return props;
     };
 
     this.readGitConfig = function readGitConfig(name) {
@@ -438,13 +442,16 @@ module.exports = yeoman.Base.extend({
       this.log(`Good, now about the ${chalk.yellow('typings')} itself...`);
     },
     confirmQuickSetup() {
+      let genProps = this.generatePropsFromConfigTemplate();
       this.log('Based on your configured template, ...');
-      this.log(`${chalk.green('repository')}: ${chalk.cyan(`${this.props.repositoryOrganization}/${this.props.repositoryName}`)}`);
-      this.log(`${chalk.green('Github username')}: ${chalk.cyan(this.props.username)}`);
-      this.log(`${chalk.green('test framework')}: ${chalk.cyan(this.props.testFramework)}`);
-      this.log(`${chalk.green('brower test harness')} (if applicable): ${chalk.cyan(this.props.browserTestHarness)}`);
-      this.log(`${chalk.green('license')}: ${chalk.cyan(this.props.license)}`);
-      this.log(`${chalk.green('license signature')}: ${chalk.cyan(this.props.licenseSignature)}`);
+      this.log(`${chalk.green('repository')}: ${chalk.cyan(`${genProps.repositoryOrganization}/${genProps.repositoryName}`)}`);
+      this.log(`${chalk.green('Github username')}: ${chalk.cyan(genProps.username)}`);
+      this.log(`${chalk.green('license')}: ${chalk.cyan(genProps.license)}`);
+      this.log(`${chalk.green('license signature')}: ${chalk.cyan(genProps.licenseSignature)}`);
+      this.log(`${chalk.green('test framework')}: ${chalk.cyan(genProps.testFramework)}`);
+      if (genProps.browserTestHarness) {
+        this.log(`${chalk.green('brower test harness')}: ${chalk.cyan(genProps.browserTestHarness)}`);
+      }
 
       return this.prompt([
         {
@@ -454,10 +461,10 @@ module.exports = yeoman.Base.extend({
           default: true
         }
       ]).then((props) => {
-        extend(this.props, props);
         if (props.usePresetValues) {
-          this.applyConfigTemplate();
+          extend(props, genProps);
         }
+        extend(this.props, props);
       });
     },
     confirmExistingRepository() {
