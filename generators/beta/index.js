@@ -584,9 +584,11 @@ module.exports = yeoman.Base.extend({
     calcProperties() {
       const devPackages = ['onchange', 'typings', 'ts-node', 'tslint', 'tslint-config-typings'];
       const typingsPackages = [];
+      const typingsGlobalPackages = []
       if (this.props.testFramework === 'blue-tape') {
         devPackages.push('tap-spec', 'blue-tape');
         typingsPackages.push('registry:npm/blue-tape');
+        typingsGlobalPackages.push('registry:env/node');
       }
       switch (this.props.browserTestHarness) {
         case 'tape-run+jspm':
@@ -598,6 +600,7 @@ module.exports = yeoman.Base.extend({
       }
       this.props.devDependencies = devPackages;
       this.props.typingsDevDependencies = typingsPackages;
+      this.props.typingsGlobalDevDependencies = typingsGlobalPackages;
     },
     printProps() {
       this.log('');
@@ -761,6 +764,9 @@ module.exports = yeoman.Base.extend({
     installTypingsPackages() {
       if (this.props.typingsDevDependencies.length > 0) {
         typings.installDependenciesRaw(this.props.typingsDevDependencies, { cwd: this.destinationPath(), saveDev: true });
+      }
+      if (this.props.typingsGlobalDevDependencies.length > 0) {
+        typings.installDependenciesRaw(this.props.typingsGlobalDevDependencies, { cwd: this.destinationPath(), saveDev: true, global: true });
       }
     },
     // createGitHubRepo() {
