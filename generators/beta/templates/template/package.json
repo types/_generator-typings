@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build": "echo building... && typings bundle<%- ambient %> -o out/<%- sourceMain %>",
+    "build": "echo building... && typings bundle<%- ambient %> -o out/<%- sourceMain %>.d.ts",
     "lint": "echo linting... && tslint \"**/*.ts\" -e \"source/**\" -e \"source-test/**\" -e \"out/**\" -e \"node_modules/**\" -e \"typings/**\"",
     "browser-test": "echo running browser tests... && <%- browserTest %>",
     "source-test": "echo running source tests... &&  <%- sourceTest %>",

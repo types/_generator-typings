@@ -629,7 +629,7 @@ module.exports = yeoman.Base.extend({
         this.destinationPath('typings.json'),
         {
           name: this.props.sourceDeliveryPackageName,
-          main: this.props.sourceMain + '.d.ts',
+          main: this.props.sourceMain,
           homepage: this.props.sourceHomepage,
           version: this.props.sourceVersion
         });
@@ -690,9 +690,12 @@ module.exports = yeoman.Base.extend({
         this.destinationPath('source-test')
       );
 
-      this.fs.copy(
-        this.templatePath('test/*'),
-        this.destinationPath('test')
+      this.fs.copyTpl(
+        this.templatePath('template/test_tsconfig.json`),
+        this.destinationPath('test/tsconfig.json'),
+        {
+          sourceMain: this.props.sourceMain
+        }
       );
 
       if (~this.props.sourceUsages.indexOf('commonjs')) {

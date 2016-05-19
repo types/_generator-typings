@@ -1,6 +1,6 @@
 {
   "name": "<%- name %>",
-  "main": "<%- main %>",
+  "main": "<%- main %>.d.ts",
   "homepage": "<%- homepage %>",
   "version": "<%- version %>"
 }
