@@ -743,12 +743,12 @@ module.exports = yeoman.Base.extend({
           this.bowerInstall([this.props.sourceDeliveryPackageName], { 'save-dev': true, 'save-exact': true });
           break;
         case 'npm':
-          this.npmInstall([this.props.sourceDeliveryPackageName], { 'save-dev': true, 'save-exact': true });
+          this.npmInstall([this.props.sourceDeliveryPackageName], { 'save-dev': true, 'save-exact': true, 'progress': false });
           break;
       }
     },
     installDevDependencies() {
-      this.npmInstall(this.props.devDependencies, { 'save-dev': true })
+      this.npmInstall(this.props.devDependencies, { 'save-dev': true, 'progress': false, 'loglevel': 'silent' });
     },
     installTypingsPackages() {
       if (this.props.typingsDevDependencies.length > 0) {
@@ -787,8 +787,25 @@ module.exports = yeoman.Base.extend({
         });
       });
     },
+    startShowQuotes() {
+      this.log('Waiting for installion to complete...');
+
+      const quotes = [
+        'Typings 1.0 changed "ambient" to "global"',
+        '"global" means the typings is declared globally',
+        'Your typings files should follow the same structure as the source',
+        'typings.json/homepage shows up in "typings search"',
+        'typings.json/version shows up when the consumer installs it'
+      ];
+      this.showingQuotes = setInterval(() => {
+        this.log(quotes[Math.round(Math.random() * quotes.length - 0.5)]);
+      }, 5000);
+    },
   },
   end: {
+    startShowQuotes() {
+      clearInterval(this.showingQuotes);
+    },
     isReady() {
       this.log('');
       this.log('I am done! Now it is your turn!');
@@ -796,7 +813,7 @@ module.exports = yeoman.Base.extend({
     tsdHint() {
       this.log('');
       this.log('If DefinitelyTyped has a definition for the source,');
-      this.log(` you can run ${chalk.green('tsd install <source>')} to download the file`);
+      this.log(` you can run ${chalk.green('typings install -G dt~<source>')} to download the file`);
       this.log(' so you can easily access those definitions.');
       this.log('You don\'t need to save it though.');
     },
