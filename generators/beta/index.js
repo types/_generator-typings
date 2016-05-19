@@ -35,8 +35,6 @@ const globalConfigPath = path.join(process.env.HOME, '.generator-typingsrc');
 module.exports = yeoman.Base.extend({
   constructor: function () {
     yeoman.Base.apply(this, arguments);
-    this.option('skip-prompting', { hide: true });
-    this.option('skip-writing', { hide: true });
     this.option('update-template', { desc: 'Update template', defaults: false });
     this.props = {};
     this.updateConfigTemplate = function () {
@@ -220,7 +218,7 @@ module.exports = yeoman.Base.extend({
         });
     },
     loadConfigTemplate() {
-      // Missing `version` indicate it is the default config.
+      // Missing `version` indicates it is the default config.
       const defaultConfigTemplate = {
         username: this.props.username,
         repositoryNamePrefix: 'typed-',
@@ -237,16 +235,12 @@ module.exports = yeoman.Base.extend({
         this.updateConfigTemplate();
       }
       else if (typeof this.configTemplate.version === 'undefined') {
-        if (this.options['skip-prompting']) return;
-
         this.log(`Seems like this is the ${chalk.cyan('first time')} you use this generator.`);
         this.log(`Let's quickly setup the ${chalk.green('template')}...`);
 
         this.updateConfigTemplate();
       }
       else if (this.configTemplate.version !== TEMPLATEVERSION) {
-        if (this.options['skip-prompting']) return;
-
         this.log(`Seems like you have ${chalk.cyan('updated')} this generator. The template has changed.`);
         this.log(`Let's quickly update the ${chalk.green('template')}...`);
 
@@ -258,8 +252,6 @@ module.exports = yeoman.Base.extend({
       this.log(`To begin, I need to know a little bit about the ${chalk.green('source')} you are typings for.`);
     },
     askDelivery() {
-      if (this.options['skip-prompting']) return;
-
       const questions = [
         {
           type: 'list',
@@ -305,8 +297,6 @@ module.exports = yeoman.Base.extend({
       });
     },
     getInfoFromDelivery() {
-      if (this.options['skip-prompting']) return;
-
       if (this.props.sourceDeliveryType !== 'none') {
         this.log(`gathering info from ${chalk.cyan(this.props.sourceDeliveryType)}...`);
       }
@@ -398,8 +388,6 @@ module.exports = yeoman.Base.extend({
       }
     },
     askUsage() {
-      if (this.options['skip-prompting']) return;
-
       return this.prompt(
         {
           type: 'checkbox',
@@ -418,8 +406,6 @@ module.exports = yeoman.Base.extend({
         });
     },
     askPlatform() {
-      if (this.options['skip-prompting']) return;
-
       return this.prompt(
         {
           type: 'checkbox',
@@ -444,7 +430,7 @@ module.exports = yeoman.Base.extend({
         process.exit(1);
       });
     },
-    askTestHarness() {
+    askSourceTestHarness() {
       // Source-test is still in early stage. No automation.
     },
     enterTypingsSection() {
@@ -453,7 +439,13 @@ module.exports = yeoman.Base.extend({
     },
     confirmQuickSetup() {
       this.log('Based on your configured template, ...');
-      this.log('<<print out default props>>');
+      this.log(`${chalk.green('repository')}: ${chalk.cyan(`${this.props.repositoryOrganization}/${this.props.repositoryName}`)}`);
+      this.log(`${chalk.green('Github username')}: ${chalk.cyan(this.props.username)}`);
+      this.log(`${chalk.green('test framework')}: ${chalk.cyan(this.props.testFramework)}`);
+      this.log(`${chalk.green('brower test harness')} (if applicable): ${chalk.cyan(this.props.browserTestHarness)}`);
+      this.log(`${chalk.green('license')}: ${chalk.cyan(this.props.license)}`);
+      this.log(`${chalk.green('license signature')}: ${chalk.cyan(this.props.licenseSignature)}`);
+
       return this.prompt([
         {
           type: 'confirm',
@@ -550,7 +542,9 @@ module.exports = yeoman.Base.extend({
           default: this.configTemplate.browserTestHarness,
           when: ~this.props.sourcePlatforms.indexOf('browser'),
         },
-      ]);
+      ]).then((props) => {
+        extend(this.props, props);
+      });
     },
     askLicenseInfo() {
       if (this.props.usePresetValues) return;
@@ -600,7 +594,7 @@ module.exports = yeoman.Base.extend({
     },
     printProps() {
       this.log('');
-      this.log('');
+      this.log('Overal props for debug purpose:');
       this.log('');
 
       this.log(this.props);
@@ -608,8 +602,6 @@ module.exports = yeoman.Base.extend({
   },
   writing: {
     copyFiles() {
-      if (this.options['skip-writing']) return;
-
       this.fs.copy(
         this.templatePath('*'),
         this.destinationPath()
@@ -699,7 +691,8 @@ module.exports = yeoman.Base.extend({
             `import ${changeCase.camel(this.props.sourceDeliveryPackageName)} = require('${this.props.sourceDeliveryPackageName}');`,
             ''
           ].join('\n'));
-      } else if (~this.props.sourceUsages.indexOf('esm')) {
+      }
+      else if (~this.props.sourceUsages.indexOf('esm')) {
         this.fs.write('test/test.ts',
           [
             `import tape = require('${this.props.testFramework}');`,
@@ -707,7 +700,8 @@ module.exports = yeoman.Base.extend({
             `import ${changeCase.camel(this.props.sourceDeliveryPackageName)} from '${this.props.sourceDeliveryPackageName}';`,
             ''
           ].join('\n'));
-      } else if (~this.props.sourceUsages.indexOf('amd')) {
+      }
+      else if (~this.props.sourceUsages.indexOf('amd')) {
         this.fs.write('test/test.ts',
           [
             'define((require, module, exports) => {',
@@ -788,14 +782,30 @@ module.exports = yeoman.Base.extend({
     },
   },
   end: {
+    isReady() {
+      this.log('');
+      this.log('I am done! Now it is your turn!');
+    },
+    tsdHint() {
+      this.log('');
+      this.log('If DefinitelyTyped has a definition for the source,');
+      this.log(` you can run ${chalk.green('tsd install <source>')} to download the file`);
+      this.log(' so you can easily access those definitions.');
+      this.log('You don\'t need to save it though.');
+    },
+    readyToTest() {
+      this.log('');
+      this.log(`Run ${chalk.green('npm run watch')}.`);
+      this.log('It will automatically build and test the typings for you as you make changes.');
+    },
     sayGoodbye() {
       this.log('');
-      this.log('That\'s it for the Beta right now. Thanks for trying it out!');
+      this.log('Thanks for trying this beta out!');
       this.log('');
       this.log('If you have any suggestion, please create an issue at:');
       this.log('  https://github.com/typings/generator-typings/issues');
       this.log('');
-      this.log(`Hope you like the current version ${chalk.green('(until 1.0 is out)!')} :)`);
+      this.log(`Hope you like it! :)`);
     }
   }
 });
