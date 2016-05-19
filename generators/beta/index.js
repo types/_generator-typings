@@ -694,7 +694,7 @@ module.exports = yeoman.Base.extend({
       );
 
       this.fs.copyTpl(
-        this.templatePath('template/test_tsconfig.json`),
+        this.templatePath('template/test_tsconfig.json'),
         this.destinationPath('test/tsconfig.json'),
         {
           sourceMain: this.props.sourceMain
@@ -812,7 +812,7 @@ module.exports = yeoman.Base.extend({
         'typings.json/version shows up when the consumer installs it'
       ];
       this.showingQuotes = setInterval(() => {
-        this.log(quotes[Math.round(Math.random() * quotes.length - 0.5)]);
+        this.log('Do you know: ' + quotes[Math.round(Math.random() * quotes.length - 0.5)]);
       }, 5000);
     },
   },
