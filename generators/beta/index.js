@@ -671,6 +671,11 @@ module.exports = yeoman.Base.extend({
         );
       }
 
+      this.fs.copy(
+        this.templatePath('template/index.d.ts'),
+        this.destinationPath(`${this.props.sourceMain}.d.ts`)
+      );
+
       this.fs.copyTpl(
         this.templatePath(`template/${this.props.license}.txt`),
         this.destinationPath('LICENSE'),
