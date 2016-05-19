@@ -8,6 +8,7 @@
 > Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) project
 
 ## Upgrade Note
+
 Starting from `0.14`, the generated project will use `tslint@3.7.0` as the `extends` feature lands.
 In previous verison, you the generated project might have `tslint.json` like this:
 
@@ -27,6 +28,7 @@ So you need to change your `tslint.json` to:
 ```
 
 ## Features
+
 - [x] Basic scaffolding
 - Source delivery mechanisms
   - [x] npm
@@ -61,6 +63,7 @@ So you need to change your `tslint.json` to:
     - [x] source-test: Run tests transferred from source
 
 ## Installation
+
 First, install [Yeoman](http://yeoman.io) and generator-typings using [npm](https://www.npmjs.com/).
 
 ```sh
@@ -78,12 +81,47 @@ yo typings
 ```
 
 ## How to write typings
+
 - https://github.com/typings/typings
 - https://github.com/typings/typings/blob/master/docs/faq.md
 - https://github.com/typings/typings/blob/master/docs/examples.md
 - https://github.com/unional/typescript/blob/master/style-guide/typings/README.md
 
+## About writing tests for typings
+
+Simply shape test (like those in DefinitlyType) is not sufficient.
+Since there is no type in javascript, even if you create a wrong signature, you won't detect it until runtime.
+
+e.g.
+
+```js
+// source code
+function foo(something) {
+  return something++;
+}
+```
+
+The source code expects `something` to be a number. But in your typings:
+
+```ts
+function foo(something: string): string;
+```
+
+It won't fail until you use it. i.e.
+
+```ts
+// consumer program
+import foo ....somehow
+
+let x = "abc";
+foo(x);
+```
+
+Because your typings provide guidance to the consumer, they will write their code that way and will fail when they run it.
+`tsc` will compile fine.
+
 ## License
+
 MIT © [unional](https://github.com/unional)
 
 
