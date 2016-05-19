@@ -11,8 +11,6 @@ module.exports = yeoman.Base.extend({
       this.log(yosay(`Welcome to the sensational ${chalk.yellow('typings')} generator!`));
     },
     sourceUri() {
-      const done = this.async();
-
       const uriExamples = [
         'visionmedia/batch',
         'chaijs/chai',
@@ -20,78 +18,63 @@ module.exports = yeoman.Base.extend({
         'knockout/knockout'
       ];
 
-      this.prompt({
+      return this.prompt({
         type: 'input',
         name: 'sourceUri',
         message: `What is the ${chalk.green('author/module')} of the ${chalk.red('source')} on github?`,
         default: () => uriExamples[Math.round(Math.random() * 4 - 0.5)],
         validate: (value) => value.length > 0
-      }, (props) => {
+      }).then((props) => {
         this.sourceUri = props.sourceUri;
         this.sourcePackageUrl = `https://github.com/${props.sourceUri}`;
         this.sourcePackageName = props.sourceUri.split('/')[1];
         this.prettyPackageName = changeCase.titleCase(this.sourcePackageName.replace('-', ' '));
         this.packageVariable = changeCase.camelCase(this.sourcePackageName.replace('-', ' '));
-        done();
       });
     },
     isNpm() {
-      const done = this.async();
-
-      this.prompt({
+      return this.prompt({
         type: 'confirm',
         name: 'isNpm',
         message: `Is the source installable through NPM?`,
         default: true
-      }, (props) => {
+      }).then((props) => {
         this.isNpm = props.isNpm;
-        done();
       });
     },
     npmName() {
-      const done = this.async();
-
-      this.prompt({
+      return this.prompt({
         type: 'input',
         name: 'npmName',
         message: `Name of the package on NPM is...`,
         when: () => this.isNpm,
         default: () => this.sourcePackageName
-      }, (props) => {
+      }).then((props) => {
         this.npmName = props.npmName;
-        done();
       });
     },
     isAmbient() {
-      const done = this.async();
-
-      this.prompt({
+      return this.prompt({
         type: 'confirm',
         name: 'isAmbient',
         message: `Is this module ambient? i.e. does it declare itself globally?`,
         default: false
-      }, (props) => {
+      }).then((props) => {
         this.isAmbient = props.isAmbient;
-        done();
       });
     },
     username() {
-      const done = this.async();
-
-      this.prompt({
+      return this.prompt({
         type: 'input',
         name: 'username',
         message: 'And your GitHub username is...',
         validate: (value) => value.length > 0,
         store: true
-      }, (props) => {
+      }).then((props) => {
         this.username = props.username;
-        done();
       });
     },
     license() {
-      const done = this.async();
-
       const licenses = [
         { name: 'Apache 2.0', value: 'Apache-2.0' },
         { name: 'MIT', value: 'MIT' },
@@ -102,28 +85,24 @@ module.exports = yeoman.Base.extend({
         { name: 'No License (Copyrighted)', value: 'nolicense' }
       ];
 
-      this.prompt({
+      return this.prompt({
         type: 'list',
         name: 'license',
         message: 'Which license do you want to use?',
         default: 'MIT',
         choices: licenses
-      }, (props) => {
+      }).then((props) => {
         this.license = props.license;
-        done();
       });
     },
     nameOnLicense() {
-      const done = this.async();
-
-      this.prompt({
+      return this.prompt({
         type: 'input',
         name: 'name',
         message: 'Name to use on the license?',
         default: this.username
-      }, (props) => {
+      }).then((props) => {
         this.nameOnLicense = props.name;
-        done();
       });
     }
   },

@@ -1,0 +1,6 @@
+{
+  "name": "<%- name %>",
+  "main": "<%- main %>",
+  "homepage": "<%- homepage %>",
+  "version": "<%- version %>"
+}

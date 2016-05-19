@@ -1,0 +1,4 @@
+{
+  "name": "<%- packageName %>",
+  "private": true
+}
