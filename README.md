@@ -74,7 +74,7 @@ There are a few changes in `typings@1.0` compare to previous version. When you u
 
 And update `typings.json` as `ambient` is now `global`
 
-## Upgrade Note
+## Upgrade from < 0.14
 
 Starting from `0.14`, the generated project will use `tslint@3.7.0` as the `extends` feature lands.
 In previous verison, you the generated project might have `tslint.json` like this:
