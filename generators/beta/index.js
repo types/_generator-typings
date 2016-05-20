@@ -674,10 +674,31 @@ module.exports = yeoman.Base.extend({
         );
       }
 
-      this.fs.copy(
-        this.templatePath('template/index.d.ts'),
-        this.destinationPath(`${this.props.sourceMain}.d.ts`)
-      );
+      var typedFilename;
+      if (~this.props.sourceUsages.indexOf('esm')) {
+        this.fs.copy(
+          this.templatePath('template/esm.d.ts'),
+          this.destinationPath(`${this.props.sourceMain}.d.ts`)
+        );
+      }
+      else if (~this.props.sourceUsages.indexOf('commonjs') || ~this.props.sourceUsages.indexOf('amd')) {
+        this.fs.copyTpl(
+          this.templatePath('template/commonjs.d.ts'),
+          this.destinationPath(`${this.props.sourceMain}.d.ts`),
+          {
+            name: this.props.sourceDeliveryPackageName
+          }
+        );
+      }
+      else {
+        this.fs.copyTpl(
+          this.templatePath('template/global.d.ts'),
+          this.destinationPath(`${this.props.sourceMain}.d.ts`),
+          {
+            name: this.props.sourceDeliveryPackageName
+          }
+        );
+      }
 
       this.fs.copyTpl(
         this.templatePath(`template/${this.props.license}.txt`),
