@@ -18,11 +18,11 @@ new jspm.Builder()
     reader.push(null);
     reader
       .pipe(run())
+      .pipe(reporter())
+      .pipe(process.stdout)
       .on('results', (results) => {
         if (!results.ok) {
           process.exit(1);
         }
-      })
-      .pipe(reporter())
-      .pipe(process.stdout);
+      });
   });
