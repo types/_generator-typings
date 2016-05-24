@@ -75,7 +75,8 @@ module.exports = yeoman.Base.extend({
               case 'blue-tape':
               default:
                 return [
-                  { name: 'tap-run + browserify', value: 'tap-run+browserify' },
+                  // tsify not working with TS 1.9 yet
+                  // { name: 'tap-run + browserify', value: 'tap-run+browserify' },
                   { name: 'tap-run + jspm', value: 'tap-run+jspm' },
                 ];
             }
