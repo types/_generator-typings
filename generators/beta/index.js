@@ -332,9 +332,23 @@ module.exports = yeoman.Base.extend({
         case 'bower':
           collectingSourceInfo.push(new Promise((resolve, reject) => {
             const child = this.spawnCommand('bower', ['info', this.props.sourceDeliveryPackageName, '--json'], { stdio: [0, 'pipe'] });
+            let jsonRaw = '';
             child.on('close', (code) => {
               if (code !== 0) {
                 reject(`${chalk.red('Oops')}, could not find ${chalk.cyan(this.props.sourceDeliveryPackageName)}.`);
+              }
+              else {
+                const result = JSON.parse(jsonRaw.toString());
+                if (result.latest.main) {
+                  const main = path.parse(result.latest.main);
+                  this.props.sourceMain = path.join(main.dir, main.name);
+                }
+                else {
+                  this.props.sourceMain = 'index';
+                }
+                this.props.sourceVersion = result.latest.version;
+                this.props.sourceHomepage = result.latest.homepage;
+                resolve();
               }
             });
 
@@ -349,47 +363,41 @@ module.exports = yeoman.Base.extend({
               catch (err) { }
             });
             child.stdout.on('data', (data) => {
-              const result = JSON.parse(data.toString());
-              console.log('stdout', result);
-              if (result.latest.main) {
-                const main = path.parse(result.latest.main);
-                this.props.sourceMain = path.join(main.dir, main.name);
-              }
-              else {
-                this.props.sourceMain = 'index';
-              }
-              this.props.sourceVersion = result.latest.version;
-              this.props.sourceHomepage = result.latest.homepage;
-              resolve();
+              jsonRaw += data.toString();
             });
           }));
           break;
         case 'npm':
           collectingSourceInfo.push(new Promise((resolve, reject) => {
             const child = this.spawnCommand('npm', ['info', this.props.sourceDeliveryPackageName, '--json'], { stdio: [0, 'pipe'] });
+            let jsonRaw = '';
             child.on('close', (code) => {
               if (code !== 0) {
                 reject(`${chalk.red('Oops')}, could not find ${chalk.cyan(this.props.sourceDeliveryPackageName)}.`);
               }
+              else {
+                const pjson = JSON.parse(jsonRaw.toString());
+                console.log(pjson);
+                if (pjson.main) {
+                  const main = path.parse(pjson.main);
+                  this.props.sourceMain = path.join(main.dir, main.name);
+                }
+                else {
+                  this.props.sourceMain = 'index';
+                }
+                this.props.sourceVersion = pjson.version;
+                this.props.sourceHomepage = pjson.homepage;
+                this.props.sourceRepository = pjson.repository && pjson.repository.url ?
+                  pjson.repository.url : pjson.repository;
+                if (this.props.sourceRepository.indexOf('git+https') === 0) {
+                  this.props.sourceRepository = this.props.sourceRepository.slice(4);
+                }
+                resolve();
+              }
             });
 
             child.stdout.on('data', (data) => {
-              const pjson = JSON.parse(data.toString());
-              if (pjson.main) {
-                const main = path.parse(pjson.main);
-                this.props.sourceMain = path.join(main.dir, main.name);
-              }
-              else {
-                this.props.sourceMain = 'index';
-              }
-              this.props.sourceVersion = pjson.version;
-              this.props.sourceHomepage = pjson.homepage;
-              this.props.sourceRepository = pjson.repository && pjson.repository.url ?
-                pjson.repository.url : pjson.repository;
-              if (this.props.sourceRepository.indexOf('git+https') === 0) {
-                this.props.sourceRepository = this.props.sourceRepository.slice(4);
-              }
-              resolve();
+              jsonRaw += data.toString();
             });
           }));
           break;
