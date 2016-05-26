@@ -6,7 +6,7 @@
     "browser-test": "echo running browser tests... && <%- browserTest %>",
     "source-test": "echo running source tests... &&  <%- sourceTest %>",
     "test": "echo running server tests... && <%- test %>",
-    "watch": "onchange \"**/*.ts\" -i -e \"out/**\" -- npm -s run build+test",
+    "watch": "onchange -w \"**/*.ts\" -i -e \"out/**\" -- npm -s run build+test",
     "publish": "npm -s run lint+build+test && echo please publish to typings/registry",
     "source-test+test+browser-test": "npm run source-test && npm test && npm run browser-test",
     "build+test": "npm run build && npm run source-test+test+browser-test",
