@@ -377,7 +377,6 @@ module.exports = yeoman.Base.extend({
               }
               else {
                 const pjson = JSON.parse(jsonRaw.toString());
-                console.log(pjson);
                 if (pjson.main) {
                   const main = path.parse(pjson.main);
                   this.props.sourceMain = path.join(main.dir, main.name);
