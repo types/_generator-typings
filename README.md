@@ -169,7 +169,7 @@ function foo(something) {
 }
 ```
 
-The source code expects `something` to be a number. But if you write yoru typings as:
+The source code expects `something` to be a number. If you write your typings as:
 
 ```ts
 function foo(something: string): string;
