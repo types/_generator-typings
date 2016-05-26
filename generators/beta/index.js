@@ -825,12 +825,15 @@ module.exports = yeoman.Base.extend({
       this.git.getRemotes((err, result) => {
         // assume when there is remote, it is correctly pointing to github.
         if (!result) {
-          this.git.addRemote('origin', `https://github.com/${this.props.username}/${this.props.repositoryName}.git`)
+          this.git.addRemote('origin', `https://github.com/${this.props.username}/${this.props.repositoryName}.git`, () => {
+            this.git.push(['-u', 'origin', 'master'], () => {
+              done();
+            });
+          })
         }
-
-        this.git.push(['-u', 'origin', 'master'], () => {
+        else {
           done();
-        });
+        }
       });
     },
     startShowQuotes() {
