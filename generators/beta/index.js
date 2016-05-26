@@ -386,6 +386,9 @@ module.exports = yeoman.Base.extend({
               this.props.sourceHomepage = pjson.homepage;
               this.props.sourceRepository = pjson.repository && pjson.repository.url ?
                 pjson.repository.url : pjson.repository;
+              if (this.props.sourceRepository.indexOf('git+https') === 0) {
+                this.props.sourceRepository = this.props.sourceRepository.slice(4);
+              }
               resolve();
             });
           }));
@@ -812,7 +815,7 @@ module.exports = yeoman.Base.extend({
     // }
     addRemote() {
       const done = this.async();
-      this.git.getRemotes(true, (result) => {
+      this.git.getRemotes((err, result) => {
         // assume when there is remote, it is correctly pointing to github.
         if (!result) {
           this.git.addRemote('origin', `https://github.com/${this.props.username}/${this.props.repositoryName}.git`)
