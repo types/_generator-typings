@@ -31,3 +31,5 @@ e.g. if you are creating typings for `chai@3.5.0`, then:
   // ...
 }
 ```
+
+Created by [`generator-typings`](https://github.com/typings/generator-typings)
