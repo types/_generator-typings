@@ -36,6 +36,9 @@ const globalConfigPath = path.join(process.env.HOME, '.generator-typingsrc');
 module.exports = yeoman.Base.extend({
   constructor: function () {
     yeoman.Base.apply(this, arguments);
+
+    this.argument('typingsName', { type: String, required: false, desc: `If specified, this will be used as the ${chalk.green('<repositoryName>')} and the repo will be created under this folder` });
+
     this.option('update-template', { desc: 'Update template', defaults: false });
     this.props = {};
     this.updateConfigTemplate = function () {
@@ -116,11 +119,12 @@ module.exports = yeoman.Base.extend({
       });
     };
     this.generatePropsFromConfigTemplate = function () {
+      const repoName = this.typingsName || this.props.repositoryName || this.configTemplate.repositoryNamePrefix + this.props.sourceDeliveryPackageName
       let props = {
         username: this.configTemplate.username,
-        repositoryName: this.props.repositoryName || this.configTemplate.repositoryNamePrefix + this.props.sourceDeliveryPackageName,
+        repositoryName: repoName,
         repositoryOrganization: this.props.repositoryOrganization || this.configTemplate.repositoryOrganization,
-        repositoryRemoteUrl: this.props.repositoryRemoteUrl || `https://github.com/${this.props.repositoryOrganization}/${this.props.repositoryName}.git`,
+        repositoryRemoteUrl: this.props.repositoryRemoteUrl || `https://github.com/${this.props.repositoryOrganization}/${repoName}.git`,
         license: this.configTemplate.license,
         licenseSignature: this.configTemplate.licenseSignature,
       };
@@ -199,9 +203,9 @@ module.exports = yeoman.Base.extend({
   initializing: {
     loadRepo() {
       collectingLocalInfo.push(
-        this.loadGitConfig('.').then((value) => {
+        this.loadGitConfig(this.typingsName || '.').then((value) => {
           extend(this.props, value);
-        })
+        });
       );
     }
   },
@@ -213,6 +217,8 @@ module.exports = yeoman.Base.extend({
     },
     greeting() {
       this.log(yosay(`Welcome to the sensational ${chalk.yellow('typings')} generator!`));
+      this.log('');
+      this.log(`I'll be creating the ${chalk.yellow('typings')} repository under the ${chalk.cyan(this.typingsName? this.typingsName:'current')} folder`);
     },
     waitForLocalInfo() {
       const done = this.async();
@@ -623,6 +629,11 @@ module.exports = yeoman.Base.extend({
     },
   },
   writing: {
+    changeDestinationRoot() {
+      if (this.typingsName) {
+        this.destinationRoot(this.typingsName);
+      }
+    },
     // createGitHubRepo() {
     //   github.authenticate({
     //     type: 'basic',
@@ -635,7 +646,7 @@ module.exports = yeoman.Base.extend({
       if (this.git) return;
 
       const done = this.async();
-      this.git = simpleGit().clone(this.props.repositoryRemoteUrl, '.', () => {
+      this.git = simpleGit(this.destinationPath()).clone(this.props.repositoryRemoteUrl, '.', () => {
         done();
       });
     },
@@ -856,6 +867,11 @@ module.exports = yeoman.Base.extend({
     isReady() {
       this.log('');
       this.log('I am done! Now it is your turn!');
+      if (this.typingsName) {
+        this.log('');
+        this.log(`The typings repository is created under the ${this.typingsName} folder.`);
+        this.log('Please cd into it to start working.');
+      }
     },
     tsdHint() {
       this.log('');
