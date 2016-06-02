@@ -362,7 +362,6 @@ module.exports = yeoman.Base.extend({
             child.stderr.on('data', (data) => {
               try {
                 const result = JSON.parse(data.toString());
-                console.log('stderr', result);
                 if (result.id === 'validate' || result.id === 'cached') {
                   this.props.sourceRepository = result.data.pkgMeta._source;
                 }
@@ -648,7 +647,6 @@ module.exports = yeoman.Base.extend({
       if (this.git) return;
 
       const done = this.async();
-      console.log('in cretaeGitRepo', this.typingsName, this.destinationPath(), this.props);
       this.git = this.typingsName ? simpleGit(this.destinationPath()) : simpleGit();
       this.git.clone(this.props.repositoryRemoteUrlToAdd, '.', () => {
         done();
