@@ -10,7 +10,7 @@ The type definition for [`<%- sourcePackageName %>`](<%- sourcePackageUrl %>)
 ## Contributing
 
 ```sh
-# Fork this repo
+# Fork this repo, then
 npm install
 
 npm run watch
