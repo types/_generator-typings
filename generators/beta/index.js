@@ -736,7 +736,7 @@ module.exports = yeoman.Base.extend({
       if (~this.props.sourceUsages.indexOf('commonjs')) {
         this.fs.write('test/test.ts',
           [
-            `import tape = require('${this.props.testFramework}');`,
+            `import test = require('${this.props.testFramework}');`,
             '',
             `import ${changeCase.camel(this.props.sourceDeliveryPackageName)} = require('${this.props.sourceDeliveryPackageName}');`,
             ''
@@ -745,7 +745,7 @@ module.exports = yeoman.Base.extend({
       else if (~this.props.sourceUsages.indexOf('esm')) {
         this.fs.write('test/test.ts',
           [
-            `import tape = require('${this.props.testFramework}');`,
+            `import test = require('${this.props.testFramework}');`,
             '',
             `import ${changeCase.camel(this.props.sourceDeliveryPackageName)} from '${this.props.sourceDeliveryPackageName}';`,
             ''
@@ -755,7 +755,7 @@ module.exports = yeoman.Base.extend({
         this.fs.write('test/test.ts',
           [
             'define((require, module, exports) => {',
-            `  import tape = require('${this.props.testFramework}');`,
+            `  import test = require('${this.props.testFramework}');`,
             '',
             `  import ${changeCase.camel(this.props.sourceDeliveryPackageName)} = require('${this.props.sourceDeliveryPackageName}');`,
             '',
