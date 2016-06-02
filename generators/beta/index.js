@@ -205,7 +205,7 @@ module.exports = yeoman.Base.extend({
       collectingLocalInfo.push(
         this.loadGitConfig(this.typingsName || '.').then((value) => {
           extend(this.props, value);
-        });
+        })
       );
     }
   },
