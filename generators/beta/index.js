@@ -622,6 +622,12 @@ module.exports = yeoman.Base.extend({
     },
   },
   writing: {
+    // createGitHubRepo() {
+    //   github.authenticate({
+    //     type: 'basic',
+
+    //   })
+    // },
     // Git repo cloning need to be done before any file copy.
     createGitRepo() {
       // Assume the repo is cloned from remote
@@ -821,12 +827,6 @@ module.exports = yeoman.Base.extend({
         typings.installDependenciesRaw(this.props.typingsGlobalDevDependencies, { cwd: this.destinationPath(), saveDev: true, global: true });
       }
     },
-    // createGitHubRepo() {
-    //   github.authenticate({
-    //     type: 'basic',
-
-    //   })
-    // },
     submodule() {
       const done = this.async();
       this.log(`Downloading ${chalk.green(this.props.sourceRepository)}...`);
