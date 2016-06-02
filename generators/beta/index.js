@@ -672,7 +672,17 @@ module.exports = yeoman.Base.extend({
           test: ~this.props.sourcePlatforms.indexOf('node') ? 'cd test && ts-node ../node_modules/blue-tape/bin/blue-tape \\"**/*.ts\\" | tap-spec' : 'echo no server test',
           browserTest: ~this.props.sourcePlatforms.indexOf('browser') ?
             'node npm-scripts/test "test/**.*.ts"' : 'echo no browser test',
-          sourceMain: this.props.sourceMain
+          sourceMain: this.props.sourceMain,
+          allTestScript: (() => {
+            let tests = [];
+            if (~this.props.sourcePlatforms.indexOf('node')) {
+              tests.push('npm run test');
+            }
+            if (~this.props.sourcePlatforms.indexOf('browser')) {
+              tests.push('npm run browser-test')
+            }
+            return tests.join(' && ');
+          })()
         });
 
       if (this.props.sourceDeliveryType === 'bower') {

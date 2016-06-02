@@ -8,8 +8,8 @@
     "test": "echo running server tests... && <%- test %>",
     "watch": "onchange -w \"**/*.ts\" -i -e \"out/**\" -- npm -s run build+test",
     "publish": "npm -s run lint+build+test && echo please publish to typings/registry",
-    "source-test+test+browser-test": "npm run source-test && npm test && npm run browser-test",
-    "build+test": "npm run build && npm run source-test+test+browser-test",
+    "all-tests": "<%- allTestScript %>",
+    "build+test": "npm run build && npm run all-tests",
     "lint+build+test": "npm run lint && npm run build+test",
     "prepublish": "typings install"
   }
