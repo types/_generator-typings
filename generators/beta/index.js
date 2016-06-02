@@ -622,6 +622,16 @@ module.exports = yeoman.Base.extend({
     },
   },
   writing: {
+    // Git repo cloning need to be done before any file copy.
+    createGitRepo() {
+      // Assume the repo is cloned from remote
+      if (this.git) return;
+
+      const done = this.async();
+      this.git = simpleGit().clone(this.props.repositoryRemoteUrl, '.', () => {
+        done();
+      });
+    },
     copyFiles() {
       this.fs.copy(
         this.templatePath('*'),
@@ -817,34 +827,10 @@ module.exports = yeoman.Base.extend({
 
     //   })
     // },
-    createGitRepo() {
-      if (this.git) return;
-      this.git = simpleGit().init();
-    },
     submodule() {
       const done = this.async();
       this.log(`Downloading ${chalk.green(this.props.sourceRepository)}...`);
       this.git.submoduleAdd(this.props.sourceRepository, 'source', done);
-    },
-    // initCommit() {
-    //   this.git.add('./*')
-    //     .commit('init commit');
-    // }
-    addRemote() {
-      const done = this.async();
-      this.git.getRemotes((err, result) => {
-        // assume when there is remote, it is correctly pointing to github.
-        if (!result) {
-          this.git.addRemote('origin', `https://github.com/${this.props.username}/${this.props.repositoryName}.git`, () => {
-            this.git.push(['-u', 'origin', 'master'], () => {
-              done();
-            });
-          })
-        }
-        else {
-          done();
-        }
-      });
     },
     startShowQuotes() {
       this.log(chalk.yellow('Waiting for installion to complete...'));
