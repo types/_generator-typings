@@ -837,17 +837,17 @@ module.exports = yeoman.Base.extend({
       });
     },
     startShowQuotes() {
-      this.log('Waiting for installion to complete...');
+      this.log(chalk.yellow('Waiting for installion to complete...'));
 
       const quotes = [
-        'Typings 1.0 changed "ambient" to "global"',
+        'typings 1.0 changed "ambient" to "global"',
         '"global" means the typings is declared globally',
-        'Your typings files should follow the same structure as the source',
-        'typings.json/homepage shows up in "typings search"',
+        'your typings files should follow the same structure as the source',
+        'typings.json/homepage shows up in "typings search" and "typings info"',
         'typings.json/version shows up when the consumer installs it'
       ];
       this.showingQuotes = setInterval(() => {
-        this.log('Do you know: ' + quotes[Math.round(Math.random() * quotes.length - 0.5)]);
+        this.log(chalk.yellow(`Do you know that ${quotes[Math.round(Math.random() * quotes.length - 0.5)]}?`));
       }, 5000);
     },
   },
