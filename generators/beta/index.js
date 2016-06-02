@@ -29,6 +29,7 @@ const collectingSourceInfo = [];
 const collectingLocalInfo = [];
 
 const TEMPLATEVERSION = 0;
+const GENERATORVERSION = '1.0 beta';
 const globalConfigPath = path.join(process.env.HOME, '.generator-typingsrc');
 
 
@@ -673,7 +674,8 @@ module.exports = yeoman.Base.extend({
           sourcePackageUrl: this.props.sourceRepository,
           organization: this.props.repositoryOrganization,
           packageName: this.props.repositoryName,
-          license: this.props.license
+          license: this.props.license,
+          generatorVersion: GENERATORVERSION
         });
 
 
