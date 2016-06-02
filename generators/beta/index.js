@@ -40,6 +40,7 @@ module.exports = yeoman.Base.extend({
     this.argument('typingsName', { type: String, required: false, desc: `If specified, this will be used as the ${chalk.green('<repositoryName>')} and the repo will be created under this folder` });
 
     this.option('update-template', { desc: 'Update template', defaults: false });
+    this.option('skip-git', { defaults: false, hide: true, desc: 'Skip git related operations. For testing only.' });
     this.props = {};
     this.updateConfigTemplate = function () {
       const questions = [
@@ -140,7 +141,6 @@ module.exports = yeoman.Base.extend({
 
       return props;
     };
-
     this.readGitConfig = function readGitConfig(name) {
       return new Promise((resolve, reject) => {
         var result;
@@ -154,7 +154,6 @@ module.exports = yeoman.Base.extend({
         });
       });
     };
-
     this.loadGitConfig = function loadGitConfig(repositoryPath) {
       return Promise.all([
         new Promise((resolve, reject) => {
@@ -166,7 +165,7 @@ module.exports = yeoman.Base.extend({
 
           if (fs.existsSync(path.join(repositoryPath, '.git'))) {
             var git = simpleGit(repositoryPath);
-            result.git = git;
+            this.git = git;
             git.getRemotes(true, (err, out) => {
               const origins = out.filter((entry) => {
                 return entry.name === 'origin';
@@ -177,7 +176,8 @@ module.exports = yeoman.Base.extend({
                 const u = url.parse(result.repositoryRemoteUrl);
 
                 const parts = u.pathname.substring(1).split('/', 2);
-                result.repositoryName = parts[1].substr(0, parts[1].length - 4);
+                let repoName = parts[1];
+                result.repositoryName = repoName.indexOf('.git') === repoName.length - 4 ? repoName.slice(0, -4) : repoName;
                 result.repositoryOrganization = parts[0];
               }
 
@@ -218,7 +218,7 @@ module.exports = yeoman.Base.extend({
     greeting() {
       this.log(yosay(`Welcome to the sensational ${chalk.yellow('typings')} generator!`));
       this.log('');
-      this.log(`I'll be creating the ${chalk.yellow('typings')} repository under the ${chalk.cyan(this.typingsName? this.typingsName:'current')} folder`);
+      this.log(`I'll be creating the ${chalk.yellow('typings')} repository under the ${chalk.cyan(this.typingsName ? this.typingsName : 'current')} folder`);
     },
     waitForLocalInfo() {
       const done = this.async();
@@ -642,11 +642,15 @@ module.exports = yeoman.Base.extend({
     // },
     // Git repo cloning need to be done before any file copy.
     createGitRepo() {
+      if (this.options['skip-git']) return;
+
       // Assume the repo is cloned from remote
       if (this.git) return;
 
       const done = this.async();
-      this.git = simpleGit(this.destinationPath()).clone(this.props.repositoryRemoteUrl, '.', () => {
+      console.log('in cretaeGitRepo', this.typingsName, this.destinationPath(), this.props);
+      this.git = this.typingsName ? simpleGit(this.destinationPath()) : simpleGit();
+      this.git.clone(this.props.repositoryRemoteUrlToAdd, '.', () => {
         done();
       });
     },
@@ -841,6 +845,8 @@ module.exports = yeoman.Base.extend({
       }
     },
     submodule() {
+      if (this.options['skip-git']) return;
+
       const done = this.async();
       this.log(`Downloading ${chalk.green(this.props.sourceRepository)}...`);
       this.git.submoduleAdd(this.props.sourceRepository, 'source', done);

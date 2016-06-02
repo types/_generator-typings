@@ -10,17 +10,22 @@ describe('beta', function() {
       return helpers.run(path.join(__dirname, '../generators/beta'))
         .withPrompts({
           sourceDeliveryType: 'npm',
-          sourceDeliveryPackageName: 'batch',
+          sourceDeliveryPackageName: 'nop',
           sourceUsages: ['commonjs'],
           sourcePlatforms: ['node'],
-          usePresetValues: true,
+          usePresetValues: false,
           useExistingRepository: false,
           username: 'unional',
           repositoryOrganization: 'typed-typings',
+          repositoryName: 'npm-nop',
           repositoryNamePrefix: 'typed-',
           testFramework: 'blue-tape',
           browserTestHarness: 'tap-run+browserify',
-          license: 'MIT'
+          license: 'MIT',
+          licenseSignature: 'unional'
+        })
+        .withOptions({
+          skipGit: true
         })
         .toPromise();
     });
