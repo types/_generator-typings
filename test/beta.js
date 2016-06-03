@@ -1,24 +1,86 @@
 'use strict';
-var path = require('path');
-var assert = require('yeoman-assert');
-var helpers = require('yeoman-test');
+const path = require('path');
+const assert = require('yeoman-assert');
+const helpers = require('yeoman-test');
+const extend = require('extend');
 
-describe('beta', function() {
-  describe('npm dryrun', function() {
-    before(function() {
-      this.timeout(60000);
-      return helpers.run(path.join(__dirname, '../generators/beta'))
+const GENERATOR_NAME = 'beta';
+
+const template = {
+  username: 'unional',
+  repositoryOrganization: 'unional',
+  repositoryNamePrefix: 'typed-',
+  testFramework: 'blue-tape',
+  browserTestHarness: 'tape-run+jspm',
+  license: 'MIT',
+  licenseSignature: 'unional'
+};
+
+describe(GENERATOR_NAME, () => {
+  describe('update template', () => {
+    before(() => {
+      return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
+        .withOptions({
+          updateTemplate: true,
+          skipGit: true
+        })
+        .withPrompts(extend(
+          template,
+          {
+            sourceDeliveryType: 'npm',
+            sourceDeliveryPackageName: 'nop',
+            sourceUsages: ['commonjs'],
+            sourcePlatforms: ['node'],
+            usePresetValues: true
+          }
+        ))
+        .toPromise();
+    });
+
+    it('update and use template', () => {
+      assert.file([
+        'package.json',
+        'tsconfig.json',
+        'tslint.json',
+        '.editorconfig',
+        '.travis.yml',
+        '.gitignore',
+        'typings.json',
+        'README.md',
+        'index.d.ts',
+        'LICENSE',
+        'source-test/README.md',
+        'source-test/tsconfig.json',
+        'test/tsconfig.json',
+        'test/test.ts'
+      ]);
+    });
+  });
+  it('generate npm package using default template', () => {
+      return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
+        .withPrompts({
+          sourceDeliveryType: 'npm',
+          sourceDeliveryPackageName: 'nop',
+          sourceUsages: ['commonjs'],
+          sourcePlatforms: ['node'],
+          usePresetValues: true,
+        })
+        .withOptions({
+          skipGit: true
+        })
+        .toPromise();
+  });
+  it('generator npm package using custom values', () => {
+      return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
         .withPrompts({
           sourceDeliveryType: 'npm',
           sourceDeliveryPackageName: 'nop',
           sourceUsages: ['commonjs'],
           sourcePlatforms: ['node'],
           usePresetValues: false,
-          useExistingRepository: false,
           username: 'unional',
           repositoryOrganization: 'typed-typings',
           repositoryName: 'npm-nop',
-          repositoryNamePrefix: 'typed-',
           testFramework: 'blue-tape',
           browserTestHarness: 'tape-run+jspm',
           license: 'MIT',
@@ -28,15 +90,11 @@ describe('beta', function() {
           skipGit: true
         })
         .toPromise();
-    });
-
-    it('creates files', function() {
-    });
-  });
-  describe.skip('http dryrun', function() {
-    before(function(done) {
+  })
+  describe.skip('http dryrun', function () {
+    before(function (done) {
       this.timeout(60000);
-      helpers.run(path.join(__dirname, '../generators/beta'))
+      helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
         .withPrompts({
           sourceDeliveryType: 'http',
           sourceDeliveryPackageName: '6px',
@@ -60,13 +118,13 @@ describe('beta', function() {
         .on('end', done);
     });
 
-    it('creates files', function() {
+    it('creates files', function () {
     });
   });
-  describe.skip('bower dryrun', function() {
-    before(function(done) {
+  describe.skip('bower dryrun', function () {
+    before(function (done) {
       this.timeout(60000);
-      helpers.run(path.join(__dirname, '../generators/beta'))
+      helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
         .withPrompts({
           sourceDeliveryType: 'bower',
           sourceDeliveryPackageName: 'domready',
@@ -83,7 +141,7 @@ describe('beta', function() {
         .on('end', done);
     });
 
-    it('creates files', function() {
+    it('creates files', function () {
     });
   });
 });
