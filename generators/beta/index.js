@@ -609,7 +609,7 @@ module.exports = yeoman.Base.extend({
       }
       switch (this.props.browserTestHarness) {
         case 'tape-run+jspm':
-          devPackage.push('stream', 'jspm', 'tape-run');
+          devPackages.push('stream', 'jspm', 'tape-run');
           break;
         case 'tape-run+browserify':
           devPackages.push('globby', 'browserify', 'tsify', 'tape-run');
