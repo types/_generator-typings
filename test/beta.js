@@ -20,7 +20,7 @@ describe('beta', function() {
           repositoryName: 'npm-nop',
           repositoryNamePrefix: 'typed-',
           testFramework: 'blue-tape',
-          browserTestHarness: 'tap-run+browserify',
+          browserTestHarness: 'tape-run+jspm',
           license: 'MIT',
           licenseSignature: 'unional'
         })
