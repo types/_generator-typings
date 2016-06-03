@@ -217,8 +217,6 @@ module.exports = yeoman.Base.extend({
     },
     greeting() {
       this.log(yosay(`Welcome to the sensational ${chalk.yellow('typings')} generator!`));
-      this.log('');
-      this.log(`I'll be creating the ${chalk.yellow('typings')} repository under the ${chalk.cyan(this.typingsName ? this.typingsName : 'current')} folder`);
     },
     waitForLocalInfo() {
       const done = this.async();
@@ -244,22 +242,24 @@ module.exports = yeoman.Base.extend({
 
       if (this.options.updateTemplate) {
         this.log(`You want to update your ${chalk.green('template')}? Here it goes...`);
-        this.updateConfigTemplate();
+        return this.updateConfigTemplate();
       }
       else if (typeof this.configTemplate.version === 'undefined') {
         this.log(`Seems like this is the ${chalk.cyan('first time')} you use this generator.`);
         this.log(`Let's quickly setup the ${chalk.green('template')}...`);
 
-        this.updateConfigTemplate();
+        return this.updateConfigTemplate();
       }
       else if (this.configTemplate.version !== TEMPLATEVERSION) {
         this.log(`Seems like you have ${chalk.cyan('updated')} this generator. The template has changed.`);
         this.log(`Let's quickly update the ${chalk.green('template')}...`);
 
-        this.updateConfigTemplate();
+        return this.updateConfigTemplate();
       }
     },
     enterSourceSection() {
+      this.log('');
+      this.log(`I'll be creating the ${chalk.yellow('typings')} repository under the ${chalk.cyan(this.typingsName ? this.typingsName : 'current')} folder`);
       this.log('');
       this.log(`To begin, I need to know a little bit about the ${chalk.green('source')} you are typings for.`);
     },
