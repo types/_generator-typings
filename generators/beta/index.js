@@ -81,8 +81,8 @@ module.exports = yeoman.Base.extend({
               default:
                 return [
                   // tsify not working with TS 1.9 yet
-                  // { name: 'tap-run + browserify', value: 'tap-run+browserify' },
-                  { name: 'tap-run + jspm', value: 'tap-run+jspm' },
+                  // { name: 'tape-run + browserify', value: 'tape-run+browserify' },
+                  { name: 'tape-run + jspm', value: 'tape-run+jspm' },
                 ];
             }
           },
@@ -237,7 +237,7 @@ module.exports = yeoman.Base.extend({
         repositoryOrganization: undefined,
         license: 'MIT',
         testFramework: 'blue-tape',
-        browserTestHarness: 'tape-run+browserify'
+        browserTestHarness: 'tape-run+jspm'
       };
 
       this.configTemplate = rc('generator-typings', defaultConfigTemplate);
@@ -558,8 +558,8 @@ module.exports = yeoman.Base.extend({
               case 'blue-tape':
               default:
                 return [
-                  { name: 'tap-run + browserify', value: 'tap-run+browserify' },
-                  { name: 'tap-run + jspm', value: 'tap-run+jspm' },
+                  // { name: 'tape-run + browserify', value: 'tape-run+browserify' },
+                  { name: 'tape-run + jspm', value: 'tape-run+jspm' },
                 ];
             }
           },
