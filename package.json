@@ -8,8 +8,7 @@
     "url": "https://github.com/unional"
   },
   "files": [
-    "generators/app",
-    "generators/beta"
+    "generators/app"
   ],
   "keywords": [
     "yeoman-generator",

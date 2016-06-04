@@ -5,7 +5,7 @@ const extend = require('extend');
 const simpleGit = require('simple-git');
 
 
-const GENERATOR_NAME = 'beta';
+const GENERATOR_NAME = 'app';
 
 const template = {
   username: 'abc',
