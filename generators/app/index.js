@@ -531,13 +531,19 @@ module.exports = yeoman.Base.extend({
 
       const quotes = [
         'typings 1.0 changed "ambient" to "global"',
-        '"global" means the typings is declared globally',
-        'your typings files should follow the same structure as the source',
+        '"global" means the typings is declared globally (as a script file)',
         'typings.json/homepage shows up in "typings search" and "typings info"',
-        'typings.json/version shows up when the consumer installs it'
+        'typings.json/version shows up when the consumer installs it',
+        'most typings in DefinitelyTyped (dt~<package>) are "global"',
+        'typings by default search for packages in typings/registry/npm',
+        'you can use `typings info <package> --versions` to find out where is the typing repo',
+        'you can use `-SG` in place of `--save --global` to save your fingers',
+        'typings used in registry (except those for global) are written in top-level import/export declaration format',
+        'you can configure .typingsrc for proxy settings',
+        'you need to write runtime test for your typings, not just compile test'
       ];
       this.showingQuotes = setInterval(() => {
-        this.log(chalk.yellow(`Do you know that ${quotes[Math.round(Math.random() * quotes.length - 0.5)]}?`));
+        this.log(chalk.yellow(`Installing...do you know that ${quotes[Math.round(Math.random() * quotes.length - 0.5)]}?`));
       }, 5000);
     },
   },
