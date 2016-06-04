@@ -544,7 +544,7 @@ module.exports = yeoman.Base.extend({
       ];
       this.showingQuotes = setInterval(() => {
         this.log(chalk.yellow(`Installing...do you know that ${quotes[Math.round(Math.random() * quotes.length - 0.5)]}?`));
-      }, 5000);
+      }, 8000);
     },
   },
   end: {
