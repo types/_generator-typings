@@ -3,7 +3,7 @@ var path = require('path');
 var assert = require('yeoman-assert');
 var helpers = require('yeoman-test');
 
-describe('current', function() {
+describe.skip('current', function() {
   describe('visionmedia/batch', function() {
     before(function(done) {
       this.timeout(60000);

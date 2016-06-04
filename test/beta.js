@@ -18,8 +18,67 @@ const template = {
 };
 
 describe(GENERATOR_NAME, () => {
+  it('uses typingsName', function () {
+    let generator;
+
+    this.timeout(5000);
+    return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
+      .inTmpDir((dir) => {
+        fs.writeFileSync('.generator-typingsrc', JSON.stringify(template));
+      })
+      .withArguments(['testtype'])
+      .withOptions({
+        skipGit: true
+      })
+      .withPrompts({
+        sourceDeliveryType: 'npm',
+        sourceDeliveryPackageName: 'nop',
+        sourceUsages: ['commonjs'],
+        sourcePlatforms: ['node', 'browser'],
+        useGeneratedValues: true
+      })
+      .on('ready', (gen) => {
+        generator = gen;
+      })
+      .toPromise()
+      .then((dir) => {
+        let root = generator.destinationRoot();
+        assert.equal(path.basename(root), 'testtype');
+          assert.deepEqual(fs.readdirSync(generator.destinationRoot()),
+          ['.editorconfig',
+            '.gitignore',
+            '.travis.yml',
+            'LICENSE',
+            'README.md',
+            'index.d.ts',
+            'npm-scripts',
+            'package.json',
+            'source-test',
+            'test',
+            'tsconfig.json',
+            'tslint.json',
+            'typings.json']);
+        assert.file([
+          'package.json',
+          'tsconfig.json',
+          'tslint.json',
+          '.editorconfig',
+          '.travis.yml',
+          '.gitignore',
+          'typings.json',
+          'README.md',
+          'index.d.ts',
+          'LICENSE',
+          'source-test/README.md',
+          'source-test/tsconfig.json',
+          'test/tsconfig.json',
+          'test/test.ts'
+        ]);
+      });
+  });
+
   describe('update template', () => {
-    it('update and use template', function() {
+    it('update and use template', function () {
       this.timeout(5000);
       return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
         .withOptions({
@@ -33,7 +92,7 @@ describe(GENERATOR_NAME, () => {
             sourceDeliveryPackageName: 'nop',
             sourceUsages: ['commonjs'],
             sourcePlatforms: ['node', 'browser'],
-            usePresetValues: true
+            useGeneratedValues: true
           }
         ))
         .toPromise()
@@ -71,11 +130,14 @@ describe(GENERATOR_NAME, () => {
         });
     });
   });
-  it('generate npm package using default template', function() {
+  it('generate npm package using default template', function () {
     let generator;
 
     this.timeout(5000);
     return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
+      .inTmpDir((dir) => {
+        fs.writeFileSync('.generator-typingsrc', JSON.stringify(template));
+      })
       .withOptions({
         skipGit: true
       })
@@ -84,10 +146,7 @@ describe(GENERATOR_NAME, () => {
         sourceDeliveryPackageName: 'nop',
         sourceUsages: ['commonjs'],
         sourcePlatforms: ['node'],
-        usePresetValues: true,
-      })
-      .inTmpDir((dir) => {
-        fs.writeFileSync('.generator-typingsrc', JSON.stringify(template));
+        useGeneratedValues: true,
       })
       .on('ready', (gen) => {
         generator = gen;
@@ -95,25 +154,40 @@ describe(GENERATOR_NAME, () => {
       .toPromise();
   });
   it('generator npm package using custom values', () => {
+    let generator;
     return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
       .withPrompts({
         sourceDeliveryType: 'npm',
         sourceDeliveryPackageName: 'nop',
         sourceUsages: ['commonjs'],
         sourcePlatforms: ['node'],
-        usePresetValues: false,
-        username: 'unional',
-        repositoryOrganization: 'typed-typings',
-        repositoryName: 'npm-nop',
+        useGeneratedValues: false,
+        username: 'someone',
+        repositoryOrganization: 'someorg',
+        repositoryName: 'somerepo',
         testFramework: 'blue-tape',
         browserTestHarness: 'tape-run+jspm',
-        license: 'MIT',
-        licenseSignature: 'unional'
+        license: 'ISC',
+        licenseSignature: 'happy'
       })
       .withOptions({
         skipGit: true
       })
-      .toPromise();
+      .on('ready', (gen) => {
+        generator = gen;
+      })
+      .toPromise()
+      .then(() => {
+        assert.objectContent(generator.props, {
+          username: 'someone',
+          repositoryOrganization: 'someorg',
+          repositoryName: 'somerepo',
+          testFramework: 'blue-tape',
+          browserTestHarness: 'tape-run+jspm',
+          license: 'ISC',
+          licenseSignature: 'happy'
+        });
+      });
   })
   describe.skip('http dryrun', function () {
     before(function (done) {
@@ -126,6 +200,7 @@ describe(GENERATOR_NAME, () => {
           sourceUsages: ['script'],
           sourceVersion: '1.0.3',
           sourcePlatforms: ['browser'],
+          useGeneratedValues: false,
           useExistingRepository: false,
           username: 'unional',
           fullname: 'Homa Wong',
@@ -154,6 +229,7 @@ describe(GENERATOR_NAME, () => {
           sourceDeliveryPackageName: 'domready',
           sourceUsages: ['commonjs'],
           sourcePlatforms: ['node'],
+          useGeneratedValues: false,
           useExistingRepository: false,
           username: 'unional',
           repositoryOrganization: 'typed-typings',

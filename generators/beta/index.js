@@ -47,38 +47,19 @@ module.exports = yeoman.Base.extend({
         process.exit(1);
       });
     },
-    loadConfigTemplate() {
+    initTemplateCommands() {
       this.templateCommands = createTemplateCommands(this);
-      this.configTemplate = this.templateCommands.loadOrCreate();
     }
   },
   prompting: {
     greeting() {
       this.log(yosay(`Welcome to the sensational ${chalk.yellow('typings')} generator!`));
     },
-    updateConfigTemplate() {
-      let updating;
-      if (this.options.updateTemplate) {
-        this.log(`You want to update your ${chalk.green('template')}? Here it goes...`);
-        updating = this.templateCommands.update();
-      }
-      else if (typeof this.configTemplate.version === 'undefined') {
-        this.log(`Seems like this is the ${chalk.cyan('first time')} you use this generator.`);
-        this.log(`Let's quickly setup the ${chalk.green('template')}...`);
-        updating = this.templateCommands.update();
-      }
-      else if (this.configTemplate.version !== TEMPLATEVERSION) {
-        this.log(`Seems like you have ${chalk.cyan('updated')} this generator. The template has changed.`);
-        this.log(`Let's quickly update the ${chalk.green('template')}...`);
-        updating = this.templateCommands.update();
-      }
-
-      if (updating) {
-        return updating.then((configTemplate) => {
-          this.configTemplate = configTemplate;
-          this.log('Got it! The template is saved.')
-        });
-      }
+    retrieveConfigTemplate() {
+      return this.templateCommands.retrieve()
+      .then((configTemplate) => {
+        this.configTemplate = configTemplate;
+      });
     },
     enterSourceSection() {
       this.log('');
@@ -282,141 +263,16 @@ module.exports = yeoman.Base.extend({
       this.log('');
       this.log(`Good, now about the ${chalk.yellow('typings')} itself...`);
     },
-    confirmQuickSetup() {
-      let genProps = this.templateCommands.generateProps();
-      this.log('Based on your configured template, ...');
-      this.log(`${chalk.green('repository')}: ${chalk.cyan(`${genProps.repositoryOrganization}/${genProps.repositoryName}`)}`);
-      this.log(`${chalk.green('Github username')}: ${chalk.cyan(genProps.username)}`);
-      this.log(`${chalk.green('license')}: ${chalk.cyan(genProps.license)}`);
-      this.log(`${chalk.green('license signature')}: ${chalk.cyan(genProps.licenseSignature)}`);
-      this.log(`${chalk.green('test framework')}: ${chalk.cyan(genProps.testFramework)}`);
-      if (genProps.browserTestHarness) {
-        this.log(`${chalk.green('brower test harness')}: ${chalk.cyan(genProps.browserTestHarness)}`);
-      }
-
-      return this.prompt([
-        {
-          type: 'confirm',
-          name: 'usePresetValues',
-          message: 'Does it look good to you?',
-          default: true
+    useGeneratedValues() {
+      return this.templateCommands.useGeneratedValues()
+      .then((props) => {
+        extend(this.props, props);
+        if (!this.props.useGeneratedValues) {
+          return this.templateCommands.askCustomValues()
+          .then((props) => {
+            extend(this.props, props);
+          });
         }
-      ]).then((props) => {
-        if (props.usePresetValues) {
-          extend(props, genProps);
-        }
-        extend(this.props, props);
-      });
-    },
-    confirmExistingRepository() {
-      if (this.props.usePresetValues || !this.props.git) return
-      return this.prompt([
-        {
-          type: 'confirm',
-          name: 'useExistingRepository',
-          message: 'I notice you are in a git repository. Is this the typings repository you created?',
-          default: true
-        },
-      ]).then((props) => {
-        extend(this.props, props);
-      });
-    },
-    askRepositoryInfo() {
-      if (this.props.usePresetValues) return;
-      return this.prompt([
-        {
-          type: 'input',
-          name: 'repositoryOrganization',
-          message: `https://github.com/${chalk.green('<organization>')}/...`,
-          default: () => this.props.useExistingRepository ?
-            this.props.repositoryOrganization :
-            this.configTemplate.repositoryOrganization,
-          validate: (value) => value.length > 0
-        },
-        {
-          type: 'input',
-          name: 'repositoryName',
-          message: (props) => `https://github.com/${chalk.cyan(props.repositoryOrganization)}/${chalk.green('<name>')}`,
-          default: () => this.props.useExistingRepository ?
-            this.props.repositoryName :
-            this.configTemplate.repositoryNamePrefix + this.props.sourceDeliveryPackageName,
-          validate: (value) => value.length > 0
-        },
-      ]).then((props) => {
-        extend(this.props, props);
-      });
-    },
-    askGitHubInfo() {
-      if (this.props.usePresetValues) return;
-      return this.prompt([
-        {
-          type: 'input',
-          name: 'username',
-          message: `Your username on ${chalk.green('GitHub')}`,
-          default: this.configTemplate.username,
-          validate: (value) => value.length > 0,
-        }]).then((props) => {
-          extend(this.props, props);
-        });
-    },
-    askTestFramework() {
-      if (this.props.usePresetValues) return;
-      return this.prompt([
-        {
-          type: 'list',
-          name: 'testFramework',
-          message: `Your ${chalk.green('test framework')} of choice`,
-          choices: ['blue-tape'],
-          default: this.configTemplate.testFramework,
-          when: ~this.props.sourcePlatforms.indexOf('node'),
-        },
-        {
-          type: 'list',
-          name: 'browserTestHarness',
-          message: `Your ${chalk.cyan('browser')} ${chalk.green('test harness')}`,
-          choices: (props) => {
-            switch (props.testFramework) {
-              case 'blue-tape':
-              default:
-                return [
-                  // { name: 'tape-run + browserify', value: 'tape-run+browserify' },
-                  { name: 'tape-run + jspm', value: 'tape-run+jspm' },
-                ];
-            }
-          },
-          default: this.configTemplate.browserTestHarness,
-          when: ~this.props.sourcePlatforms.indexOf('browser'),
-        },
-      ]).then((props) => {
-        extend(this.props, props);
-      });
-    },
-    askLicenseInfo() {
-      if (this.props.usePresetValues) return;
-      return this.prompt([
-        {
-          type: 'list',
-          name: 'license',
-          message: `Which ${chalk.green('license')} do you want to use?`,
-          choices: [
-            { name: 'Apache 2.0', value: 'Apache-2.0' },
-            { name: 'MIT', value: 'MIT' },
-            { name: 'Unlicense', value: 'unlicense' },
-            { name: 'FreeBSD', value: 'BSD-2-Clause-FreeBSD' },
-            { name: 'NewBSD', value: 'BSD-3-Clause' },
-            { name: 'Internet Systems Consortium (ISC)', value: 'ISC' },
-            { name: 'No License (Copyrighted)', value: 'nolicense' }
-          ],
-          default: this.configTemplate.license,
-        },
-        {
-          type: 'input',
-          name: 'licenseSignature',
-          message: `Your signature in the license: Copyright (c) ${new Date().getFullYear()} ${chalk.green('<signature>')}`,
-          default: (props) => this.configTemplate.licenseSignature,
-        },
-      ]).then((props) => {
-        extend(this.props, props);
       });
     },
     calcProperties() {

@@ -57,7 +57,7 @@ describe(`${GENERATOR_NAME} git tests`, () => {
         sourceDeliveryPackageName: 'nop',
         sourceUsages: ['commonjs'],
         sourcePlatforms: ['node'],
-        usePresetValues: false,
+        useGeneratedValues: false,
         repositoryName: 'generator-typings-blank-repo-for-test',
         repositoryOrganization: 'typings'
 
