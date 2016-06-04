@@ -707,7 +707,7 @@ module.exports = yeoman.Base.extend({
           allTestScript: (() => {
             let tests = [];
             if (~this.props.sourcePlatforms.indexOf('node')) {
-              tests.push('npm run test');
+              tests.push('npm test');
             }
             if (~this.props.sourcePlatforms.indexOf('browser')) {
               tests.push('npm run browser-test')

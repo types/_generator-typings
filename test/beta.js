@@ -18,7 +18,7 @@ const template = {
 
 describe(GENERATOR_NAME, () => {
   describe('update template', () => {
-    before(() => {
+    it('update and use template', () => {
       return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
         .withOptions({
           updateTemplate: true,
@@ -34,62 +34,75 @@ describe(GENERATOR_NAME, () => {
             usePresetValues: true
           }
         ))
-        .toPromise();
-    });
-
-    it('update and use template', () => {
-      assert.file([
-        'package.json',
-        'tsconfig.json',
-        'tslint.json',
-        '.editorconfig',
-        '.travis.yml',
-        '.gitignore',
-        'typings.json',
-        'README.md',
-        'index.d.ts',
-        'LICENSE',
-        'source-test/README.md',
-        'source-test/tsconfig.json',
-        'test/tsconfig.json',
-        'test/test.ts'
-      ]);
+        .toPromise()
+        .then(() => {
+          assert.file([
+            'package.json',
+            'tsconfig.json',
+            'tslint.json',
+            '.editorconfig',
+            '.travis.yml',
+            '.gitignore',
+            'typings.json',
+            'README.md',
+            'index.d.ts',
+            'LICENSE',
+            'source-test/README.md',
+            'source-test/tsconfig.json',
+            'test/tsconfig.json',
+            'test/test.ts'
+          ]);
+          assert.jsonFileContent('package.json', {
+            scripts: {
+              build: 'echo building... && typings bundle -o out/index.d.ts',
+              'all-tests': 'npm test'
+            }
+          });
+          assert.jsonFileContent('typings.json', {
+            name: 'nop',
+            main: 'index.d.ts',
+            homepage: 'https://github.com/supershabam/nop'
+          });
+          assert.fileContent([
+            ['README.md', /# Typed Nop/]
+          ])
+        });
     });
   });
   it('generate npm package using default template', () => {
-      return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
-        .withPrompts({
-          sourceDeliveryType: 'npm',
-          sourceDeliveryPackageName: 'nop',
-          sourceUsages: ['commonjs'],
-          sourcePlatforms: ['node'],
-          usePresetValues: true,
-        })
-        .withOptions({
-          skipGit: true
-        })
-        .toPromise();
+    return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
+      .withPrompts({
+        sourceDeliveryType: 'npm',
+        sourceDeliveryPackageName: 'nop',
+        sourceUsages: ['commonjs'],
+        sourcePlatforms: ['node'],
+        usePresetValues: true,
+      })
+      .withOptions({
+        skipGit: true
+      })
+      .toPromise();
   });
   it('generator npm package using custom values', () => {
-      return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
-        .withPrompts({
-          sourceDeliveryType: 'npm',
-          sourceDeliveryPackageName: 'nop',
-          sourceUsages: ['commonjs'],
-          sourcePlatforms: ['node'],
-          usePresetValues: false,
-          username: 'unional',
-          repositoryOrganization: 'typed-typings',
-          repositoryName: 'npm-nop',
-          testFramework: 'blue-tape',
-          browserTestHarness: 'tape-run+jspm',
-          license: 'MIT',
-          licenseSignature: 'unional'
-        })
-        .withOptions({
-          skipGit: true
-        })
-        .toPromise();
+    return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
+      .withPrompts({
+        sourceDeliveryType: 'npm',
+        sourceDeliveryPackageName: 'nop',
+        sourceUsages: ['commonjs'],
+        sourcePlatforms: ['node'],
+        usePresetValues: false,
+        username: 'unional',
+        repositoryOrganization: 'typed-typings',
+        repositoryName: 'npm-nop',
+        testFramework: 'blue-tape',
+        browserTestHarness: 'tape-run+jspm',
+        license: 'MIT',
+        licenseSignature: 'unional'
+      })
+      .withOptions({
+        skipGit: true
+      })
+      .toPromise();
   })
   describe.skip('http dryrun', function () {
     before(function (done) {
