@@ -1,37 +1,22 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
 const yeoman = require('yeoman-generator');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
 const yosay = require('yosay');
 const changeCase = require('change-case');
-const rc = require('rc');
 const extend = require('extend');
 const typings = require('typings-core');
 
-const simpleGit = require('simple-git');
-
-// const GitHubApi = require('github');
-
-// const github = new GitHubApi({
-//   version: "3.0.0",
-//   protocol: "https",
-//   host: "api.github.com",
-//   timeout: 5000,
-//   header: {
-//     "user-agent": "generator-typings"
-//   }
-// });
+const createGitCommands = require('./createGitCommands');
+const createTemplateCommands = require('./createTemplateCommands');
 
 const collectingSourceInfo = [];
-const collectingLocalInfo = [];
 
 const TEMPLATEVERSION = 0;
 const GENERATORVERSION = '1.0 beta';
 const globalConfigPath = path.join(process.env.HOME, '.generator-typingsrc');
-
 
 module.exports = yeoman.Base.extend({
   constructor: function () {
@@ -40,221 +25,59 @@ module.exports = yeoman.Base.extend({
     this.argument('typingsName', { type: String, required: false, desc: `If specified, this will be used as the ${chalk.green('<repositoryName>')} and the repo will be created under this folder` });
 
     this.option('update-template', { desc: 'Update template', defaults: false });
-    this.option('skip-git', { defaults: false, hide: true, desc: 'Skip git related operations. For testing only.' });
+    this.option('debug', { desc: 'Print debug info', defaults: false });
+
     this.props = {};
-    this.updateConfigTemplate = function () {
-      const questions = [
-        {
-          type: 'input',
-          name: 'username',
-          message: `Your username on ${chalk.green('GitHub')}`,
-          default: this.configTemplate.username,
-        },
-        {
-          type: 'input',
-          name: 'repositoryOrganization',
-          message: (props) => `https://github.com/${chalk.green('<organization>')}/${this.configTemplate.repositoryNamePrefix}*`,
-          default: (props) => this.configTemplate.repositoryOrganization || props.username,
-        },
-        {
-          type: 'input',
-          name: 'repositoryNamePrefix',
-          message: (props) => {
-            return `https://github.com/${props.repositoryOrganization}/${chalk.green(this.configTemplate.repositoryNamePrefix)}*`
-          },
-          default: this.configTemplate.repositoryNamePrefix,
-        },
-        {
-          type: 'list',
-          name: 'testFramework',
-          message: `Your ${chalk.green('test framework')} of choice`,
-          choices: ['blue-tape'],
-          default: this.configTemplate.testFramework,
-        },
-        {
-          type: 'list',
-          name: 'browserTestHarness',
-          message: `Your ${chalk.cyan('browser')} ${chalk.green('test harness')}`,
-          choices: (props) => {
-            switch (props.testFramework) {
-              case 'blue-tape':
-              default:
-                return [
-                  // tsify not working with TS 1.9 yet
-                  // { name: 'tape-run + browserify', value: 'tape-run+browserify' },
-                  { name: 'tape-run + jspm', value: 'tape-run+jspm' },
-                ];
-            }
-          },
-          default: this.configTemplate.browserTestHarness,
-        },
-        {
-          type: 'list',
-          name: 'license',
-          message: `Which ${chalk.green('license')} do you want to use?`,
-          choices: [
-            { name: 'Apache 2.0', value: 'Apache-2.0' },
-            { name: 'MIT', value: 'MIT' },
-            { name: 'Unlicense', value: 'unlicense' },
-            { name: 'FreeBSD', value: 'BSD-2-Clause-FreeBSD' },
-            { name: 'NewBSD', value: 'BSD-3-Clause' },
-            { name: 'Internet Systems Consortium (ISC)', value: 'ISC' },
-            { name: 'No License (Copyrighted)', value: 'nolicense' }
-          ],
-          default: this.configTemplate.license,
-        },
-        {
-          type: 'input',
-          name: 'licenseSignature',
-          message: `Your signature in the license: Copyright (c) ${new Date().getFullYear()} ${chalk.green('<signature>')}`,
-          default: (props) => this.configTemplate.licenseSignature || props.username,
-        },
-      ];
-
-      return this.prompt(questions).then((props) => {
-        props.version = TEMPLATEVERSION;
-        this.configTemplate = props;
-        this.configTemplate.default = false;
-        fs.writeFileSync(globalConfigPath, JSON.stringify(this.configTemplate));
-        this.log('Got it! The template is saved.')
-      });
-    };
-    this.generatePropsFromConfigTemplate = function () {
-      const repoName = this.typingsName || this.props.repositoryName || this.configTemplate.repositoryNamePrefix + this.props.sourceDeliveryPackageName
-      let props = {
-        username: this.configTemplate.username,
-        repositoryName: repoName,
-        repositoryOrganization: this.props.repositoryOrganization || this.configTemplate.repositoryOrganization,
-        repositoryRemoteUrl: this.props.repositoryRemoteUrl || `https://github.com/${this.props.repositoryOrganization}/${repoName}.git`,
-        license: this.configTemplate.license,
-        licenseSignature: this.configTemplate.licenseSignature,
-      };
-
-      if (~this.props.sourcePlatforms.indexOf('node')) {
-        props.testFramework = this.configTemplate.testFramework;
-      }
-
-      if (~this.props.sourcePlatforms.indexOf('browser')) {
-        props.testFramework = this.configTemplate.testFramework;
-        props.browserTestHarness = this.configTemplate.browserTestHarness;
-      }
-
-      return props;
-    };
-    this.readGitConfig = function readGitConfig(name) {
-      return new Promise((resolve, reject) => {
-        var result;
-        const child = this.spawnCommand('git', ['config', name], { stdio: [0, 'pipe'] });
-        child.on('close', (code) => {
-          resolve(result);
-        });
-
-        child.stdout.on('data', (data) => {
-          result = data.toString().trim();
-        });
-      });
-    };
-    this.loadGitConfig = function loadGitConfig(repositoryPath) {
-      return Promise.all([
-        new Promise((resolve, reject) => {
-          repositoryPath = path.resolve(repositoryPath);
-          var result = {
-            repositoryName: path.basename(repositoryPath),
-            repositoryOrganization: path.basename(path.join(repositoryPath, '..'))
-          };
-
-          if (fs.existsSync(path.join(repositoryPath, '.git'))) {
-            var git = simpleGit(repositoryPath);
-            this.git = git;
-            git.getRemotes(true, (err, out) => {
-              const origins = out.filter((entry) => {
-                return entry.name === 'origin';
-              });
-
-              if (origins.length === 1) {
-                result.repositoryRemoteUrl = origins[0].refs.fetch;
-                const u = url.parse(result.repositoryRemoteUrl);
-
-                const parts = u.pathname.substring(1).split('/', 2);
-                let repoName = parts[1];
-                result.repositoryName = repoName.indexOf('.git') === repoName.length - 4 ? repoName.slice(0, -4) : repoName;
-                result.repositoryOrganization = parts[0];
-              }
-
-              resolve(result);
-            });
-          }
-          else {
-            resolve(result);
-          }
-        }),
-        this.readGitConfig('user.username'),
-        this.readGitConfig('user.name'),
-        this.readGitConfig('user.email'),
-      ]).then((results) => {
-        var result = results[0];
-        result.username = results[1];
-        result.name = results[2];
-        result.email = results[3];
-        return result;
-      });
-    };
   },
   initializing: {
-    loadRepo() {
-      collectingLocalInfo.push(
-        this.loadGitConfig(this.typingsName || '.').then((value) => {
-          extend(this.props, value);
-        })
-      );
+    changeDestinationRoot() {
+      if (this.typingsName) {
+        this.destinationRoot(this.typingsName);
+      }
+    },
+    loadGitConfig() {
+      this.git = createGitCommands(this, this.destinationPath());
+      return Promise.all([
+        this.git.loadConfig(),
+        this.git.loadRepoInfo()
+      ]).then((values) => {
+        extend(this.props, values[0], values[1]);
+      }, (err) => {
+        this.log(chalk.red(err));
+        process.exit(1);
+      });
+    },
+    loadConfigTemplate() {
+      this.templateCommands = createTemplateCommands(this);
+      this.configTemplate = this.templateCommands.loadOrCreate();
     }
   },
   prompting: {
-    betaGreeting() {
-      this.log('Welcome to the beta! Let me know if my questions make sense to you.');
-      this.log('Now, let\'s get started...');
-      this.log('');
-    },
     greeting() {
       this.log(yosay(`Welcome to the sensational ${chalk.yellow('typings')} generator!`));
     },
-    waitForLocalInfo() {
-      const done = this.async();
-      Promise.all(collectingLocalInfo).then(
-        () => done(),
-        (err) => {
-          this.log(err);
-          process.exit(1);
-        });
-    },
-    loadConfigTemplate() {
-      // Missing `version` indicates it is the default config.
-      const defaultConfigTemplate = {
-        username: this.props.username,
-        repositoryNamePrefix: 'typed-',
-        repositoryOrganization: undefined,
-        license: 'MIT',
-        testFramework: 'blue-tape',
-        browserTestHarness: 'tape-run+jspm'
-      };
-
-      this.configTemplate = rc('generator-typings', defaultConfigTemplate);
-
+    updateConfigTemplate() {
+      let updating;
       if (this.options.updateTemplate) {
         this.log(`You want to update your ${chalk.green('template')}? Here it goes...`);
-        return this.updateConfigTemplate();
+        updating = this.templateCommands.update();
       }
       else if (typeof this.configTemplate.version === 'undefined') {
         this.log(`Seems like this is the ${chalk.cyan('first time')} you use this generator.`);
         this.log(`Let's quickly setup the ${chalk.green('template')}...`);
-
-        return this.updateConfigTemplate();
+        updating = this.templateCommands.update();
       }
       else if (this.configTemplate.version !== TEMPLATEVERSION) {
         this.log(`Seems like you have ${chalk.cyan('updated')} this generator. The template has changed.`);
         this.log(`Let's quickly update the ${chalk.green('template')}...`);
+        updating = this.templateCommands.update();
+      }
 
-        return this.updateConfigTemplate();
+      if (updating) {
+        return updating.then((configTemplate) => {
+          this.configTemplate = configTemplate;
+          this.log('Got it! The template is saved.')
+        });
       }
     },
     enterSourceSection() {
@@ -438,6 +261,7 @@ module.exports = yeoman.Base.extend({
             { name: 'others (e.g. atom)', value: 'others' },
           ],
           validate: (values) => values.length > 0,
+          default: []
         }).then((props) => {
           this.props.sourcePlatforms = props.sourcePlatforms;
         });
@@ -459,7 +283,7 @@ module.exports = yeoman.Base.extend({
       this.log(`Good, now about the ${chalk.yellow('typings')} itself...`);
     },
     confirmQuickSetup() {
-      let genProps = this.generatePropsFromConfigTemplate();
+      let genProps = this.templateCommands.generateProps();
       this.log('Based on your configured template, ...');
       this.log(`${chalk.green('repository')}: ${chalk.cyan(`${genProps.repositoryOrganization}/${genProps.repositoryName}`)}`);
       this.log(`${chalk.green('Github username')}: ${chalk.cyan(genProps.username)}`);
@@ -520,13 +344,10 @@ module.exports = yeoman.Base.extend({
         },
       ]).then((props) => {
         extend(this.props, props);
-        if (!this.props.repositoryRemoteUrl) {
-          this.props.repositoryRemoteUrlToAdd = `https://github.com/${props.repositoryOrganization}/${props.repositoryName}.git`;
-        }
       });
     },
     askGitHubInfo() {
-      if (this.props.usePresetValues || this.props.repositoryRemoteUrl) return;
+      if (this.props.usePresetValues) return;
       return this.prompt([
         {
           type: 'input',
@@ -619,20 +440,17 @@ module.exports = yeoman.Base.extend({
       this.props.typingsDevDependencies = typingsPackages;
       this.props.typingsGlobalDevDependencies = typingsGlobalPackages;
     },
-    printProps() {
-      this.log('');
-      this.log('Overal props for debug purpose:');
-      this.log('');
-
-      this.log(this.props);
+    printDebugInfo() {
+      if (this.options.debug) {
+        this.log('');
+        this.log(chalk.bgYellow('debug: props'));
+        this.log(this.props);
+        this.log(chalk.bgYellow('debug: configTemplate'));
+        this.log(this.configTemplate);
+      }
     },
   },
   writing: {
-    changeDestinationRoot() {
-      if (this.typingsName) {
-        this.destinationRoot(this.typingsName);
-      }
-    },
     // createGitHubRepo() {
     //   github.authenticate({
     //     type: 'basic',
@@ -644,15 +462,13 @@ module.exports = yeoman.Base.extend({
       if (this.options['skip-git']) return;
 
       // Assume the repo is cloned from remote
-      if (this.git) return;
+      if (this.git.repoExists) return;
 
-      const done = this.async();
-      this.git = this.typingsName ? simpleGit(this.destinationPath()) : simpleGit();
-      this.git.clone(this.props.repositoryRemoteUrlToAdd, '.', () => {
-        done();
-      });
+      return this.git.clone(`https://github.com/${this.props.repositoryOrganization}/${this.props.repositoryName}.git`);
     },
     copyFiles() {
+      if (this.options.skipWriting) return;
+
       this.fs.copy(
         this.templatePath('*'),
         this.destinationPath()
@@ -702,7 +518,7 @@ module.exports = yeoman.Base.extend({
           sourceTest: 'echo no source test',
           test: ~this.props.sourcePlatforms.indexOf('node') ? 'cd test && ts-node ../node_modules/blue-tape/bin/blue-tape \\"**/*.ts\\" | tap-spec' : 'echo no server test',
           browserTest: ~this.props.sourcePlatforms.indexOf('browser') ?
-            'node npm-scripts/test "test/**.*.ts"' : 'echo no browser test',
+            'node npm-scripts/test \\"test/**/*.ts\\"' : 'echo no browser test',
           sourceMain: this.props.sourceMain,
           allTestScript: (() => {
             let tests = [];
@@ -821,6 +637,8 @@ module.exports = yeoman.Base.extend({
   },
   install: {
     installSourcePackage() {
+      if (this.options.skipInstall) return;
+
       this.log(`Installing ${chalk.cyan(this.props.sourceDeliveryPackageName)}...`);
       switch (this.props.sourceDeliveryType) {
         case 'bower':
@@ -832,9 +650,13 @@ module.exports = yeoman.Base.extend({
       }
     },
     installDevDependencies() {
+      if (this.options.skipInstall) return;
+
       this.npmInstall(this.props.devDependencies, { 'save-dev': true, 'progress': false, 'loglevel': 'silent' });
     },
     installTypingsPackages() {
+      if (this.options.skipInstall) return;
+
       if (this.props.typingsDevDependencies.length > 0) {
         typings.installDependenciesRaw(this.props.typingsDevDependencies, { cwd: this.destinationPath(), saveDev: true });
       }
@@ -843,11 +665,10 @@ module.exports = yeoman.Base.extend({
       }
     },
     submodule() {
-      if (this.options['skip-git']) return;
+      if (this.options.skipGit) return;
 
-      const done = this.async();
-      this.log(`Downloading ${chalk.green(this.props.sourceRepository)}...`);
-      this.git.submoduleAdd(this.props.sourceRepository, 'source', done);
+      this.log(`Submoduling ${chalk.green(this.props.sourceRepository)} into ${chalk.cyan('source')} folder...`);
+      return this.git.addSubmodule(this.props.sourceRepository, 'source');
     },
     startShowQuotes() {
       this.log(chalk.yellow('Waiting for installion to complete...'));
