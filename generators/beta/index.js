@@ -568,7 +568,7 @@ module.exports = yeoman.Base.extend({
     },
     sayGoodbye() {
       this.log('');
-      this.log('Thanks for trying this beta out!');
+      this.log('Thanks for helping the typings community!');
       this.log('');
       this.log('If you have any suggestion, please create an issue at:');
       this.log('  https://github.com/typings/generator-typings/issues');

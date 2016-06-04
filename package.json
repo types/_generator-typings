@@ -9,8 +9,7 @@
   },
   "files": [
     "generators/app",
-    "generators/beta",
-    "generators/current"
+    "generators/beta"
   ],
   "keywords": [
     "yeoman-generator",

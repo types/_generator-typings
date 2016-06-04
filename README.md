@@ -146,7 +146,7 @@ Here are examples to create [`npm-noop2`](https://github.com/typed-typings/npm-n
 ```sh
 # create the github repo from github website
 # under your organization folder (e.g. /somewhere/typed-typings/)
-yo typings:beta npm-noop2
+yo typings npm-noop2
 
 # Once it is done,
 cd npm-noop2
@@ -156,14 +156,14 @@ cd npm-noop2
 # create the github repo from github website
 # clone it locally to your machine (e.g. into /somewhere/typed-typings/npm-noop2/)
 # in that directory:
-yo typings:beta
+yo typings
 ```
 
 ```sh
 # create the github repo from github website
 # under your organization folder (e.g. /somewhere/typed-typings/)
 mkdir npm-noop2 && cd npm-noop2
-yo typings:beta
+yo typings
 ```
 
 
