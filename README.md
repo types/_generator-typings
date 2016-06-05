@@ -3,7 +3,9 @@
 [![NPM version][npm-image]][npm-url]
 [![downloads][downloads-image]][downloads-url]
 [![Dependency Status][daviddm-image]][daviddm-url]
-[![Build Status][travis-image]][travis-url] [![License][license-image]][license-url]
+[![Build Status][travis-image]][travis-url]
+[![Appveyor status][appveyor-image]][appveyor-url]
+[![License][license-image]][license-url]
 
 > Yeoman generator for typings (next-gen of tsd/DefinitelyTyped) project
 
@@ -138,3 +140,5 @@ MIT © [unional](https://github.com/unional)
 [daviddm-url]: https://david-dm.org/typings/generator-typings
 [license-image]: http://img.shields.io/:license-mit-blue.svg?style=flat-square
 [license-url]: http://unional.mit-license.org
+[appveyor-image]: https://ci.appveyor.com/api/projects/status/hsl5yotnplivq8b9/branch/master?svg=true
+[appveyor-url]: https://ci.appveyor.com/project/unional/generator-typings/branch/master
