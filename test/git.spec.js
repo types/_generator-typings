@@ -20,6 +20,7 @@ const template = {
 
 describe(`${GENERATOR_NAME} git tests`, () => {
   it.only('should use current and parent dir as repo name and org when it is not a git repo', () => {
+    console.log('starting test');
     let generator;
     return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
       .withOptions({
