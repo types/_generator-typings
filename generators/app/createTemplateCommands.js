@@ -1,13 +1,13 @@
 'use strict'
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const chalk = require('chalk');
 const rc = require('rc');
 const extend = require('extend');
 
 const TEMPLATEVERSION = 0;
-const globalConfigPath = path.join(process.env[process.platform === 'win32'? 'USERPROFILE': 'HOME'], '.generator-typingsrc');
-
+const globalConfigPath = path.join(os.homedir(), '.generator-typingsrc');
 
 module.exports = function createTemplateCommmands(generator) {
 

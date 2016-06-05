@@ -17,6 +17,9 @@
     "Definitely Typed",
     "d.ts"
   ],
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "dependencies": {
     "chalk": "^1.0.0",
     "change-case": "^2.3.1",
