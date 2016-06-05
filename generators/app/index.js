@@ -16,7 +16,6 @@ const collectingSourceInfo = [];
 
 const TEMPLATEVERSION = 0;
 const GENERATORVERSION = '1.0';
-const globalConfigPath = path.join(process.env.HOME, '.generator-typingsrc');
 
 module.exports = yeoman.Base.extend({
   constructor: function () {

@@ -36,7 +36,6 @@ describe(`${GENERATOR_NAME} template tests`, () => {
       })
       .toPromise()
       .then((dir) => {
-        console.log(generator.configTemplate);
         assert.objectContent(generator.configTemplate, template);
       });
   });

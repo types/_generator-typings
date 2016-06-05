@@ -6,7 +6,7 @@ const rc = require('rc');
 const extend = require('extend');
 
 const TEMPLATEVERSION = 0;
-const globalConfigPath = path.join(process.env.HOME, '.generator-typingsrc');
+const globalConfigPath = path.join(process.env[process.platform === 'win32'? 'USERPROFILE': 'HOME'], '.generator-typingsrc');
 
 
 module.exports = function createTemplateCommmands(generator) {

@@ -77,6 +77,15 @@ describe(`${GENERATOR_NAME} git tests`, () => {
   it('when it is a cloned git repo', () => {
     let generator;
     return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
+      .inTmpDir((dir) => {
+        let git = simpleGit(dir);
+        return new Promise((resolve) => {
+          git.clone('https://github.com/typings/generator-typings-blank-repo-for-test', '.', () => {
+            console.log('git clone completed');
+            resolve();
+          });
+        });
+      })
       .withOptions({
         skipConfiguring: true,
         skipDefault: true,
@@ -84,15 +93,8 @@ describe(`${GENERATOR_NAME} git tests`, () => {
         skipInstall: true,
         skipGit: true
       })
-      .inTmpDir((dir) => {
-        let git = simpleGit(dir);
-        return new Promise((resolve) => {
-          git.clone('https://github.com/typings/generator-typings-blank-repo-for-test', '.', () => {
-            resolve();
-          });
-        });
-      })
       .on('ready', (gen) => {
+        console.log('helper say ready');
         generator = gen;
       })
       .toPromise()
