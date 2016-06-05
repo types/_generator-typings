@@ -1,7 +1,7 @@
 {
   "name": "generator-typings",
   "version": "1.0.1",
-  "description": "Yeoman generator for typings (https://github.com/typings/typings)",
+  "description": "Create typings repository for `typings` (https://github.com/typings/typings)",
   "homepage": "https://github.com/typings/generator-typings",
   "author": {
     "name": "unional",
