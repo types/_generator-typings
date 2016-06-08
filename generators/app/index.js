@@ -56,9 +56,9 @@ module.exports = yeoman.Base.extend({
     },
     retrieveConfigTemplate() {
       return this.templateCommands.retrieve()
-      .then((configTemplate) => {
-        this.configTemplate = configTemplate;
-      });
+        .then((configTemplate) => {
+          this.configTemplate = configTemplate;
+        });
     },
     enterSourceSection() {
       this.log('');
@@ -264,15 +264,15 @@ module.exports = yeoman.Base.extend({
     },
     useGeneratedValues() {
       return this.templateCommands.useGeneratedValues()
-      .then((props) => {
-        extend(this.props, props);
-        if (!this.props.useGeneratedValues) {
-          return this.templateCommands.askCustomValues()
-          .then((props) => {
-            extend(this.props, props);
-          });
-        }
-      });
+        .then((props) => {
+          extend(this.props, props);
+          if (!this.props.useGeneratedValues) {
+            return this.templateCommands.askCustomValues()
+              .then((props) => {
+                extend(this.props, props);
+              });
+          }
+        });
     },
     calcProperties() {
       const devPackages = ['onchange', 'typings', 'ts-node', 'tslint', 'tslint-config-typings'];
@@ -522,8 +522,11 @@ module.exports = yeoman.Base.extend({
     submodule() {
       if (this.options.skipGit) return;
 
-      this.log(`Submoduling ${chalk.green(this.props.sourceRepository)} into ${chalk.cyan('source')} folder...`);
-      return this.git.addSubmodule(this.props.sourceRepository, 'source');
+      let sourceExists = fs.existsSync(this.destinationPath('source'));
+      if (!sourceExists) {
+        this.log(`Submoduling ${chalk.green(this.props.sourceRepository)} into ${chalk.cyan('source')} folder...`);
+        return this.git.addSubmodule(this.props.sourceRepository, 'source');
+      }
     },
     startShowQuotes() {
       this.log(chalk.yellow('Waiting for installion to complete...'));
