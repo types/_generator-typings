@@ -8,6 +8,10 @@ const yosay = require('yosay');
 const changeCase = require('change-case');
 const extend = require('extend');
 const typings = require('typings-core');
+const updateNotifier = require('update-notifier');
+
+const pkg = require('../../package.json');
+updateNotifier({ pkg }).notify();
 
 const createGitCommands = require('./createGitCommands');
 const createTemplateCommands = require('./createTemplateCommands');
