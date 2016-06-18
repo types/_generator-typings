@@ -19,7 +19,7 @@ const createTemplateCommands = require('./createTemplateCommands');
 const collectingSourceInfo = [];
 
 const TEMPLATEVERSION = 0;
-const GENERATORVERSION = '1.0';
+const GENERATORVERSION = pkg.version;
 
 module.exports = yeoman.Base.extend({
   constructor: function () {
