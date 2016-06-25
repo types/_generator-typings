@@ -76,20 +76,6 @@ describe(GENERATOR_NAME, () => {
       .then((dir) => {
         let root = generator.destinationRoot();
         assert.equal(path.basename(root), 'testtype');
-        assert.deepEqual(fs.readdirSync(generator.destinationRoot()),
-          ['.editorconfig',
-            '.gitignore',
-            '.travis.yml',
-            'LICENSE',
-            'README.md',
-            'index.d.ts',
-            'npm-scripts',
-            'package.json',
-            'source-test',
-            'test',
-            'tsconfig.json',
-            'tslint.json',
-            'typings.json']);
         assert.file([
           'package.json',
           'tsconfig.json',

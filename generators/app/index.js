@@ -201,7 +201,7 @@ module.exports = yeoman.Base.extend({
                 this.props.sourceHomepage = pjson.homepage;
                 this.props.sourceRepository = pjson.repository && pjson.repository.url ?
                   pjson.repository.url : pjson.repository;
-                if (this.props.sourceRepository.indexOf('git+https') === 0) {
+                if (this.props.sourceRepository && this.props.sourceRepository.indexOf('git+https') === 0) {
                   this.props.sourceRepository = this.props.sourceRepository.slice(4);
                 }
                 resolve();
@@ -251,13 +251,32 @@ module.exports = yeoman.Base.extend({
         });
     },
     waitForSourceInfo() {
-      const done = this.async();
-      Promise.all(collectingSourceInfo).then(() => {
-        done();
-      }, (err) => {
-        this.log(err);
-        process.exit(1);
-      });
+      if (collectingSourceInfo.length) {
+        const done = this.async();
+        Promise.all(collectingSourceInfo).then(() => {
+          const questions = [];
+          if (!this.props.sourceRepository) {
+            questions.push({
+              type: 'input',
+              name: 'sourceRepository',
+              message: `What is the ${chalk.green('Url')} to the source repository?`
+            });
+          }
+
+          if (questions.length) {
+            this.prompt(questions).then((props) => {
+              extend(this.props, props);
+              done();
+            });
+          }
+          else {
+            done();
+          }
+        }, (err) => {
+          this.log(err);
+          process.exit(1);
+        });
+      }
     },
     askSourceTestHarness() {
       // Source-test is still in early stage. No automation.
