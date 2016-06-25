@@ -259,11 +259,12 @@ module.exports = yeoman.Base.extend({
             questions.push({
               type: 'input',
               name: 'sourceRepository',
-              message: `What is the ${chalk.green('Url')} to the source repository?`
+              message: `${chalk.green('Where')} can I clone the source repository (e.g. https://github.com/typings/generator-typings.git)?`
             });
           }
 
           if (questions.length) {
+            this.log('There are some info missing from the source, so I need to ask a few more questions...');
             this.prompt(questions).then((props) => {
               extend(this.props, props);
               done();
