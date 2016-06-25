@@ -582,8 +582,8 @@ module.exports = yeoman.Base.extend({
       this.log('I am done! Now it is your turn!');
       if (this.typingsName) {
         this.log('');
-        this.log(`The typings repository is created under the ${this.typingsName} folder.`);
-        this.log('Please cd into it to start working.');
+        this.log(`The typings repository is created under the ${chalk.cyan(this.typingsName)} folder.`);
+        this.log(`Please ${chalk.green('cd')} into it to start working.`);
       }
     },
     tsdHint() {
