@@ -199,11 +199,20 @@ module.exports = yeoman.Base.extend({
                 }
                 this.props.sourceVersion = pjson.version;
                 this.props.sourceHomepage = pjson.homepage;
-                this.props.sourceRepository = pjson.repository && pjson.repository.url ?
-                  pjson.repository.url : pjson.repository;
-                if (this.props.sourceRepository && this.props.sourceRepository.indexOf('git+https') === 0) {
-                  this.props.sourceRepository = this.props.sourceRepository.slice(4);
+                if (pjson.repository) {
+                  if (typeof pjson.repository === 'string') {
+                    this.props.sourceRepository = pjson.repository;
+                  }
+                  else if (pjson.repository.type === 'git') {
+                    // Example: npm-firebase has repository.type === 'none'
+                    this.props.sourceRepository = pjson.repository.url;
+                  }
+
+                  if (this.props.sourceRepository && this.props.sourceRepository.indexOf('git+https') === 0) {
+                    this.props.sourceRepository = this.props.sourceRepository.slice(4);
+                  }
                 }
+
                 resolve();
               }
             });
@@ -546,11 +555,12 @@ module.exports = yeoman.Base.extend({
     submodule() {
       if (this.options.skipGit) return;
 
-      let sourceExists = fs.existsSync(this.destinationPath('source'));
-      if (!sourceExists) {
-        this.log(`Submoduling ${chalk.green(this.props.sourceRepository)} into ${chalk.cyan('source')} folder...`);
-        return this.git.addSubmodule(this.props.sourceRepository, 'source');
-      }
+      if (!this.props.sourceRepository) return;
+
+      if (!fs.existsSync(this.destinationPath('source'))) return;
+
+      this.log(`Submoduling ${chalk.green(this.props.sourceRepository)} into ${chalk.cyan('source')} folder...`);
+      return this.git.addSubmodule(this.props.sourceRepository, 'source');
     },
     startShowQuotes() {
       this.log(chalk.yellow('Waiting for installion to complete...'));

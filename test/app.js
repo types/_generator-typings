@@ -18,6 +18,35 @@ const template = {
 };
 
 describe(GENERATOR_NAME, () => {
+  it('npm with repository.type === "none"', function () {
+    let generator;
+
+    this.timeout(5000);
+    return helpers.run(path.join(__dirname, `../generators/${GENERATOR_NAME}`))
+      .inTmpDir((dir) => {
+        fs.writeFileSync('.generator-typingsrc', JSON.stringify(template));
+      })
+      .withOptions({
+        skipGit: true
+      })
+      .withPrompts({
+        sourceDeliveryType: 'npm',
+        sourceDeliveryPackageName: 'firebase',
+        sourceUsages: ['commonjs'],
+        sourcePlatforms: ['node', 'browser'],
+        useGeneratedValues: true
+      })
+      .on('ready', (gen) => {
+        generator = gen;
+      })
+      .toPromise()
+      .then(() => {
+        assert(generator.props.sourceRepository === undefined);
+      });
+  })
+})
+
+describe(GENERATOR_NAME, () => {
   it('skip submodule if source already exists', function () {
     let generator;
 
