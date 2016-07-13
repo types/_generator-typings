@@ -56,6 +56,8 @@ npm install -g yo
 npm install -g generator-typings
 ```
 
+## Usage
+
 There are several ways to create your typings repository:
 
 Here are examples to create [`npm-noop2`](https://github.com/typed-typings/npm-noop2)
