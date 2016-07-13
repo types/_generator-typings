@@ -352,7 +352,10 @@ module.exports = yeoman.Base.extend({
       // Assume the repo is cloned from remote
       if (this.git.repoExists) return;
 
-      return this.git.clone(`https://github.com/${this.props.repositoryOrganization}/${this.props.repositoryName}.git`);
+      return this.git.clone(`https://github.com/${this.props.repositoryOrganization}/${this.props.repositoryName}.git`)
+        .then(undefined, (err) => {
+          this.log(`${chalk.red('Unable to clone')} the typings repository, continue...`);
+        });
     },
     copyFiles() {
       if (this.options.skipWriting) return;
@@ -527,12 +530,13 @@ module.exports = yeoman.Base.extend({
     installSourcePackage() {
       if (this.options.skipInstall) return;
 
-      this.log(`Installing ${chalk.cyan(this.props.sourceDeliveryPackageName)}...`);
       switch (this.props.sourceDeliveryType) {
         case 'bower':
+          this.log(`Installing ${chalk.cyan(this.props.sourceDeliveryPackageName)}...`);
           this.bowerInstall([this.props.sourceDeliveryPackageName], { 'save-dev': true, 'save-exact': true });
           break;
         case 'npm':
+          this.log(`Installing ${chalk.cyan(this.props.sourceDeliveryPackageName)}...`);
           this.npmInstall([this.props.sourceDeliveryPackageName], { 'save-dev': true, 'save-exact': true, 'progress': false });
           break;
       }
