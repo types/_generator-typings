@@ -7,6 +7,7 @@
     "name": "unional",
     "url": "https://github.com/unional"
   },
+  "main": "generators/app/index.js",
   "files": [
     "generators/app"
   ],
@@ -24,7 +25,6 @@
     "chalk": "^1.0.0",
     "change-case": "^3.0.0",
     "extend": "^3.0.0",
-    "github": "^0.2.4",
     "rc": "^1.1.6",
     "simple-git": "^1.37.0",
     "typings-core": "^1.0.1",
@@ -33,6 +33,7 @@
     "yosay": "^1.1.1"
   },
   "devDependencies": {
+    "dependency-check": "^2.5.2",
     "eslint-config-xo-space": "^0.12.0",
     "gulp": "^3.9.0",
     "gulp-eslint": "^2.0.0",
@@ -55,7 +56,8 @@
     "url": "https://github.com/typings/generator-typings.git"
   },
   "scripts": {
-    "prepublish": "gulp prepublish && gulp",
+    "dependency-check": "dependency-check . --unused --no-dev && dependency-check . --missing --no-dev",
+    "prepublish": "npm run dependency-check && gulp prepublish && gulp",
     "test": "gulp"
   },
   "license": "MIT"
