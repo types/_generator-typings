@@ -2,7 +2,6 @@
 const fs = require('fs');
 const path = require('path');
 const yeoman = require('yeoman-generator');
-const inquirer = require('inquirer');
 const chalk = require('chalk');
 const yosay = require('yosay');
 const changeCase = require('change-case');
