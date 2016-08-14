@@ -20,7 +20,10 @@ export const aliases: Aliases = {
   create,
   // publish
   publish,
+  pub: publish,
   // setup
   setup,
-  scaffold: setup
+  scaffold: setup,
+  generate: setup,
+  gen: setup
 }
