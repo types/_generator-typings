@@ -49,12 +49,12 @@ const args: Args = extend(argv, { emitter, cwd })
 // Notify the user of updates.
 updateNotifier({ pkg }).notify()
 
+emitter.on('notimplemented', (cmd: string) => {
+  logInfo(`Command ${chalk.yellow(cmd)} is not yet implemented, welcome to contribute.`)
+})
+
 // Execute with normalizations applied.
 exec(args)
-
-emitter.on('notimplemented', (cmd: string) => {
-  logInfo(`${cmd} is not yet implemented, PR Welcome.`)
-})
 
 /**
  * Handle the CLI commands.
