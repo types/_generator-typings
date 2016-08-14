@@ -55,14 +55,14 @@
     "url": "https://github.com/typings/typesrepo.git"
   },
   "scripts": {
-    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json",
     "lint": "tslint \"src/**/*.ts\"",
     "test": "rimraf dist && tsc && ava \"dist/**/*.spec.js\"",
     "watch": "rimraf dist && node scripts/watch.js dist/**/*.spec.js",
     "verify": "npm run test && npm run lint && npm run dependency-check && npm run build",
     "dependency-check": "dependency-check . --unused --no-dev && dependency-check . --missing --no-dev",
     "preversion": "npm run verify",
-    "prepublish": "typings install && npm run build"
+    "prepublish": "typings install && rimraf dist && npm run build"
   },
   "license": "MIT"
 }
