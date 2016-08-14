@@ -10,6 +10,9 @@ ${PROJECT_NAME} setup [<organization>/]<repo-name>
 
 Options:
   --bare    Perform minimum setup
+
+Alias:
+  gen, generate, scaffold
 `
 }
 
