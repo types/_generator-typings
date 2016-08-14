@@ -1,5 +1,7 @@
 const pkg = require('../../package.json')
 
+// alternative suggestions:
+// typesgen, create-typings, typings-template
 export const PROJECT_NAME = 'typesrepo'
 export const PRETTY_PROJECT_NAME = 'TypesRepo'
 export const CONFIG_FILE = `${PROJECT_NAME}.json`
