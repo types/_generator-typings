@@ -15,7 +15,7 @@ import { aliases } from './aliases'
 import { handle } from './cli'
 import { log, logInfo } from './log'
 
-const pkg = require('../package.json')
+const pkg = require('../../package.json')
 
 interface Argv {
   help: boolean
@@ -90,6 +90,6 @@ ${PROJECT_NAME} <command> -V   Enable verbose logging
 Options:
   --version[-v]         Print the CLI version
 
-${PROJECT_NAME}@${pkg.version} ${join(__dirname, '..')}
+${PROJECT_NAME}@${pkg.version} ${join(__dirname, '../..')}
 `)
 }
