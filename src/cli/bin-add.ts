@@ -7,7 +7,7 @@ export function help() {
   return `
 ${PROJECT_NAME} add [...<feature>]
 
-  <feature> Features to add to the repository.
+  <feature> Features to be added to the repository.
 
 Features:
   test          Add test template to the repository.
