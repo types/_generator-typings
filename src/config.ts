@@ -7,7 +7,7 @@ import Promise = require('any-promise')
 
 import { Options } from './utils/Options'
 import { PROJECT_NAME } from './utils/constants'
-import { createDefaultTemplate, getPrintMessage, readConfig, readOldConfig, convertOldConfig } from './config.utils'
+import { createDefaultTemplate, readConfig, readOldConfig, convertOldConfig } from './config.utils'
 
 const CONFIGVERSION = 1
 export const GLOBAL_OLD_CONFIG_PATH = join(homedir(), `.generator-typingsrc`)
@@ -37,16 +37,10 @@ export interface ConfigKeyOptions extends Options {
   options: boolean
 }
 
-export function where() {
+export function where(): string | undefined {
   const currentConfig = read()
   // the `config` property is assed by `rc` storing location of the file.
-  const location = (currentConfig as any).config
-  return location || 'no config found'
-}
-
-export function list() {
-  const currentConfig = read()
-  return getPrintMessage(currentConfig)
+  return (currentConfig as any).config
 }
 
 export function update() {
@@ -54,9 +48,6 @@ export function update() {
   return prompt(currentConfig)
     .then(config => {
       return save(config)
-    })
-    .then(() => {
-      return 'Config updated.'
     })
 }
 
