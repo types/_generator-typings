@@ -2,6 +2,7 @@
   "dependencies": {
     "chalk": "registry:npm/chalk#1.1.1+20160812215109",
     "es6-promise": "registry:npm/es6-promise#3.0.0+20160723033700",
+    "inquirer": "registry:npm/inquirer#1.0.0+20160723033700",
     "minimist": "registry:npm/minimist#1.0.0+20160723033700",
     "rc": "registry:npm/rc#1.1.0+20160723033700",
     "update-notifier": "registry:npm/update-notifier#0.6.0+20160723033700",
@@ -10,5 +11,6 @@
   },
   "globalDevDependencies": {
     "node": "registry:env/node#6.0.0+20160813135048"
-  }
+  },
+  "globalDependencies": {}
 }

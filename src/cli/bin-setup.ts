@@ -1,21 +1,17 @@
-import { Promise } from 'es6-promise'
+import { CliBuilder } from 'clibuilder'
+// import * as setup from '../setup'
 
-import { PROJECT_NAME } from '../utils/constants'
-import { setup, SetupOptions } from '../setup'
-
-export function help() {
-  return `
-${PROJECT_NAME} setup (with no arguments, in cloned repository folder)
-${PROJECT_NAME} setup [<organization>/]<repo-name>
-
-Options:
-  --bare    Perform minimum setup
-
-Alias:
-  gen, generate, scaffold
-`
-}
-
-export function exec(args: string[], options: SetupOptions): Promise<void> {
-  return setup(args[0], options)
+export function configure(program: CliBuilder) {
+  program
+    .command('setup')
+    .alias('gen')
+    .alias('generate')
+    .alias('scaffold')
+    .description('Setup typings repository.\nIf [repository] is not specified, I would assume the current folder is the repository folder.')
+    .argument('[repository]', 'Name of the typings repository on GitHub')
+    .option('-m, --mode <mode>', 'Override setup mode to use.', {
+      'no-prompt': 'Skip prompt',
+      'no-test': 'Do not install test',
+      'with-test': 'Setup with test'
+    })
 }

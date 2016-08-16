@@ -1,4 +1,3 @@
-import chalk = require('chalk')
 import { Promise } from 'es6-promise'
 import * as os from 'os'
 
@@ -57,4 +56,3 @@ export function handleError(error: Error, options: PrintOptions): any {
 
   process.exit(1)
 }
-

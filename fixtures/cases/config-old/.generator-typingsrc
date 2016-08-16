@@ -1,0 +1,10 @@
+{
+  "username": "unional",
+  "repositoryOrganization": "unional",
+  "repositoryNamePrefix": "typed-",
+  "testFramework": "blue-tape",
+  "browserTestHarness": "tape-run+jspm",
+  "license": "MIT",
+  "licenseSignature": "unional",
+  "version": "0"
+}

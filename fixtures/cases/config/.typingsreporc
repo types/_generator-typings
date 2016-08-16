@@ -1,0 +1,13 @@
+{
+  "githubUsername": "unional",
+  "githubOrganization": "unional",
+  "license": "MIT",
+  "licenseSignature": "unional",
+  "mode": "with-test",
+  "features": [
+    "travis"
+  ],
+  "serverTestFramework": "ava",
+  "browserTestFramework": "ava",
+  "browserTestHarness": "jsdom"
+}

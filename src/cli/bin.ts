@@ -1,95 +1,112 @@
 #!/usr/bin/env node
 
-import minimist = require('minimist')
-import wordwrap = require('wordwrap')
-import { join, relative, resolve } from 'path'
-import chalk = require('chalk')
-import updateNotifier = require('update-notifier')
-import extend = require('xtend')
-import { EventEmitter } from 'events'
+import program from 'clibuilder'
 
-import { PROJECT_NAME } from '../utils/constants'
-import { Emitter } from '../utils/emitter'
-import { Options } from '../utils/Options'
-import { aliases } from './aliases'
-import { handle } from './cli'
-import { log, logInfo } from './log'
+import * as add from './bin-add'
+import * as config from './bin-config'
+import * as create from './bin-create'
+import * as integrate from './bin-integrate'
+import * as publish from './bin-publish'
+import * as setup from './bin-setup'
 
 const pkg = require('../../package.json')
+program.version = pkg.version
 
-interface Argv {
-  help: boolean
-  version: boolean
-  verbose: boolean
-  cwd?: string
-  out?: string
-  source?: string
-  offset?: number
-  limit?: number
-  sort?: string
-}
+add.configure(program)
+config.configure(program)
+create.configure(program)
+integrate.configure(program)
+publish.configure(program)
+setup.configure(program)
 
-interface Args extends Argv, Options {
-  _: string[]
-}
+program.start(process.argv)
 
-const argv = minimist<Argv>(process.argv.slice(2), {
-  boolean: ['version', 'help'],
-  string: ['cwd'],
-  alias: {
-    help: ['h'],
-    version: ['v']
-  }
-})
+// program
+//   .version(pkg.version)
+//   .option('-x', 'asdf')
 
-const cwd = argv.cwd ? resolve(argv.cwd) : process.cwd()
-const emitter: Emitter = new EventEmitter()
-const args: Args = extend(argv, { emitter, cwd })
+// program.parse(process.argv)
 
-// Notify the user of updates.
-updateNotifier({ pkg }).notify()
+// interface Argv {
+//   help: boolean
+//   version: boolean
+//   verbose: boolean
+//   cwd?: string
+//   out?: string
+//   source?: string
+//   offset?: number
+//   limit?: number
+//   sort?: string
+// }
 
-emitter.on('notimplemented', (cmd: string) => {
-  logInfo(`Command ${chalk.yellow(cmd)} is not yet implemented, welcome to contribute.`)
-})
+// interface Args extends Argv, Options {
+//   _: string[]
+// }
 
-// Execute with normalizations applied.
-exec(args)
+// const argv = minimist<Argv>(process.argv.slice(2), {
+//   boolean: ['version', 'help', 'update', 'where'],
+//   string: ['cwd'],
+//   alias: {
+//     help: ['h'],
+//     version: ['v'],
+//     where: ['w'],
+//     update: ['u']
+//   }
+// })
 
-/**
- * Handle the CLI commands.
- */
-function exec (options: Args): any {
-  if (options._.length) {
-    const command = aliases[options._[0]]
-    const args = options._.slice(1)
+// const cwd = argv.cwd ? resolve(argv.cwd) : process.cwd()
+// const emitter: Emitter = new EventEmitter()
+// const args: Args = extend(argv, { emitter, cwd })
 
-    if (command != null) {
-      if (options.help) {
-        return console.log(command.help())
-      }
+// // Notify the user of updates.
+// updateNotifier({ pkg }).notify()
 
-      return handle(command.exec(args, options), options)
-    }
-  } else if (options.version) {
-    console.log(pkg.version)
-    return
-  }
+// emitter.on('notimplemented', (cmd: string) => {
+//   logInfo(`Command ${chalk.yellow(cmd)} is not yet implemented, welcome to contribute.`)
+// })
 
-  const wrap = wordwrap(4, 80)
+// emitter.on('out', (msg: string) => {
 
-  console.log(`
-Usage: ${PROJECT_NAME} <command>
+// })
 
-Commands:
-${wrap(Object.keys(aliases).sort().join(', '))}
+// // Execute with normalizations applied.
+// exec(args)
 
-${PROJECT_NAME} <command> -h   Get help for <command>
-${PROJECT_NAME} <command> -V   Enable verbose logging
+// /**
+//  * Handle the CLI commands.
+//  */
+// function exec(options: Args): any {
+//   if (options._.length) {
+//     const command = aliases[options._[0]]
+//     const args = options._.slice(1)
 
-Options:
-  --version[-v]         Print the CLI version
+//     if (command != null) {
+//       if (options.help) {
+//         return console.log(command.help())
+//       }
 
-${PROJECT_NAME}@${pkg.version} ${join(__dirname, '../..')}
-`)
-}
+//       return handle(command.exec(args, options), options)
+//     }
+//   }
+//   else if (options.version) {
+//     console.log(pkg.version)
+//     return
+//   }
+
+//   const wrap = wordwrap(4, 80)
+
+//   console.log(`
+// Usage: ${PROJECT_NAME} <command>
+
+// Commands:
+// ${wrap(Object.keys(aliases).sort().join(', '))}
+
+// ${PROJECT_NAME} <command> -h   Get help for <command>
+// ${PROJECT_NAME} <command> -V   Enable verbose logging
+
+// Options:
+//   --version[-v]         Print the CLI version
+
+// ${PROJECT_NAME}@${pkg.version} ${join(__dirname, '../..')}
+// `)
+// }

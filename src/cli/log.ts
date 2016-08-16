@@ -1,11 +1,15 @@
 import chalk = require('chalk')
 
-import { PROJECT_NAME, PRETTY_PROJECT_NAME, VERSION } from '../utils/constants'
+import { PRETTY_PROJECT_NAME } from '../utils/constants'
+
+export function log(message: string) {
+  console.log(message)
+}
 
 /**
  * Log a trivial string, without bells or whistles.
  */
-export function log(message: string) {
+export function error(message: string) {
   console.error(message)
 }
 
@@ -46,5 +50,5 @@ export function logError(message: string, prefix?: string) {
     return formatLine(chalk.bgBlack.red, 'ERR!', line, prefix)
   }).join('\n')
 
-  log(output)
+  error(output)
 }

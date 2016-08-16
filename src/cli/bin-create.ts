@@ -1,17 +1,7 @@
-import { Promise } from 'es6-promise'
+import { CliBuilder } from 'clibuilder'
 
-import { PROJECT_NAME } from '../utils/constants'
-import { create, CreateOptions } from '../create'
-
-export function help() {
-  return `
-${PROJECT_NAME} create [<organization>/]<repo-name>
-
-Creates github repository.
-`
-}
-
-
-export function exec(args: string[], options: CreateOptions): Promise<void> {
-  return create(args[0], options)
+export function configure(program: CliBuilder) {
+  program.command('create')
+    .description('Creates github repsitory.')
+    .argument('<repository name>', 'name of the repository')
 }

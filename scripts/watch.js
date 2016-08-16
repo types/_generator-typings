@@ -12,4 +12,7 @@ cp.spawn('tsc', ['-w'])
         stdio: 'inherit'
       });
     }
+    cp.spawnSync('npm', ['run', 'lint'], {
+      stdio: 'inherit'
+    })
   })

@@ -12,7 +12,6 @@
     ],
     "module": "commonjs",
     "moduleResolution": "node",
-    "noImplicitAny": true,
     "newLine": "LF",
     "removeComments": true,
     "rootDir": "src",
@@ -21,9 +20,8 @@
     "strictNullChecks": true,
     "target": "es5"
   },
-  "exclude": [
-    "fixtures",
-    "generators",
-    "node_modules"
+  "include": [
+    "src/**/*.ts",
+    "typings/index.d.ts"
   ]
 }
