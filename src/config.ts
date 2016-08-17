@@ -7,7 +7,7 @@ import Promise = require('any-promise')
 
 import { Options } from './utils/Options'
 import { PROJECT_NAME } from './utils/constants'
-import { createDefaultTemplate, readConfig, readOldConfig, convertOldConfig } from './config.utils'
+import { readRaw } from './config.utils'
 
 const CONFIGVERSION = 1
 export const GLOBAL_OLD_CONFIG_PATH = join(homedir(), `.generator-typingsrc`)
@@ -38,7 +38,7 @@ export interface ConfigKeyOptions extends Options {
 }
 
 export function where(): string | undefined {
-  const currentConfig = read()
+  const currentConfig = readRaw()
   // the `config` property is assed by `rc` storing location of the file.
   return (currentConfig as any).config
 }
@@ -56,15 +56,11 @@ export function update() {
  * Note: cannot test cases when there is no config because we cannot control where `rc()` reads file.
  */
 export function read() {
-  const defaultTemplate = createDefaultTemplate()
-  const configTemplate = readConfig()
-  // the `config` property is assed by `rc` storing location of the file.
-  if (!(configTemplate as any).config) {
-    const oldConfig = readOldConfig()
-    return (oldConfig as any).config ? convertOldConfig(oldConfig) : defaultTemplate
-  }
-
-  return configTemplate
+  const config = readRaw()
+  delete (config as any)._
+  delete (config as any).config
+  delete (config as any).configs
+  return config
 }
 
 export function save(config: Config) {

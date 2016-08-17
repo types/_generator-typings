@@ -2,8 +2,8 @@ import { resolve, relative } from 'path'
 import test from 'ava'
 import fixture from 'ava-fixture'
 
-import { readOldConfig, convertOldConfig, getPrintMessage } from './config.utils'
-import { where, list } from './config'
+import { readOldConfig, convertOldConfig } from './config.utils'
+import { where, read } from './config'
 
 const ftest = fixture(test, '../fixtures/cases')
 
@@ -29,24 +29,25 @@ ftest('config.utils.convertOldConfig', 'config-old', (t, cwd) => {
   } as any)
 })
 
-ftest('config.list', 'config', t => {
-  const actual = list()
-  t.is(actual,
-    getPrintMessage({
+ftest('config.read', 'config', t => {
+  const actual = read()
+  t.deepEqual(actual,
+    {
       githubUsername: 'unional',
       githubOrganization: 'unional',
       license: 'MIT',
       licenseSignature: 'unional',
       mode: 'with-test',
-      features: [ 'travis' ],
+      features: ['travis'],
       serverTestFramework: 'ava',
       browserTestFramework: 'ava',
       browserTestHarness: 'jsdom'
-    }),
+    } as any,
     'prints out all configs')
 })
 
 ftest('config.where', 'config', (t, cwd) => {
-  const actual = relative(cwd, where())
+  const result = where()
+  const actual = relative(cwd, result || '')
   t.is(actual, '.typingsreporc')
 })

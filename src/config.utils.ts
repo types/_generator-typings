@@ -13,7 +13,7 @@ export interface OldConfig {
   licenseSignature: string
 }
 
-export function createDefaultTemplate(): Config {
+export function createDefaultConfig(): Config {
   // const { username } = loadGitConfig()
   const username = ''
   return {
@@ -24,6 +24,18 @@ export function createDefaultTemplate(): Config {
     mode: 'with-test',
     features: ['source', 'travis']
   }
+}
+
+export function readRaw() {
+  const defaultConfig = createDefaultConfig()
+  const config = readConfig()
+  // the `config` property is assed by `rc` storing location of the file.
+  if (!(config as any).config) {
+    const oldConfig = readOldConfig()
+    return (oldConfig as any).config ? convertOldConfig(oldConfig) : defaultConfig
+  }
+
+  return config
 }
 
 export function readConfig(): Config {
