@@ -4,9 +4,6 @@ import program from 'clibuilder'
 
 import * as add from './bin-add'
 import * as config from './bin-config'
-import * as create from './bin-create'
-import * as integrate from './bin-integrate'
-import * as publish from './bin-publish'
 import * as setup from './bin-setup'
 
 const pkg = require('../../package.json')
@@ -14,9 +11,6 @@ program.version = pkg.version
 
 add.configure(program)
 config.configure(program)
-create.configure(program)
-integrate.configure(program)
-publish.configure(program)
 setup.configure(program)
 
 program.start(process.argv)
