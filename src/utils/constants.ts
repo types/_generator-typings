@@ -1,4 +1,3 @@
-import pascalCase = require('pascal-case')
 const pkg = require('../../package.json')
 
 // alternative suggestions:
