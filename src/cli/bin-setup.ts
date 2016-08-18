@@ -80,6 +80,9 @@ export function configure(program: CliBuilder) {
           program.log('')
           program.log(`Good, now about the ${chalk.yellow('typings')} itself...`)
         })
+        .then(() => {
+          console.log(setupInfo)
+        })
     })
 }
 
