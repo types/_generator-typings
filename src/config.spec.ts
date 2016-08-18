@@ -31,15 +31,20 @@ ftest('config.read', 'config', t => {
   const actual = read()
   t.deepEqual(actual,
     {
-      githubUsername: 'unional',
-      githubOrganization: 'unional',
-      license: 'MIT',
-      licenseSignature: 'unional',
-      mode: 'with-test',
-      features: ['travis'],
-      serverTestFramework: 'ava',
-      browserTestFramework: 'ava',
-      browserTestHarness: 'jsdom'
+      'githubUsername': 'unional',
+      'githubOrganization': 'unional',
+      'lint': [
+        'typings'
+      ],
+      'serverTest': 'blue-tape',
+      'browserTest': 'blue-tape',
+      'browserTestHarness': 'tape-run+jspm',
+      'githubRepositoryCreation': true,
+      'sourceSubmodule': true,
+      'travis': true,
+      'appveyor': false,
+      'license': 'MIT',
+      'licenseSignature': 'unional'
     } as any,
     'prints out all configs')
 })

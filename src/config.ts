@@ -99,7 +99,10 @@ export function where(): string | undefined {
  */
 export function read() {
   const config = readRaw()
+
+  // These are added automatically by `rc()`
   delete (config as any)._
+  delete (config as any).l
   delete (config as any).config
   delete (config as any).configs
   return config

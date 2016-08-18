@@ -1,13 +1,16 @@
 {
   "githubUsername": "unional",
   "githubOrganization": "unional",
-  "license": "MIT",
-  "licenseSignature": "unional",
-  "mode": "with-test",
-  "features": [
-    "travis"
+  "lint": [
+    "typings"
   ],
-  "serverTestFramework": "ava",
-  "browserTestFramework": "ava",
-  "browserTestHarness": "jsdom"
+  "serverTest": "blue-tape",
+  "browserTest": "blue-tape",
+  "browserTestHarness": "tape-run+jspm",
+  "githubRepositoryCreation": true,
+  "sourceSubmodule": true,
+  "travis": true,
+  "appveyor": false,
+  "license": "MIT",
+  "licenseSignature": "unional"
 }

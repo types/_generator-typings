@@ -30,10 +30,10 @@ export function createDefaultConfig(): Config {
 }
 
 export function readRaw() {
-  const defaultConfig = createDefaultConfig()
   const config = readConfig()
   // the `config` property is added by `rc` storing location of the file.
   if (!(config as any).config) {
+    const defaultConfig = createDefaultConfig()
     const oldConfig = readOldConfig()
     return (oldConfig as any).config ? convertOldConfig(oldConfig) : defaultConfig
   }
