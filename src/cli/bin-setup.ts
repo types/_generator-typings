@@ -22,15 +22,10 @@ export function configure(program: CliBuilder) {
     .alias('scaffold')
     .description('Setup typings repository.\nIf [repository] is not specified, I would assume the current folder is the repository folder.')
     .argument('[repository]', 'Name of the typings repository on GitHub')
-    .option('-m, --mode <mode>', 'Override setup mode to use.', {
-      'no-prompt': 'Skip prompt',
-      'no-test': 'Do not install test',
-      'with-test': 'Setup with test'
-    })
     .action<{ repository: string },
     setup.SetupOptions>((args, options, builder, program) => {
       const cwd = args.repository ? path.resolve(process.cwd(), args.repository) : process.cwd()
-
+      const setupInfo: setup.SetupInfo = {}
       const git = new Git(cwd)
       const gettingRepoInfo = git.getRepositoryInfo()
       const conf = config.read()
@@ -50,58 +45,44 @@ export function configure(program: CliBuilder) {
         .then(values => {
           const conf = extend(values[0], options)
           const repositoryInfo = values[1]
-
+          setupInfo.config = conf
+          setupInfo.repositoryInfo = repositoryInfo
           program.log('')
           program.log(`I'll be creating the ${chalk.yellow('typings')} repository under the ${chalk.cyan(args.repository ? args.repository : 'current')} folder`)
           program.log('')
           program.log(`To begin, I need to know a little bit about the ${chalk.green('source')} you are typings for.`)
           return promptPackageInfo(conf)
-            .then(packageInfo => {
-              return {
-                config: conf,
-                repositoryInfo,
-                packageInfo
-              } as setup.SetupInfo
-            })
         })
-        .then(setupInfo => {
-          const { packageInfo } = setupInfo
+        .then(packageInfo => {
           const manager = packageInfo.type === 'npm' ? npm : packageInfo.type === 'bower' ? bower : undefined
           if (manager) {
             program.log(`gathering info from ${chalk.cyan(packageInfo.type)}...`)
             return manager.read(packageInfo.name)
               .then(info => {
-                setupInfo.packageInfo = extend(packageInfo, info)
-                return setupInfo
+                return extend(packageInfo, info)
               }, () => {
                 program.error(`${chalk.red('Oops')}, could not find ${chalk.cyan(packageInfo.name)}.`)
               })
           }
           else {
-            return Promise.resolve(setupInfo)
+            return Promise.resolve(packageInfo)
           }
         })
-        .then(setupInfo => {
-          return promptMissingPackageInfo(setupInfo.packageInfo, program)
-            .then(info => {
-              setupInfo.packageInfo = info
-              return setupInfo
-            })
+        .then(packageInfo => {
+          return promptMissingPackageInfo(packageInfo, program)
         })
-        .then(setupInfo => {
+        .then(packageInfo => {
+          setupInfo.packageInfo = packageInfo
+        })
+        .then(() => {
           return promptUsageInfo()
-            .then(usageInfo => {
-              setupInfo.usageInfo = usageInfo
-              return setupInfo
-            })
         })
-        .then(setupInfo => {
+        .then(usageInfo => {
+          setupInfo.usageInfo = usageInfo
+        })
+        .then(() => {
           program.log('')
           program.log(`Good, now about the ${chalk.yellow('typings')} itself...`)
-          return setupInfo
-        })
-        .then(setupInfo => {
-
         })
     })
 }

@@ -13,8 +13,8 @@ export interface UsageInfo {
 }
 
 export interface SetupInfo {
-  config: Config
-  repositoryInfo: RepositoryInfo
-  packageInfo: PackageInfo
+  config?: Config
+  repositoryInfo?: RepositoryInfo
+  packageInfo?: PackageInfo
   usageInfo?: UsageInfo
 }
