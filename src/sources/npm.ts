@@ -2,10 +2,12 @@ import { spawnSync } from 'child_process'
 import path = require('path')
 import Promise = require('any-promise')
 
-export function read(packageName: string): Promise<any> {
+import { PackageInfo } from './interfaces'
+
+export function read(name: string): Promise<PackageInfo> {
   return new Promise((resolve, reject) => {
-    const result: any = {}
-    const child = spawnSync('npm', ['info', packageName, '--json'], { stdio: [0, 'pipe'] })
+    const result: PackageInfo = { type: 'npm', name }
+    const child = spawnSync('npm', ['info', name, '--json'], { stdio: [0, 'pipe'] })
     if (child.status !== 0) {
       const { status, error } = child
       reject({ status, error })
@@ -15,20 +17,20 @@ export function read(packageName: string): Promise<any> {
     const pjson = JSON.parse(stdout)
     if (pjson.main) {
       const main = path.parse(pjson.main)
-      result.sourceMain = path.join(main.dir, main.name)
+      result.main = path.join(main.dir, main.name)
     }
     else {
-      result.sourceMain = 'index'
+      result.main = 'index'
     }
-    result.sourceVersion = pjson.version
-    result.sourceHomepage = pjson.homepage
+    result.version = pjson.version
+    result.homepage = pjson.homepage
     if (pjson.repository) {
       if (typeof pjson.repository === 'string') {
-        result.sourceRepository = pjson.repository
+        result.url = pjson.repository
       }
       else if (pjson.repository.type === 'git') {
         // Example: npm-firebase has repository.type === 'none'
-        result.sourceRepository = pjson.repository.url
+        result.url = pjson.repository.url
       }
     }
 

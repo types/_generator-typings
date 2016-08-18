@@ -2,10 +2,13 @@ import { CliBuilder } from 'clibuilder'
 import inquirer = require('inquirer')
 import chalk = require('chalk')
 
-import { Config } from '../config'
-// import extend = require('xtend')
+import * as config from '../config'
+import extend = require('xtend')
 
-import { PackageInfo, SetupOptions } from '../setup'
+import { PackageInfo } from '../sources/interfaces'
+import * as npm from '../sources/npm'
+import * as bower from '../sources/bower'
+import { SetupOptions } from '../setup'
 
 export function configure(program: CliBuilder) {
   program
@@ -21,28 +24,29 @@ export function configure(program: CliBuilder) {
       'with-test': 'Setup with test'
     })
     .action<{ repository: string },
-    SetupOptions>((args, options) => {
-      // let conf = config.read()
-      // conf = extend(conf, options)
-      // const packageInfo = setup.promptPackageInfo(conf)
-
-      // if (mode === 'no-prompt') {
-      //   return false
-      // }
-      // else {
-      // }
-
-      // if (mode === 'no-test') {
-
-      // }
-      // if (mode === 'with-test') {
-
-      // }
-      //     reject(`${chalk.red('Oops')}, could not find ${chalk.cyan(result.sourceDeliveryPackageName)}.`);
+    SetupOptions>((args, options, builder, program) => {
+      let conf = config.read()
+      conf = extend(conf, options)
+      promptPackageInfo(conf)
+        .then(packageInfo => {
+          const manager = packageInfo.type === 'npm' ? npm : packageInfo.type === 'bower' ? bower : undefined
+          if (manager) {
+            return manager.read(packageInfo.name)
+              .then(info => {
+                return extend(packageInfo, info)
+              })
+              .catch(() => {
+                program.error(`${chalk.red('Oops')}, could not find ${chalk.cyan(packageInfo.name)}.`)
+              })
+          }
+          else {
+            return Promise.resolve(packageInfo)
+          }
+        })
     })
 }
 
-export function promptPackageInfo(config: Config): Promise<PackageInfo> {
+export function promptPackageInfo(config: config.Config): Promise<PackageInfo> {
   const questions = [
     {
       type: 'list',
@@ -62,7 +66,7 @@ export function promptPackageInfo(config: Config): Promise<PackageInfo> {
     },
     {
       type: 'input',
-      name: 'packageName',
+      name: 'name',
       message: (props) => {
         switch (props.type) {
           case 'http':
@@ -76,9 +80,22 @@ export function promptPackageInfo(config: Config): Promise<PackageInfo> {
     },
     {
       type: 'input',
-      name: 'packageUrl',
+      name: 'url',
       message: `What is the ${chalk.green('url')} of the package?`,
       validate: (value) => value.length > 0,
+      when: (props) => props.type === 'http'
+    },
+    {
+      type: 'input',
+      name: 'version',
+      message: `What is the ${chalk.green('version')} of the package?`,
+      validate: (value) => value.length > 0,
+      when: (props) => ['http', 'none'].indexOf(props.type) !== -1
+    },
+    {
+      type: 'input',
+      name: 'homepage',
+      message: `Enter the ${chalk.green('homepage')} of the package (if any)`,
       when: (props) => props.type === 'http'
     }
   ]
