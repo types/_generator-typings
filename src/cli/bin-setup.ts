@@ -43,15 +43,14 @@ export function configure(program: CliBuilder) {
 
       Promise.all([configReady, gettingRepoInfo])
         .then(values => {
-          const conf = extend(values[0], options)
-          const repositoryInfo = values[1]
-          setupInfo.config = conf
-          setupInfo.repositoryInfo = repositoryInfo
+          setupInfo.config = extend(values[0], options)
+          setupInfo.repositoryInfo = values[1]
+
           program.log('')
           program.log(`I'll be creating the ${chalk.yellow('typings')} repository under the ${chalk.cyan(args.repository ? args.repository : 'current')} folder`)
           program.log('')
           program.log(`To begin, I need to know a little bit about the ${chalk.green('source')} you are typings for.`)
-          return promptPackageInfo(conf)
+          return promptPackageInfo(values[0])
         })
         .then(packageInfo => {
           const manager = packageInfo.type === 'npm' ? npm : packageInfo.type === 'bower' ? bower : undefined
@@ -73,14 +72,11 @@ export function configure(program: CliBuilder) {
         })
         .then(packageInfo => {
           setupInfo.packageInfo = packageInfo
-        })
-        .then(() => {
           return promptUsageInfo()
         })
         .then(usageInfo => {
           setupInfo.usageInfo = usageInfo
-        })
-        .then(() => {
+
           program.log('')
           program.log(`Good, now about the ${chalk.yellow('typings')} itself...`)
         })
