@@ -6,7 +6,7 @@ import { Options } from './utils/Options'
 import { PROJECT_NAME } from './utils/constants'
 import { readRaw } from './config.utils'
 
-const CONFIGVERSION = 2
+export const CONFIGVERSION = 2
 export const GLOBAL_OLD_CONFIG_PATH = join(homedir(), `.generator-typingsrc`)
 export const GLOBAL_CONFIG_PATH = join(homedir(), `.${PROJECT_NAME}rc`)
 

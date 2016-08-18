@@ -4,7 +4,7 @@ import inquirer = require('inquirer')
 import Promise = require('any-promise')
 
 import { optionsToChoices } from '../utils/Options'
-import { read, where, save, Config, Features } from '../config'
+import { read, where, save, Config, Features, CONFIGVERSION } from '../config'
 
 export function configure(program: CliBuilder) {
   program
@@ -31,6 +31,7 @@ export function update(program: CliBuilder) {
   let config = read()
   return prompt(config)
     .then(config => {
+      config.version = CONFIGVERSION
       config = save(config)
       program.log('config updated.')
       return config
