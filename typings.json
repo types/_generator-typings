@@ -5,6 +5,7 @@
     "inquirer": "registry:npm/inquirer#1.0.0+20160723033700",
     "minimist": "registry:npm/minimist#1.0.0+20160723033700",
     "rc": "registry:npm/rc#1.1.0+20160723033700",
+    "simple-git": "github:types/simple-git",
     "update-notifier": "registry:npm/update-notifier#0.6.0+20160723033700",
     "wordwrap": "registry:npm/wordwrap#1.0.0+20160723033700",
     "xtend": "registry:npm/xtend#4.0.0+20160723033700"

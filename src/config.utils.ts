@@ -2,6 +2,7 @@ import rc = require('rc')
 
 import { PROJECT_NAME } from './utils/constants'
 import { Config } from './config'
+import { getConfigValue } from './git'
 
 export interface OldConfig {
   username: string,
@@ -14,8 +15,7 @@ export interface OldConfig {
 }
 
 export function createDefaultConfig(): Config {
-  // const { username } = loadGitConfig()
-  const username = ''
+  const username = getConfigValue('user.username')
   return {
     githubUsername: username,
     githubOrganization: username,
@@ -29,7 +29,7 @@ export function createDefaultConfig(): Config {
 export function readRaw() {
   const defaultConfig = createDefaultConfig()
   const config = readConfig()
-  // the `config` property is assed by `rc` storing location of the file.
+  // the `config` property is added by `rc` storing location of the file.
   if (!(config as any).config) {
     const oldConfig = readOldConfig()
     return (oldConfig as any).config ? convertOldConfig(oldConfig) : defaultConfig
