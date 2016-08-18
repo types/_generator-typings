@@ -41,6 +41,10 @@ export function update(program: CliBuilder) {
 export function getPrintMessage(config: Config) {
   const result: string[] = []
   for (const key in config) {
+    if (key === 'version') {
+      // Do not print version value
+      continue
+    }
     result.push(`${chalk.cyan(key)} = ${chalk.green(config[key])}`)
   }
   return result.join('\n')
