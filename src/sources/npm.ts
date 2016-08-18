@@ -26,11 +26,11 @@ export function read(name: string): Promise<PackageInfo> {
     result.homepage = pjson.homepage
     if (pjson.repository) {
       if (typeof pjson.repository === 'string') {
-        result.url = pjson.repository
+        result.gitUrl = pjson.repository
       }
       else if (pjson.repository.type === 'git') {
         // Example: npm-firebase has repository.type === 'none'
-        result.url = pjson.repository.url
+        result.gitUrl = pjson.repository.url
       }
     }
 

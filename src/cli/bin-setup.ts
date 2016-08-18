@@ -1,14 +1,18 @@
 import { CliBuilder } from 'clibuilder'
 import inquirer = require('inquirer')
 import chalk = require('chalk')
+import extend = require('xtend')
+import Promise = require('any-promise')
+import path = require('path')
 
 import * as config from '../config'
-import extend = require('xtend')
+import { update as updateConfig } from './bin-config'
+import { Git } from '../git'
 
 import { PackageInfo } from '../sources/interfaces'
 import * as npm from '../sources/npm'
 import * as bower from '../sources/bower'
-import { SetupOptions } from '../setup'
+import * as setup from '../setup'
 
 export function configure(program: CliBuilder) {
   program
@@ -24,26 +28,109 @@ export function configure(program: CliBuilder) {
       'with-test': 'Setup with test'
     })
     .action<{ repository: string },
-    SetupOptions>((args, options, builder, program) => {
-      let conf = config.read()
-      conf = extend(conf, options)
-      promptPackageInfo(conf)
-        .then(packageInfo => {
+    setup.SetupOptions>((args, options, builder, program) => {
+      const cwd = args.repository ? path.resolve(process.cwd(), args.repository) : process.cwd()
+
+      const git = new Git(cwd)
+      const gettingRepoInfo = git.getRepositoryInfo()
+      const conf = config.read()
+      let configReady = Promise.resolve(conf)
+      if (config.isDefault(conf)) {
+        program.log(`Seems like this is the ${chalk.cyan('first time')} you use this generator.`)
+        program.log(`Let's quickly setup the ${chalk.green('config template')}...`)
+        configReady = updateConfig(program)
+      }
+      else if (config.needsUpdate(conf)) {
+        program.log(`Seems like you have ${chalk.cyan('updated')} this generator. The config template has changed.`)
+        program.log(`Let's quickly update the ${chalk.green('config template')}...`)
+        configReady = updateConfig(program)
+      }
+
+      Promise.all([configReady, gettingRepoInfo])
+        .then(values => {
+          const conf = extend(values[0], options)
+          const repositoryInfo = values[1]
+
+          program.log('')
+          program.log(`I'll be creating the ${chalk.yellow('typings')} repository under the ${chalk.cyan(args.repository ? args.repository : 'current')} folder`)
+          program.log('')
+          program.log(`To begin, I need to know a little bit about the ${chalk.green('source')} you are typings for.`)
+          return promptPackageInfo(conf)
+            .then(packageInfo => {
+              return {
+                config: conf,
+                repositoryInfo,
+                packageInfo
+              } as setup.SetupInfo
+            })
+        })
+        .then(setupInfo => {
+          const { packageInfo } = setupInfo
           const manager = packageInfo.type === 'npm' ? npm : packageInfo.type === 'bower' ? bower : undefined
           if (manager) {
+            program.log(`gathering info from ${chalk.cyan(packageInfo.type)}...`)
             return manager.read(packageInfo.name)
               .then(info => {
-                return extend(packageInfo, info)
-              })
-              .catch(() => {
+                setupInfo.packageInfo = extend(packageInfo, info)
+                return setupInfo
+              }, () => {
                 program.error(`${chalk.red('Oops')}, could not find ${chalk.cyan(packageInfo.name)}.`)
               })
           }
           else {
-            return Promise.resolve(packageInfo)
+            return Promise.resolve(setupInfo)
           }
         })
+        .then(setupInfo => {
+          return promptMissingPackageInfo(setupInfo.packageInfo, program)
+            .then(info => {
+              setupInfo.packageInfo = info
+              return setupInfo
+            })
+        })
+        .then(setupInfo => {
+          return promptUsageInfo()
+            .then(usageInfo => {
+              setupInfo.usageInfo = usageInfo
+              return setupInfo
+            })
+        })
+        .then(setupInfo => {
+          program.log('')
+          program.log(`Good, now about the ${chalk.yellow('typings')} itself...`)
+          return setupInfo
+        })
+        .then(setupInfo => {
+
+        })
     })
+}
+
+export function promptUsageInfo(): Promise<setup.UsageInfo> {
+  return inquirer.prompt([{
+    type: 'checkbox',
+    name: 'usages',
+    message: `${chalk.green('How')} can the package be used?`,
+    choices: [
+      { name: 'AMD Module', value: 'amd' },
+      { name: 'CommonJS Module', value: 'commonjs', checked: true },
+      { name: 'ES2015 Module', value: 'esm' },
+      { name: 'Script Tag', value: 'script' },
+      { name: 'part of environment', value: 'env' }
+    ],
+    validate: (values) => values.length > 0
+  }, {
+    type: 'checkbox',
+    name: 'platforms',
+    message: `${chalk.green('Where')} can the package be used?`,
+    choices: [
+      { name: 'Browser', value: 'browser' },
+      { name: 'Native NodeJS', value: 'node', checked: true },
+      { name: 'others (e.g. atom)', value: 'others' }
+    ],
+    validate: (values) => values.length > 0,
+    default: []
+  }]) as any
 }
 
 export function promptPackageInfo(config: config.Config): Promise<PackageInfo> {
@@ -77,28 +164,40 @@ export function promptPackageInfo(config: config.Config): Promise<PackageInfo> {
         }
       },
       validate: (value) => value.length > 0
-    },
-    {
-      type: 'input',
-      name: 'url',
-      message: `What is the ${chalk.green('url')} of the package?`,
-      validate: (value) => value.length > 0,
-      when: (props) => props.type === 'http'
-    },
-    {
-      type: 'input',
-      name: 'version',
-      message: `What is the ${chalk.green('version')} of the package?`,
-      validate: (value) => value.length > 0,
-      when: (props) => ['http', 'none'].indexOf(props.type) !== -1
-    },
-    {
-      type: 'input',
-      name: 'homepage',
-      message: `Enter the ${chalk.green('homepage')} of the package (if any)`,
-      when: (props) => props.type === 'http'
     }
   ]
 
+  return inquirer.prompt(questions) as any
+}
+
+export function promptMissingPackageInfo(packageInfo: PackageInfo, program: CliBuilder): Promise<PackageInfo> {
+  const questions: inquirer.Question[] = []
+  if (!packageInfo.gitUrl) {
+    questions.push({
+      type: 'input',
+      name: 'gitUrl',
+      message: `${chalk.green('Where')} can I clone the source repository (e.g. git+ssh://github.com/typings/generator-typings.git)?`,
+      validate: (value) => value.length > 0
+    })
+  }
+  if (!packageInfo.version) {
+    questions.push({
+      type: 'input',
+      name: 'version',
+      message: `What is the ${chalk.green('version')} of the package?`,
+      validate: (value) => value.length > 0
+    })
+  }
+  if (!packageInfo.homepage) {
+    questions.push({
+      type: 'input',
+      name: 'homepage',
+      message: `Enter the ${chalk.green('homepage')} of the package (if any)`
+    })
+  }
+
+  if (questions.length) {
+    program.log('There are some info missing from the source, so I need to ask a few more questions...')
+  }
   return inquirer.prompt(questions) as any
 }

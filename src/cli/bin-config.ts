@@ -20,18 +20,20 @@ export function configure(program: CliBuilder) {
         program.log(where() || 'no config found')
       }
       else if (options.update) {
-        let config = read()
-        prompt(config)
-          .then(config => {
-            return save(config)
-          })
-          .then(() => {
-            program.log('config updated.')
-          })
+        update(program)
       }
       else {
         return false
       }
+    })
+}
+export function update(program: CliBuilder) {
+  let config = read()
+  return prompt(config)
+    .then(config => {
+      config = save(config)
+      program.log('config updated.')
+      return config
     })
 }
 

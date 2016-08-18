@@ -109,7 +109,8 @@ export function read() {
 }
 
 export function save(config: Config) {
-  return writeFile(GLOBAL_CONFIG_PATH, JSON.stringify(config))
+  writeFile(GLOBAL_CONFIG_PATH, JSON.stringify(config))
+  return config
 }
 
 export function isDefault(template: Config) {

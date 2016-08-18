@@ -11,7 +11,7 @@ test('npm.read', t => {
         main: 'index',
         version: '1.0.0',
         homepage: 'https://github.com/supershabam/nop',
-        url: 'git://github.com/supershabam/nop'
+        gitUrl: 'git://github.com/supershabam/nop'
       })
     })
 })

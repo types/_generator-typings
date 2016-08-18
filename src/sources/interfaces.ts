@@ -5,7 +5,7 @@ export interface PackageInfo {
   type: string
   name: string
   main?: string
-  url?: string
+  gitUrl?: string
   version?: string
   homepage?: string
 }
