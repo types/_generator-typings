@@ -1,7 +1,10 @@
 import { CliBuilder } from 'clibuilder'
 import chalk = require('chalk')
+import inquirer = require('inquirer')
+import Promise = require('any-promise')
 
-import * as config from '../config'
+import { optionsToChoices } from '../utils/Options'
+import { read, where, save, Config, Features } from '../config'
 
 export function configure(program: CliBuilder) {
   program
@@ -9,17 +12,22 @@ export function configure(program: CliBuilder) {
     .option('-l, --list', 'list all')
     .option('-u, --update', 'update config with prompts')
     .option('-w, --where', 'show where the config is saved')
-    .action((args, options) => {
+    .action<void, any>((args, options) => {
       if (options.list) {
-        program.log(getPrintMessage(config.read()))
+        program.log(getPrintMessage(read()))
       }
       else if (options.where) {
-        program.log(config.where() || 'no config found')
+        program.log(where() || 'no config found')
       }
       else if (options.update) {
-        config.update().then(() => {
-          program.log('config updated.')
-        })
+        let config = read()
+        prompt(config)
+          .then(config => {
+            return save(config)
+          })
+          .then(() => {
+            program.log('config updated.')
+          })
       }
       else {
         return false
@@ -27,16 +35,110 @@ export function configure(program: CliBuilder) {
     })
 }
 
-export function getPrintMessage(config: config.Config) {
-  return `
-${chalk.cyan('githubUsername')} = ${chalk.green(config.githubUsername)}
-${chalk.cyan('githubOrganization')} = ${chalk.green(config.githubOrganization)}
-${chalk.cyan('license')} = ${chalk.green(config.license)}
-${chalk.cyan('licenseSignature')} = ${chalk.green(config.licenseSignature)}
-${chalk.cyan('mode')} = ${chalk.green(config.mode)}
-${chalk.cyan('features')} = ${chalk.green('[' + (config.features.join(' | ') as string || 'none') + ']')}
-${chalk.cyan('serverTestFramework')} = ${chalk.green(config.serverTestFramework as string)}
-${chalk.cyan('browserTestFramework')} = ${chalk.green(config.browserTestFramework as string)}
-${chalk.cyan('browserTestHarness')} = ${chalk.green(config.browserTestHarness as string)}
-`
+export function getPrintMessage(config: Config) {
+  const result: string[] = []
+  for (const key in config) {
+    result.push(`${chalk.cyan(key)} = ${chalk.green(config[key])}`)
+  }
+  return result.join('\n')
+}
+
+export function prompt(config: Config): Promise<Config> {
+  const questions: inquirer.Question[] = [{
+    type: 'input',
+    name: 'githubUsername',
+    message: `Your username on ${chalk.green('GitHub')}`,
+    default: config.githubUsername
+  },
+  {
+    type: 'input',
+    name: 'githubOrganization',
+    message: () => `https://github.com/${chalk.green('<organization>')}/<repo>`,
+    default: (props: any) => config.githubOrganization || props.username
+  },
+  {
+    type: 'checkbox',
+    name: 'lint',
+    message: `How do you want to ${chalk.green('lint')} your code`,
+    choices: optionsToChoices(Features.lint.options),
+    default: config.lint
+  },
+  {
+    type: 'list',
+    name: 'serverTest',
+    message: `Your ${chalk.green('test framework')} of choice on ${chalk.cyan('server')}`,
+    choices: optionsToChoices(Features.serverTest.options),
+    default: config.serverTest
+  },
+  {
+    type: 'list',
+    name: 'browserTest',
+    message: `Your ${chalk.green('test framework')} of choice on ${chalk.cyan('browser')}`,
+    choices: optionsToChoices(Features.browserTest.options),
+    default: config.browserTest
+  },
+  {
+    type: 'list',
+    name: 'browserTestHarness',
+    message: `Your ${chalk.cyan('browser')} ${chalk.green('test harness')}`,
+    choices: (props: Config & inquirer.Answers) => {
+      switch (props.browserTest) {
+        case 'ava':
+          return [
+            Features.browserTestHarness.options.jsdom
+          ]
+        default:
+        case 'blue-tape':
+          return optionsToChoices(Features.browserTestHarness.options)
+      }
+    },
+    default: config.browserTestHarness
+  },
+  {
+    type: 'confirm',
+    name: 'githubRepositoryCreation',
+    message: `Can I create ${chalk.cyan('github')} repository ${chalk.green('automatically')} for you?`,
+    default: config.githubRepositoryCreation
+  },
+  {
+    type: 'confirm',
+    name: 'sourceSubmodule',
+    message: `Do you want to download ${chalk.cyan('source')} repository as ${chalk.green('submodule')}?`,
+    default: config.sourceSubmodule
+  },
+  {
+    type: 'confirm',
+    name: 'travis',
+    message: `Do you use ${chalk.green('travis')}?`,
+    default: config.travis
+  },
+  {
+    type: 'confirm',
+    name: 'appveyor',
+    message: `Do you use ${chalk.green('appveyor')}?`,
+    default: config.appveyor
+  },
+  {
+    type: 'list',
+    name: 'license',
+    message: `Which ${chalk.green('license')} do you want to use?`,
+    choices: [
+      { name: 'Apache 2.0', value: 'Apache-2.0' },
+      { name: 'MIT', value: 'MIT' },
+      { name: 'Unlicense', value: 'unlicense' },
+      { name: 'FreeBSD', value: 'BSD-2-Clause-FreeBSD' },
+      { name: 'NewBSD', value: 'BSD-3-Clause' },
+      { name: 'Internet Systems Consortium (ISC)', value: 'ISC' },
+      { name: 'No License (Copyrighted)', value: 'nolicense' }
+    ],
+    default: config.license
+  },
+  {
+    type: 'input',
+    name: 'licenseSignature',
+    message: `Your signature in the license: Copyright (c) ${new Date().getFullYear()} ${chalk.green('<signature>')}`,
+    default: (props: Config) => config.licenseSignature || props.githubUsername
+  }]
+
+  return inquirer.prompt(questions) as any
 }

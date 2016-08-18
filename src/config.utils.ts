@@ -21,8 +21,11 @@ export function createDefaultConfig(): Config {
     githubOrganization: username,
     license: 'MIT',
     licenseSignature: username,
-    mode: 'with-test',
-    features: ['source', 'travis']
+    serverTest: 'blue-tape',
+    browserTest: 'blue-tape',
+    browserTestHarness: 'tape-run+jspm',
+    sourceSubmodule: true,
+    travis: true
   }
 }
 
@@ -52,10 +55,8 @@ export function convertOldConfig(oldConfig: OldConfig): Config & { config: strin
     githubOrganization: oldConfig.repositoryOrganization,
     license: oldConfig.license,
     licenseSignature: oldConfig.licenseSignature,
-    mode: 'with-test',
-    features: [],
-    serverTestFramework: oldConfig.testFramework,
-    browserTestFramework: oldConfig.testFramework,
+    serverTest: oldConfig.testFramework,
+    browserTest: oldConfig.testFramework,
     browserTestHarness: oldConfig.browserTestHarness,
     config: (oldConfig as any).config
   }

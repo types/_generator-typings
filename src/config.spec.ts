@@ -20,10 +20,8 @@ ftest('config.utils.convertOldConfig', 'config-old', (t, cwd) => {
     githubOrganization: 'unional',
     license: 'MIT',
     licenseSignature: 'unional',
-    mode: 'with-test',
-    features: [],
-    serverTestFramework: 'blue-tape',
-    browserTestFramework: 'blue-tape',
+    serverTest: 'blue-tape',
+    browserTest: 'blue-tape',
     browserTestHarness: 'tape-run+jspm',
     config: resolve('.generator-typingsrc')
   } as any)

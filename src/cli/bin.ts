@@ -9,7 +9,10 @@ import * as setup from './bin-setup'
 const pkg = require('../../package.json')
 program.version = pkg.version
 program.helpSectionBuilder.noAction = function() {
-  return `The command "${this.commandName}" is not implemented yet. PRs are welcome!`
+  if (this.builder.hasAction()) {
+    return undefined
+  }
+  return `The command "${this.builder.commandName}" is not implemented yet. PRs are welcome!`
 }
 add.configure(program)
 config.configure(program)

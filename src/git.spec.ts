@@ -6,7 +6,7 @@ import { Git } from './git'
 
 const ftest = fixture(test, '../fixtures/cases')
 
-ftest.only('git', 'config-old', (t, cwd) => {
+ftest('git', 'config-old', (t, cwd) => {
   const git = new Git()
   t.is(git.repositoryPath, cwd)
   return git.getRepositoryInfo()
