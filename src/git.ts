@@ -6,29 +6,28 @@ import simpleGit = require('simple-git')
 import Promise = require('any-promise')
 
 export interface RepositoryInfo {
-  name?: string,
-  organization?: string
-  remoteUrl?: string
+  name: string,
+  organization: string
   exists: boolean
-  suggestedName: string
-  suggestedOrganization: string
+  path: string
+  remoteUrl?: string
 }
 
 export class Git {
-  public repositoryPath: string
   private git: simpleGit.Git
 
-  constructor(repositoryPath?: string) {
-    this.repositoryPath = path.resolve(repositoryPath || process.cwd())
+  constructor(public repositoryPath: string) {
     this.git = simpleGit(repositoryPath)
   }
 
   getRepositoryInfo(): Promise<RepositoryInfo> {
     return new Promise((resolve) => {
+      console.log(this.repositoryPath)
       let result: RepositoryInfo = {
         exists: fs.existsSync(path.join(this.repositoryPath, '.git')),
-        suggestedName: path.basename(this.repositoryPath),
-        suggestedOrganization: path.basename(path.join(this.repositoryPath, '..'))
+        name: path.basename(this.repositoryPath),
+        organization: path.basename(path.join(this.repositoryPath, '..')),
+        path: this.repositoryPath
       }
 
       if (result.exists) {

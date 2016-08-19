@@ -17,7 +17,7 @@
     "rootDir": "src",
     "outDir": "dist",
     "sourceMap": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "target": "es5"
   },
   "files": [

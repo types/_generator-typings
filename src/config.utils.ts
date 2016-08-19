@@ -19,6 +19,7 @@ export function createDefaultConfig(): Config {
   return {
     githubUsername: username,
     githubOrganization: username,
+    repositoryNamePrefix: '',
     license: 'MIT',
     licenseSignature: username,
     serverTest: 'blue-tape',
@@ -53,6 +54,7 @@ export function convertOldConfig(oldConfig: OldConfig): Config & { config: strin
   return {
     githubUsername: oldConfig.username,
     githubOrganization: oldConfig.repositoryOrganization,
+    repositoryNamePrefix: oldConfig.repositoryNamePrefix,
     license: oldConfig.license,
     licenseSignature: oldConfig.licenseSignature,
     serverTest: oldConfig.testFramework,

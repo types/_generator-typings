@@ -1,6 +1,7 @@
 {
   "githubUsername": "unional",
   "githubOrganization": "unional",
+  "repositoryNamePrefix": "",
   "lint": [
     "typings"
   ],

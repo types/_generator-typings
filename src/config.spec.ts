@@ -18,6 +18,7 @@ ftest('config.utils.convertOldConfig', 'config-old', (t, cwd) => {
   t.deepEqual(config, {
     githubUsername: 'unional',
     githubOrganization: 'unional',
+    repositoryNamePrefix: 'typed-',
     license: 'MIT',
     licenseSignature: 'unional',
     serverTest: 'blue-tape',
@@ -33,6 +34,7 @@ ftest('config.read', 'config', t => {
     {
       'githubUsername': 'unional',
       'githubOrganization': 'unional',
+      'repositoryNamePrefix': '',
       'lint': [
         'typings'
       ],

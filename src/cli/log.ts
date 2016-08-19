@@ -20,6 +20,18 @@ function formatLine(color: Function, type: string, line: string, prefix?: string
   return `${chalk.bgBlack.white(PRETTY_PROJECT_NAME)} ${color(type)} ${prefix ? chalk.magenta(`${prefix} `) : ''}${line}`
 }
 
+export function formatLines(map: Object, ...keysToSkip: string[]) {
+  const result: string[] = []
+  for (const key in map) {
+    if (keysToSkip.indexOf(key) !== -1) {
+      continue
+    }
+
+    result.push(`${chalk.cyan(key)} = ${chalk.green(map[key])}`)
+  }
+  return result.join('\n')
+}
+
 /**
  * Log an info message.
  */

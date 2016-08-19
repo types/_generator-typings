@@ -16,5 +16,5 @@ cp.spawn('tsc', ['-w'], { shell: true })
     cp.spawnSync('npm', ['run', 'lint'], {
       stdio: 'inherit',
       shell: true
-    })
-  })
+    });
+  });
