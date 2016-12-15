@@ -1,4 +1,4 @@
-import { CliBuilder } from 'clibuilder'
+import { CliBuilder, UI } from 'clibuilder'
 import inquirer = require('inquirer')
 import chalk = require('chalk')
 import extend = require('xtend')
@@ -7,7 +7,7 @@ import path = require('path')
 
 import { Options } from '../utils/Options'
 // import { fs } from '../utils/fs'
-import { questions, checkAndUpdate } from '../config'
+import { questions, checkAndUpdate } from '../components/config'
 import { formatLines } from './log'
 import { Git } from '../git'
 
@@ -16,15 +16,31 @@ import * as npm from '../sources/npm'
 import * as bower from '../sources/bower'
 import * as setup from '../setup'
 
+export interface SetupArguments {
+  repository: string
+}
+
+export interface SetupOptions extends Options {
+  help: boolean
+  skipGit: boolean
+  skipWrite: boolean
+}
+
 export function configure(program: CliBuilder) {
   program
     .command('setup')
     .alias('gen')
     .alias('generate')
     .alias('scaffold')
-    .description('Setup typings repository.\nIf [repository] is not specified, I would assume the current folder is the repository folder.')
+    .description(`
+Setup typings repository.
+If [repository] is not specified, I would assume the current folder is the repository folder.`)
     .argument('[repository]', 'Name of the typings repository on GitHub')
     .action<SetupArguments, SetupOptions>((args, options, builder, program) => {
+      if (options.help) {
+        program.log(builder.help())
+        return
+      }
       let state: setup.SetupState = {} as any
       let git: Git
       checkAndUpdate(program)
@@ -38,9 +54,11 @@ export function configure(program: CliBuilder) {
           state.repository = repoInfo
           return prompt(state, program)
         })
-        .then(st => {
+        .then<any>(st => {
           state = st
-          if (!state.repository.exists && state.setup.githubRepositoryCreation) {
+          if (!state.repository.exists &&
+            state.setup.githubRepositoryCreation &&
+            state.repository.remoteUrl) {
             return git.clone(state.repository.remoteUrl)
           }
         })
@@ -57,37 +75,28 @@ export function configure(program: CliBuilder) {
     })
 }
 
-export interface SetupArguments {
-  repository: string
-}
-
-export interface SetupOptions extends Options {
-  skipGit: boolean
-  skipWrite: boolean
-}
-
 // function write(state: setup.SetupState) {
 
 // }
 
-function prompt(setupState: setup.SetupState, program: CliBuilder): Promise<setup.SetupState> {
+function prompt(setupState: setup.SetupState, ui: UI): Promise<setup.SetupState> {
   console.log(setupState)
   const { repository } = setupState
-  program.log('')
-  program.log(`I'll be creating the ${chalk.cyan(repository.name)} ${chalk.yellow('typings')} repository at ${chalk.green(repository.path)}`)
-  program.log('')
-  program.log(`To begin, I need to know a little bit about the ${chalk.cyan('source')} you are typings for.`)
+  ui.log('')
+  ui.log(`I'll be creating the ${chalk.cyan(repository.name)} ${chalk.yellow('typings')} repository at ${chalk.green(repository.path)}`)
+  ui.log('')
+  ui.log(`To begin, I need to know a little bit about the ${chalk.cyan('source')} you are typings for.`)
 
   return promptPackageInfo(setupState)
     .then(packageInfo => {
       const manager = packageInfo.type === 'npm' ? npm : packageInfo.type === 'bower' ? bower : undefined
       if (manager) {
-        program.log(`gathering info from ${chalk.cyan(packageInfo.type)}...`)
+        ui.log(`gathering info from ${chalk.cyan(packageInfo.type)}...`)
         return manager.read(packageInfo.name)
           .then(info => {
             return extend(packageInfo, info)
           }, () => {
-            program.error(`${chalk.red('Oops')}, could not find ${chalk.cyan(packageInfo.name)}.`)
+            ui.error(`${chalk.red('Oops')}, could not find ${chalk.cyan(packageInfo.name)}.`)
           })
       }
       else {
@@ -95,7 +104,7 @@ function prompt(setupState: setup.SetupState, program: CliBuilder): Promise<setu
       }
     })
     .then(packageInfo => {
-      return promptMissingPackageInfo(packageInfo, program)
+      return promptMissingPackageInfo(packageInfo, ui)
     })
     .then(packageInfo => {
       setupState.source = packageInfo
@@ -104,11 +113,11 @@ function prompt(setupState: setup.SetupState, program: CliBuilder): Promise<setu
     .then(usageInfo => {
       setupState.setup = usageInfo
 
-      program.log('')
-      program.log(`Good, now about the ${chalk.yellow('typings')} itself...`)
-      program.log('Based on your configured template, I will be creating the repository with these information...')
+      ui.log('')
+      ui.log(`Good, now about the ${chalk.yellow('typings')} itself...`)
+      ui.log('Based on your configured template, I will be creating the repository with these information...')
       setupState.setup = setup.buildSetupInfo(setupState)
-      program.log(formatSetupSummary(setupState))
+      ui.log(formatSetupSummary(setupState))
 
       return inquirer.prompt({
         type: 'confirm',
@@ -266,7 +275,7 @@ export function promptPackageInfo(info: setup.SetupState): Promise<PackageInfo> 
   return inquirer.prompt(questions) as any
 }
 
-export function promptMissingPackageInfo(packageInfo: PackageInfo, program: CliBuilder): Promise<PackageInfo> {
+export function promptMissingPackageInfo(packageInfo: PackageInfo, ui: UI): Promise<PackageInfo> {
   const questions: inquirer.Question[] = []
   if (!packageInfo.gitUrl) {
     questions.push({
@@ -293,7 +302,7 @@ export function promptMissingPackageInfo(packageInfo: PackageInfo, program: CliB
   }
 
   if (questions.length) {
-    program.log('There are some info missing from the source, so I need to ask a few more questions...')
+    ui.log('There are some info missing from the source, so I need to ask a few more questions...')
   }
   return inquirer.prompt(questions)
     .then(answsers => {

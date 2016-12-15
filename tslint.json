@@ -1,3 +1,8 @@
 {
-  "extends": "tslint-config-unional/standard"
+  "extends": "tslint-config-unional/standard",
+  "rules": {
+    "no-inner-declarations": [
+      false
+    ]
+  }
 }

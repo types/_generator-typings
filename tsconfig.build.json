@@ -1,24 +1,6 @@
 {
-  "atom": {
-    "rewriteTsconfig": false
-  },
-  "buildOnSave": false,
-  "compileOnSave": false,
   "compilerOptions": {
-    "declaration": true,
-    "inlineSources": true,
-    "lib": [
-      "es2015"
-    ],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "newLine": "LF",
-    "removeComments": true,
-    "rootDir": "src",
-    "outDir": "dist",
-    "sourceMap": true,
-    "strictNullChecks": false,
-    "target": "es5"
+    "outDir": "dist"
   },
   "files": [
     "src/cli/bin.ts",

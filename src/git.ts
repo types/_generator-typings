@@ -3,7 +3,6 @@ import path = require('path')
 import fs = require('fs')
 import url = require('url')
 import simpleGit = require('simple-git')
-import Promise = require('any-promise')
 
 export interface RepositoryInfo {
   name: string,

@@ -1,6 +1,6 @@
 import extend = require('xtend')
 
-import { Config } from './config'
+import { Config } from './components/config'
 import { RepositoryInfo } from './git'
 import { PackageInfo } from './sources/interfaces'
 
@@ -21,7 +21,7 @@ export interface SetupInfo {
   travis?: boolean
   appveyor?: boolean
   usages?: string[]
-  platforms?: string[]
+  platforms: string[]
 }
 
 /**

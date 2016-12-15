@@ -1,8 +1,34 @@
+import { CliBuilder } from 'clibuilder'
+
 import { Promise } from 'es6-promise'
 import * as os from 'os'
 
+import { Store } from '../utils/store'
 import { PROJECT_NAME, VERSION } from '../utils/constants'
 import { log, logError, logInfo } from './log'
+import { isIssueCommandAction, createIssueCommandAction } from './cli.actions'
+
+export interface CliState<Arg, Option > {
+  commandChain: string
+  args: Arg
+  options: Option
+}
+
+export function configure(program: CliBuilder, store: Store) {
+  store.addReducer('cli', (state, action) => {
+    if (action.type === '@@redux/INIT') {
+      return {}
+    }
+    else if (isIssueCommandAction(action)) {
+      return action.payload
+    }
+    return state
+  })
+
+  program.defaultAction = (args, options, builder, ui) => {
+    store.dispatch(createIssueCommandAction(builder.getCommandChain(), args, options))
+  }
+}
 
 /**
  * Options for the execution.

@@ -16,6 +16,6 @@
   "globalDependencies": {},
   "devDependencies": {
     "mem-fs": "registry:npm/mem-fs#1.1.3+20160819055152",
-    "mem-fs-editor": "registry:npm/mem-fs-editor#2.3.0+20160819061232"
+    "mem-fs-editor": "registry:npm/mem-fs-editor#2.3.0+20160819070958"
   }
 }

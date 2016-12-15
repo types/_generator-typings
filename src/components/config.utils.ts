@@ -1,8 +1,8 @@
 import rc = require('rc')
 
-import { PROJECT_NAME } from './utils/constants'
-import { Config } from './config'
-import { getConfigValue } from './git'
+import { PROJECT_NAME } from '../utils/constants'
+import { Config } from './config.logic'
+import { getConfigValue } from '../git'
 
 export interface OldConfig {
   username: string,
@@ -30,22 +30,18 @@ export function createDefaultConfig(): Config {
   }
 }
 
-export function readRaw() {
-  const config = readConfig()
-  // the `config` property is added by `rc` storing location of the file.
-  if (!(config as any).config) {
-    const defaultConfig = createDefaultConfig()
-    const oldConfig = readOldConfig()
-    return (oldConfig as any).config ? convertOldConfig(oldConfig) : defaultConfig
-  }
-
-  return config
-}
-
+/**
+ * Read config.
+ * This function is not testable as we cannot control where `rc` reads the config file.
+ */
 export function readConfig(): Config {
   return rc(PROJECT_NAME) as Config
 }
 
+/**
+ * Read old config.
+ * This function is not testable as we cannot control where `rc` reads the config file.
+ */
 export function readOldConfig(): OldConfig {
   return rc('generator-typings') as OldConfig
 }

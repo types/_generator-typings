@@ -2,14 +2,10 @@ import { join } from 'path'
 import { homedir } from 'os'
 import { writeFile } from 'fs'
 import chalk = require('chalk')
-import inquirer = require('inquirer')
-import Promise = require('any-promise')
-import extend = require('xtend')
-import { CliBuilder } from 'clibuilder'
 
-import { PROJECT_NAME } from './utils/constants'
-import { readRaw } from './config.utils'
-import { optionsToChoices } from './utils/Options'
+import { PROJECT_NAME } from '../utils/constants'
+import { readConfig, readOldConfig, convertOldConfig, createDefaultConfig } from './config.utils'
+import { optionsToChoices } from '../utils/Options'
 
 export const CONFIGVERSION = 2
 export const GLOBAL_OLD_CONFIG_PATH = join(homedir(), `.generator-typingsrc`)
@@ -176,17 +172,23 @@ export interface Config {
 }
 
 export function where(): string | undefined {
-  const currentConfig = readRaw()
+  const currentConfig = readConfig()
   // the `config` property is assed by `rc` storing location of the file.
   return (currentConfig as any).config
 }
 
 /**
  * Read config.
- * Note: cannot test cases when there is no config because we cannot control where `rc()` reads file.
+ * This function is not testable as we cannot control where `rc` reads the config file.
  */
 export function read() {
-  const config = readRaw()
+  const config = readConfig()
+  // the `config` property is added by `rc` storing location of the file.
+  if (!(config as any).config) {
+    const defaultConfig = createDefaultConfig()
+    const oldConfig = readOldConfig()
+    return (oldConfig as any).config ? convertOldConfig(oldConfig) : defaultConfig
+  }
 
   // These are added automatically by `rc()`
   delete (config as any)._
@@ -207,37 +209,4 @@ export function isDefault(template: Config) {
 
 export function needsUpdate(template: Config) {
   return isDefault(template) || template.version !== CONFIGVERSION
-}
-
-export function checkAndUpdate(program: CliBuilder) {
-  const conf = read()
-  let configReady = Promise.resolve(conf)
-  if (isDefault(conf)) {
-    program.log(`Seems like this is the ${chalk.cyan('first time')} you use this generator.`)
-    program.log(`Let's quickly setup the ${chalk.green('config template')}...`)
-    configReady = update(program)
-  }
-  else if (needsUpdate(conf)) {
-    program.log(`Seems like you have ${chalk.cyan('updated')} this generator. The config template has changed.`)
-    program.log(`Let's quickly update the ${chalk.green('config template')}...`)
-    configReady = update(program)
-  }
-
-  return configReady
-}
-
-export function update(program: CliBuilder) {
-  let config = read()
-  return prompt(config)
-    .then(config => {
-      config.version = CONFIGVERSION
-      config = save(config)
-      program.log('config updated.')
-      return config
-    })
-}
-
-export function prompt(config: Config): Promise<Config> {
-  const keys = Object.keys(questions)
-  return inquirer.prompt(keys.map(key => extend(questions[key], { default: config[key] }))) as any
 }

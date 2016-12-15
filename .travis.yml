@@ -11,3 +11,6 @@ branches:
 
 node_js:
   - "stable"
+
+script:
+  - npm run verify

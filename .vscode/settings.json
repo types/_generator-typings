@@ -3,7 +3,7 @@
   "json.schemas": [
     {
       "fileMatch": [
-        "tsconfig.build.json"
+        "tsconfig.*.json"
       ],
       "url": "http://json.schemastore.org/tsconfig"
     }

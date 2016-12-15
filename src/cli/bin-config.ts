@@ -1,8 +1,14 @@
+/**
+ * Configure default setting.
+ * Similar to `git config`
+ */
 import { CliBuilder } from 'clibuilder'
 
+import { Store } from '../utils/store'
+import { CliState } from './cli'
 import { formatLines } from './log'
 import { Options } from '../utils/Options'
-import { read, where, update } from '../config'
+import { read, where, update } from '../components/config'
 
 export interface ConfigOptions extends Options {
   list?: boolean
@@ -18,21 +24,25 @@ export function configure(program: CliBuilder) {
   program
     .command('config')
     .option('-l, --list', 'list all')
-    .option('-u, --update', 'update config with prompts')
+    .option('-p, --prompt', 'update config with prompts')
     .option('-w, --where', 'show where the config is saved')
-    .action<void, ConfigOptions>((args, options) => {
+    .action<void, ConfigOptions>((args, options, builder, ui) => {
       if (options.list) {
-        // dispatch('config.read')
-        program.log(formatLines(read(), 'version'))
+        ui.log(formatLines(read(), 'version'))
       }
       else if (options.where) {
-        program.log(where() || 'no config found')
+        ui.log(where() || 'no config found')
       }
       else if (options.update) {
-        update(program)
+        update(ui)
       }
       else {
-        return false
+        ui.log(builder.help())
       }
+    })
+    .command('init')
+    .description('Initialize config')
+    .action<void, void>((args, options, builder, ui) => {
+      update(ui)
     })
 }
