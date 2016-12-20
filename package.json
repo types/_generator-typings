@@ -33,7 +33,7 @@
     "yosay": "^1.2.0"
   },
   "devDependencies": {
-    "dependency-check": "^2.5.2",
+    "dependency-check": "^2.6.0",
     "eslint-config-xo-space": "^0.15.0",
     "gulp": "^3.9.1",
     "gulp-eslint": "^3.0.1",
