@@ -1,7 +1,13 @@
 {
   "compilerOptions": {
+    "lib": ["es2015"],
     "module": "commonjs",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noImplicitAny": true,
+    "outDir": "out",
+    "strictNullChecks": true,
+    "target": "es5"
   },
   "files": [
     "../typings/index.d.ts",

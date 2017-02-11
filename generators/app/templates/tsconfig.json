@@ -1,8 +1,13 @@
 {
   "compilerOptions": {
+    "lib": ["es2015"],
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "out"
+    "noEmit": true,
+    "noImplicitAny": true,
+    "outDir": "out",
+    "strictNullChecks": true,
+    "target": "es5"
   },
   "exclude": [
     "node_modules",
