@@ -4,7 +4,7 @@ import { Promise } from 'es6-promise'
 import * as os from 'os'
 
 import { Store } from '../utils/store'
-import { PROJECT_NAME, VERSION } from '../utils/constants'
+import { CLI_NAME, VERSION } from '../utils/constants'
 import { log, logError, logInfo } from './log'
 import { isIssueCommandAction, createIssueCommandAction } from './cli.actions'
 
@@ -68,7 +68,7 @@ export function handleError(error: Error, options: PrintOptions): any {
   logInfo(`${os.type()} ${os.release()}`, 'system')
   logInfo(process.argv.map(v => JSON.stringify(v)).join(' '), 'command')
   logInfo(process.version, 'node -v')
-  logInfo(VERSION, `${PROJECT_NAME} -v`)
+  logInfo(VERSION, `${CLI_NAME} -v`)
 
   if ((error as any).code) {
     logError((error as any).code, 'code')
@@ -76,7 +76,7 @@ export function handleError(error: Error, options: PrintOptions): any {
 
   log('')
   logInfo('If you need help, you may report this error at:')
-  logInfo(`  <https://github.com/typings/${PROJECT_NAME}/issues>`)
+  logInfo(`  <https://github.com/typings/${CLI_NAME}/issues>`)
   log('')
   logInfo('Copy the message above into the issue would be of great help.')
 

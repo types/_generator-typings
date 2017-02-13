@@ -1,20 +1,51 @@
 {
-  "name": "typingsrepo",
-  "prettyname": "TypingsRepo",
+  "name": "writetypes",
+  "prettyname": "Write Types",
   "version": "2.0.0-alpha",
-  "description": "Generate typings repository",
-  "homepage": "https://github.com/typings/typingsrepo",
+  "description": "Tool for writing TypeScript typings",
+  "main": "dist/bin.js",
+  "bin": {
+    "writetypes": "dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "lint": "tslint \"src/**/*.ts\"",
+    "test": "rimraf out && tsc && ava",
+    "coverage": "rimraf out && tsc && nyc ava --check-coverage",
+    "link+watch": "npm link && npm run watch",
+    "watch": "rimraf dist && node scripts/watch.js",
+    "verify": "npm run test && npm run lint && npm run build && npm run dependency-check",
+    "dependency-check": "dependency-check . --unused --no-dev && dependency-check . --missing --no-dev",
+    "preversion": "npm run verify",
+    "version": "git add dist",
+    "prepare": "typings install",
+    "prepublishOnly": "npm run build",
+    "postpublish": "git push"
+  },
+  "ava": {
+    "files": [
+      "dist/**/*.spec.js"
+    ],
+    "source": [
+      "scripts/*.js",
+      "dist/**/*.js",
+      "*.json"
+    ]
+  },
+  "license": "MIT",
   "author": {
     "name": "unional",
     "url": "https://github.com/unional"
   },
-  "main": "dist/cli/bin.js",
-  "bin": {
-    "typingsrepo": "dist/cli/bin.js"
+  "homepage": "https://github.com/typings/typingsrepo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typings/typingsrepo.git"
   },
-  "files": [
-    "dist/"
-  ],
   "keywords": [
     "yeoman-generator",
     "typings",
@@ -26,6 +57,8 @@
     "node": ">=4.0.0"
   },
   "dependencies": {
+    "aurelia-logging": "^1.2.0",
+    "aurelia-logging-color": "^0.4.13",
     "chalk": "^1.1.3",
     "change-case": "^3.0.0",
     "clibuilder": "^0.6.2",
@@ -48,38 +81,15 @@
     "yosay": "^1.2.0"
   },
   "devDependencies": {
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^7.0.5",
     "ava": "^0.17.0",
     "ava-fixture": "^0.3.1",
     "dependency-check": "^2.6.0",
     "rimraf": "^2.5.4",
     "tslint": "^4.0.2",
     "tslint-config-unional": "^0.6.0",
-    "typescript": "^2.0.0",
+    "typescript": "^2.2.0-dev.20170212",
     "typings": "^2.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/typings/typingsrepo.git"
-  },
-  "scripts": {
-    "build": "rimraf dist && tsc -p tsconfig.build.json",
-    "lint": "tslint \"src/**/*.ts\"",
-    "test": "rimraf out && tsc && ava",
-    "coverage": "rimraf out && tsc && nyc ava --check-coverage",
-    "link+watch": "npm link && npm run watch",
-    "watch": "rimraf dist && node scripts/watch.js",
-    "verify": "npm run test && npm run lint && npm run build && npm run dependency-check",
-    "dependency-check": "dependency-check . --unused --no-dev && dependency-check . --missing --no-dev",
-    "preversion": "npm run verify",
-    "version": "git add dist",
-    "prepare": "typings install",
-    "prepublishOnly": "npm run build",
-    "postpublish": "git push"
-  },
-  "ava": {
-    "files": [
-      "out/**/*.spec.js"
-    ]
-  },
-  "license": "MIT"
+  }
 }

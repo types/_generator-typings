@@ -2,17 +2,21 @@
 
 const cp = require('child_process');
 
-let compiling = true;
-cp.spawn('tsc', ['-w'])
-  .stdout.on('data', data => {
-    console.log(data.toString())
-    if (compiling) {
-      compiling = false;
-      cp.spawn('ava', ['-w', process.argv[2]], {
-        stdio: 'inherit'
-      });
+let ava;
+cp.spawn('tsc', ['-w'], { shell: true })
+  .stdout.on('data', (data) => {
+    if (!ava) {
+      ava = cp.spawn('ava', ['-w'], {
+        stdio: 'inherit',
+        shell: true
+      })
     }
-    cp.spawnSync('npm', ['run', 'lint'], {
-      stdio: 'inherit'
-    });
-  });
+    const text = data.toString()
+    process.stdout.write(text)
+    if (/.*Compilation complete/.test(text)) {
+      cp.spawnSync('npm', ['run', 'lint'], {
+        stdio: 'inherit',
+        shell: true
+      })
+    }
+  })

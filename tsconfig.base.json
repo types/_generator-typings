@@ -8,10 +8,11 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "newLine": "LF",
-    "removeComments": true,
-    "rootDir": "src",
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": false,
     "sourceMap": true,
-    "strictNullChecks": true,
-    "target": "es5"
+    "strictNullChecks": true
   }
 }

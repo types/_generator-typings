@@ -1,9 +1,13 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "target": "es5"
   },
   "files": [
-    "src/cli/bin.ts",
-    "typings/index.d.ts"
+    "src/bin.ts"
+  ],
+  "include": [
+    "src/commands"
   ]
 }

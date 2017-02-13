@@ -1,15 +1,15 @@
 {
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "outDir": "out"
-  },
-  "include": [
-    "src/**/*.ts",
-    "typings/index.d.ts"
-  ],
+  "extends": "./tsconfig.build.json",
   "atom": {
     "rewriteTsconfig": false
   },
   "buildOnSave": false,
-  "compileOnSave": false
+  "compileOnSave": false,
+  "include": [
+    "src/**/*",
+    "typings"
+  ],
+  "exclude": [
+    "templates"
+  ]
 }
