@@ -5,6 +5,7 @@
   "buildOnSave": false,
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": ".",
     "declaration": true,
     "inlineSources": true,
     "lib": [
@@ -21,9 +22,8 @@
     "strictNullChecks": true,
     "target": "es5"
   },
-  "exclude": [
-    "fixtures",
-    "generators",
-    "node_modules"
+  "include": [
+    "src/**/*.ts",
+    "typings/index.d.ts"
   ]
 }
