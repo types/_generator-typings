@@ -28,7 +28,7 @@
     "rc": "^1.1.6",
     "simple-git": "^1.43.0",
     "typings-core": "^2.0.0",
-    "update-notifier": "^1.0.2",
+    "update-notifier": "^2.0.0",
     "yeoman-generator": "^0.24.1",
     "yosay": "^1.2.0"
   },
