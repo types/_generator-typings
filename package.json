@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "dependency-check": "^2.5.2",
-    "eslint-config-xo-space": "^0.15.0",
+    "eslint-config-xo-space": "^0.16.0",
     "gulp": "^3.9.1",
     "gulp-eslint": "^3.0.1",
     "gulp-exclude-gitignore": "^1.0.0",
