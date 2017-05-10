@@ -96,7 +96,7 @@ yo typings
 
 ## About writing tests for typings
 
-Simply shape test (like those in DefinitlyTyped) is not sufficient.
+Simply shape test (like those in DefinitelyTyped) is not sufficient.
 Since there is no type in javascript, even if you create a wrong signature, you won't detect it until runtime.
 
 e.g.
