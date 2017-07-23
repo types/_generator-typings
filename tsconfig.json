@@ -6,7 +6,7 @@
   "buildOnSave": false,
   "compileOnSave": false,
   "include": [
-    "src/**/*",
+    "src",
     "typings"
   ],
   "exclude": [

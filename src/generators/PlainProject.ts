@@ -5,7 +5,7 @@ import chalk = require('chalk')
 import { resolve, join } from 'path'
 
 import { GeneratorContext, Generator } from '../utils/Generator'
-import { CLI_VERSION } from '../utils/constants'
+import { CLI_VERSION } from '../constants'
 import { CommandOptions } from '../utils/command'
 
 export interface PlainProjectGeneratorContext extends GeneratorContext {
