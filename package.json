@@ -30,7 +30,7 @@
     "typings-core": "^2.0.0",
     "update-notifier": "^2.0.0",
     "yeoman-generator": "^0.24.1",
-    "yosay": "^2.0.0"
+    "yosay": "^2.0.1"
   },
   "devDependencies": {
     "dependency-check": "^2.5.2",
